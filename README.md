@@ -109,23 +109,26 @@ address in:
 
 ---
 
-## 6. What is verified vs. still needed
+## 6. Where the content came from, and what is missing
 
-Everything published uses confirmed information only: name (English and
-Georgian), address, phone, opening hours (daily 12:00–02:00), the full menu
-with prices, and the Wolt and Glovo store links (both confirmed by the
-owner). Nothing has been invented.
+### Sourcing
 
-**Deliberately not stated**, because it is unverified:
+All business details on the site — the name in English and Georgian, the
+address, the phone number, the opening hours (daily 12:00–02:00), the full
+menu with prices, and the Wolt and Glovo store links — were **verified from
+current public listings**, not confirmed directly with the business.
 
-- Per-size pricing for the cheeseburger. The S/M/L options are shown as a
-  note only — no size prices are listed.
-- Any Glovo or Wolt promotional pricing. The site lists standard menu
-  prices, which do not change with temporary platform discounts.
+Nothing has been invented. Before this site is treated as an official
+source, someone at the restaurant should read it through and confirm the
+details are still accurate, since public listings go out of date.
+
+**Deliberately left out**, because it could not be verified:
+
+- Per-size pricing for the cheeseburger. S/M/L is shown as a note only.
+- Wolt and Glovo promotional pricing. The site lists standard menu prices,
+  which do not move with temporary platform discounts.
 
 ### Delivery links
-
-Both store URLs are confirmed correct:
 
 - Wolt — `https://wolt.com/en/geo/tbilisi/restaurant/sameo`
 - Glovo — `https://glovoapp.com/en/ge/tbilisi/stores/sameo-tbi`
@@ -135,14 +138,22 @@ They appear four times across two files — `index.html` (the order band) and
 structured data in `index.html`. If a platform ever changes a store address,
 search for `wolt.com` and `glovoapp.com` to find every instance.
 
-**Still to be supplied:**
+### Not on the site, and deliberately so
 
-- **Photography** — food, interior, and team
-- **Instagram / Facebook accounts** — no social links are shown anywhere,
-  by request, until the official handles are confirmed
-- **A contact email address**
-- **Real customer reviews**, ideally pulled from Google
-- **The founding story** — dates, people, and history
+None of the following exist anywhere in the code. They are omitted rather
+than filled with placeholders, because inventing any of them would put false
+information in front of customers:
+
+- **Email address** — no contact email is shown; the form and phone number
+  are the only contact routes
+- **Instagram / Facebook** — no social links, icons, or handles anywhere
+- **Customer reviews or testimonials** — no review section exists
+- **Founding story** — the About page carries brand and process writing
+  only, with no dates, founders, or history claims
+- **Photography** — the design is built to look complete without it
+
+To add any of these later, supply the real details and they can be dropped
+in. Do not fill them with sample content in the meantime.
 
 ### Updating a price
 

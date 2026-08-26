@@ -924,7 +924,7 @@ textarea:focus-visible {
   padding-bottom: var(--sp-5);
 }
 .footer__grid p { max-width: 34ch; }
-.footer h4 {
+.footer h3 {
   font-size: 0.76rem;
   letter-spacing: 0.14em;
   color: var(--muted);
