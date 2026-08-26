@@ -1,152 +1,146 @@
-# Sameo Smash — Website (Demo/Concept)
+# Sameo Smash — Website
 
-A modern, fast, mobile-friendly website for **Sameo Smash / სეიმო სმეშ**, a smash burger
-restaurant in Tbilisi, Georgia. This is a concept/demo site built to show what a real
-website could look like — several details are placeholders until the real business info
-is provided (see **"What still needs to be filled in"** below).
+Website for **Sameo Smash / სეიმო სმეშ**, a smash burger restaurant at
+1 Vashlovani St, Tbilisi 0108, Georgia.
 
-Built with plain **HTML, CSS and JavaScript** — no frameworks, no build tools, no npm
-install. This was a deliberate choice: it's the simplest technology that still gives a
-fast, professional result, and it's the easiest for a beginner to open and edit directly
-on GitHub, from an iPad or anywhere else.
+Built as plain HTML, CSS and JavaScript — no frameworks, no build step, no
+`npm install`. Every page is a text file you can edit directly on GitHub
+(including from an iPad) and the change goes live within about a minute.
 
 ---
 
-## 1. File structure (what's in this repo)
+## 1. Pages
 
+| File | Purpose |
+|---|---|
+| `index.html` | Home — hero, category line-up, brand intro, location, order CTA |
+| `menu.html` | Menu — Burgers, plus Sliders, Sides, Sauces, Desserts, Coffee, Shakes, Drinks |
+| `about.html` | About — brand story and how the kitchen works |
+| `contact.html` | Location, directions, ordering, and the contact form |
+| `404.html` | Shown automatically if someone hits a wrong address |
+| `css/style.css` | All styling. Section map is at the top of the file |
+| `js/script.js` | Mobile menu, scroll animations, contact form |
+| `robots.txt`, `sitemap.xml` | Search engine files |
+
+The header and footer are repeated in each page rather than pulled from a
+shared file — that is the trade-off for having no build step. **If you change a
+navigation or footer link, make the same edit in all five HTML files.**
+
+---
+
+## 2. Editing content
+
+1. Open the file on GitHub and tap the pencil / edit icon.
+2. Change the text between the tags — e.g. `<h3>Sliders</h3>`.
+3. Tap **Commit changes**.
+
+The phone number appears in several places per page (header, body, footer,
+and the mobile Call bar). If it ever changes, use GitHub's search to find
+every instance of both `+995 511 10 08 35` and `tel:+995511100835`.
+
+### Colours and fonts
+
+Open `css/style.css` and edit the `:root` block at the top. Changing
+`--flame` (the orange) updates every button, accent and highlight at once.
+
+---
+
+## 3. Adding real photography
+
+The site is designed to look finished **without** photos — the hero uses a
+brand disc motif and the menu uses typographic cards. Photos are an upgrade,
+not a missing piece, so nothing looks broken while you wait for them.
+
+To place a photo in a menu card, replace this block:
+
+```html
+<div class="feature__face"><span>Smash</span></div>
 ```
-index.html      → Home page
-menu.html       → Full menu page
-about.html      → About page
-contact.html    → Contact, location, delivery and the contact form
-css/style.css   → All the site's design (colors, fonts, spacing, layout)
-js/script.js    → Small scripts: mobile menu, scroll animations, contact form
-images/         → Photos and icons go here (currently placeholders)
-robots.txt      → Tells search engines they can index the site
-sitemap.xml     → Lists all pages for search engines
+
+with:
+
+```html
+<div class="feature__face">
+  <img class="photo" src="images/smash-burger.jpg" alt="Smash burger with melted cheese">
+</div>
 ```
 
-Every page repeats the same header (navigation) and footer. That's intentional — with no
-build tool, copy-pasting the header/footer is the simplest thing to understand and edit.
-If you change the navigation, just make the same edit on all 4 pages.
+Upload the image to the `images/` folder first. The `.photo` class already
+handles correct cropping and sizing. Always write a short, literal `alt`
+description — it matters for Google and for screen readers.
+
+Photos work best at roughly 1600px wide, saved as JPG under ~300KB each.
 
 ---
 
-## 2. How to edit content (no coding tools needed)
+## 4. Turning on the contact form
 
-You can do all of this from an iPad using the GitHub website or app:
+The form validates input and behaves correctly, but a static site has no
+server to send email from, so it needs a free forwarding service.
 
-1. Open the file you want to change (e.g. `menu.html`) in this repository on GitHub.
-2. Tap the **pencil / edit icon**.
-3. Find the text you want to change — it's plain English inside the page, e.g.:
-   ```html
-   <h3>Classic Smash</h3>
-   <p class="desc">[placeholder description]</p>
-   <span class="price">₾ —</span>
+1. Create a free form at [formspree.io](https://formspree.io).
+2. Copy the endpoint it gives you (e.g. `https://formspree.io/f/abcd1234`).
+3. Open `js/script.js` and paste it into the `FORM_ENDPOINT` line near the top:
+   ```js
+   var FORM_ENDPOINT = "https://formspree.io/f/abcd1234";
    ```
-4. Type your changes directly (e.g. replace `[placeholder description]` with the real
-   description, and `₾ —` with a real price like `₾ 18`).
-5. Scroll down and tap **Commit changes** to save.
+4. Commit.
 
-Anything wrapped in `[square brackets]` is a placeholder — search for `[` if you want to
-find everything that still needs real content.
-
-### Adding real photos
-
-Right now every photo is a dashed placeholder box that says "Photo placeholder" — this is
-intentional, since we didn't want to invent fake stock photography for a real business.
-
-To add a real photo:
-1. Upload your photo into the `images/` folder (drag-and-drop works on the GitHub website;
-   on the GitHub iPad app you can upload from your Photos library).
-2. Find the matching placeholder block in the HTML, which looks like this:
-   ```html
-   <div class="photo-placeholder">
-     <span class="ph-icon">📷</span>
-     <span>Hero photo placeholder...</span>
-   </div>
-   ```
-3. Replace the whole `<div class="photo-placeholder">...</div>` block with:
-   ```html
-   <img src="images/your-photo-name.jpg" alt="Describe the photo here" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" />
-   ```
-   The `alt` text matters for SEO and for visually-impaired visitors — describe what's in
-   the photo (e.g. "Smash burger with melted cheese on a wooden board").
-
-### Changing colors / fonts
-
-Open `css/style.css` and look at the very top — there's a section called `1. VARIABLES`.
-Changing a value there (e.g. `--color-primary: #ff5a1f;`) updates that color everywhere on
-the site automatically.
+Until that is set, submitting the form shows a message directing the visitor
+to the phone number — so the page never appears broken to a customer.
 
 ---
 
-## 3. Turning on the contact form (Formspree — free, ~2 minutes)
+## 5. Publishing
 
-The contact form on `contact.html` is fully built and validated, but it needs a free
-backend service to actually deliver messages to an inbox (a plain static site has no
-server to send email from). We used **Formspree** because it's the simplest reliable
-option for a static site — no server, no code.
+The site is hosted on GitHub Pages. In **Settings → Pages**, the source is set
+to deploy from a branch. Any commit to that branch republishes the site
+automatically within roughly a minute.
 
-1. Go to [formspree.io](https://formspree.io) and create a free account.
-2. Create a new form and copy the endpoint URL it gives you (looks like
-   `https://formspree.io/f/abcd1234`).
-3. Open `contact.html`, find this line:
-   ```html
-   action="https://formspree.io/f/REPLACE_WITH_YOUR_FORM_ENDPOINT"
-   ```
-4. Replace `REPLACE_WITH_YOUR_FORM_ENDPOINT` with your real form ID.
-5. Commit the change. That's it — messages will now arrive in the email you signed up with.
+### If you register a custom domain
 
-Until you do this, submitting the form just shows a friendly demo message instead of
-sending anything (so nothing breaks in the meantime).
+Search and replace `https://katemorree.github.io/First-website/` with the new
+address in:
+
+- the `<link rel="canonical">` and `og:url` tags in all four main pages
+- the JSON-LD block in `index.html`
+- `robots.txt`
+- `sitemap.xml`
 
 ---
 
-## 4. How to preview the site before publishing
+## 6. What is verified vs. still needed
 
-**Easiest option — GitHub Pages (free, no extra tools):**
-1. On GitHub, go to this repository's **Settings → Pages**.
-2. Under "Build and deployment", set Source to **Deploy from a branch**.
-3. Pick this branch and the `/ (root)` folder, then Save.
-4. GitHub gives you a live web address (like `https://yourusername.github.io/First-website/`)
-   within a minute or two — open it on your iPad, phone, or any computer to see the real site.
+Everything published on the site uses confirmed information only: the name,
+address, phone number, product categories, and that delivery and takeaway are
+offered. No opening hours, prices, ingredients, reviews, or social accounts
+have been invented.
 
-Any time you commit a change to that branch, the live site updates automatically within a
-minute — no separate "build" or "deploy" step needed.
+Still to be supplied by the business:
 
----
-
-## 5. What still needs to be filled in
-
-This is a demo built from the information available. To make it fully accurate, please
-provide (or edit in directly):
-
-- **Opening hours** — shown as a placeholder on the Home and Contact pages.
-- **Real menu items, descriptions, ingredients and prices** — every menu item is currently
-  a labeled example.
-- **Real customer reviews** — the review section uses clearly-marked sample quotes.
-- **Instagram / Facebook handles** — social links are placeholders (`#`).
-- **Wolt / Glovo delivery links**, if you use those platforms.
-- **Real photos** — of the food, the space, and the team.
-- **A contact email**, if you'd like one listed.
-- **The real brand story** for the About page (we intentionally avoided inventing history,
-  founders, or dates).
-- **A real domain name** — once you have one, update the `<link rel="canonical">` and
-  `og:url` tags in each page's `<head>`, and the URLs in `robots.txt` and `sitemap.xml`.
-
-Search the files for `[` or "placeholder" to find every spot that needs real content.
+- **Opening hours** — currently not stated anywhere on the site
+- **Prices and full item names** — the menu presents categories and points
+  customers to the phone
+- **Photography** — food, interior, and team
+- **Instagram / Facebook accounts** — no social links are shown
+- **Delivery platform links** (Wolt, Glovo, Bolt Food) if any are used
+- **A contact email address**
+- **Real customer reviews**, ideally pulled from Google
+- **The founding story** — dates, people, and history
 
 ---
 
-## 6. Why this tech stack
+## 7. Technical notes
 
-- **No build tools / frameworks** → you can edit a text file and see the result; nothing to
-  install, nothing to break.
-- **Fast loading** → no heavy JavaScript libraries; fonts and images load efficiently.
-- **SEO-friendly** → every page has a unique title/description, semantic HTML, and
-  structured data (`Restaurant` schema) so Google understands the business.
-- **Accessible** → proper headings, labels, focus states, alt text support, and a "skip to
-  content" link for keyboard/screen-reader users.
-- **Easy to deploy anywhere** → works on GitHub Pages, Netlify, Vercel, or any basic web
-  host, since it's just static files.
+- **Accessibility**: skip link, visible focus rings, labelled form fields,
+  `aria-current` on the active nav item, `aria-expanded` on the menu toggle,
+  and inputs at 16px so iOS Safari does not zoom on focus.
+- **SEO**: unique title and meta description per page, canonical URLs, Open
+  Graph tags, a sitemap, and `Restaurant` structured data on the home page.
+- **Performance**: no libraries or frameworks; three fonts; the map iframe is
+  lazy-loaded.
+- **Resilience**: scroll animations are progressive enhancement — if
+  JavaScript fails, all content still renders.
+- **Motion**: all animation is disabled automatically for visitors who have
+  "reduce motion" switched on.
+- Verified for horizontal overflow from 320px to 1920px wide.

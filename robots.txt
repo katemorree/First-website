@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://sameosmash.example/sitemap.xml
+Sitemap: https://katemorree.github.io/First-website/sitemap.xml
