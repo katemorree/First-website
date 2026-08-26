@@ -122,7 +122,58 @@
                       onProgress: onProgress, active: false, last: -1 });
     }
 
-    addSection(".stage", "--p", null);
+    // The hero burger turns a full circle as you scroll past it.
+    //
+    // Two extra numbers go onto .stage alongside --p, because CSS cannot yet
+    // do trigonometry everywhere this site runs:
+    //
+    //   --spin  the angle, 0 to 360 degrees, EASED. A flat photograph has
+    //           nothing to show edge-on, so the turn is shaped to linger
+    //           where the burger faces us and hurry through the quarters
+    //           where it does not. The sine term does that: it slows the
+    //           angle near 0, 180 and 360 and speeds it up in between.
+    //   --face  how square-on the burger is, 1 facing us and 0 edge-on.
+    //           The ground shadow narrows and lightens with it.
+    //   --fix   a widening applied before the turn, so the burger never
+    //           thins past about 40% of itself.
+    //
+    // That last one is the honest part. The burger is one flat photograph,
+    // and a flat thing turned exactly side-on has no width at all — it would
+    // vanish to a hairline. Because the turn is driven by scrolling, a
+    // visitor can stop on any angle they like, so "it passes too quickly to
+    // notice" is not good enough. Widening the picture as it turns away
+    // holds it at a readable size through the awkward quarter. It is a
+    // cheat, and it is the difference between a burger turning and a burger
+    // disappearing.
+    var TURNS = 1;      // full turns across the pin
+    var DWELL = 0.72;   // 0 = a constant turn, 1 = a hard pause facing us
+    var EDGE  = 86;     // degrees: the turn steps across the last few
+    var FLOOR = 0.42;   // narrowest the burger is allowed to get
+    var LIMIT = 6.1;    // and how far it may be widened to hold that
+
+    // At exactly 90 degrees the maths is beyond rescuing: the cosine is zero,
+    // the picture has no width at all, and no amount of widening brings back
+    // something multiplied by nothing. So the turn does not go there. It runs
+    // to 86 degrees, steps across the four degrees either side of side-on,
+    // and carries on from 94 — the same width on both sides of the step, so
+    // what you see is the burger flipping through rather than jumping.
+    function step(deg) {
+      var m = ((deg % 180) + 180) % 180;         // where we are in a half turn
+      if (m <= EDGE || m >= 180 - EDGE) return deg;
+      return deg + (m < 90 ? EDGE - m : 180 - EDGE - m);
+    }
+
+    addSection(".stage", "--p", function (p) {
+      var eased = p - (DWELL / (4 * Math.PI)) * Math.sin(4 * Math.PI * p);
+      var deg = step(eased * 360 * TURNS);
+      var face = Math.abs(Math.cos(deg * Math.PI / 180));
+      var fix = FLOOR / face;
+      if (fix < 1) fix = 1; else if (fix > LIMIT) fix = LIMIT;
+
+      this.root.style.setProperty("--spin", deg.toFixed(2) + "deg");
+      this.root.style.setProperty("--face", face.toFixed(3));
+      this.root.style.setProperty("--fix", fix.toFixed(3));
+    });
 
     // Anatomy also swaps which caption is showing
     var steps = [].slice.call(document.querySelectorAll(".anatomy__step"));

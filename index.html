@@ -118,16 +118,19 @@
               <span data-i18n class="stage__line stage__line--a">Smashed hard.</span>
               <span data-i18n class="stage__line stage__line--b">Served fast.</span>
             </h1>
-            <div class="stage__fade">
-              <p data-i18n class="hero__sub">
+            <div>
+              <p data-i18n class="hero__sub stage__fade">
                 Smash burgers, sliders, fries and shakes &mdash; pressed to order on the
                 flat-top and built for people who take a burger seriously.
               </p>
-              <div class="btn-row">
+              <!-- stage__hold, not stage__fade: the two calls to action are the
+                   point of the page, so they stay at full strength through most
+                   of the pin instead of clearing with the supporting copy. -->
+              <div class="btn-row stage__hold">
                 <a data-i18n class="btn btn--primary" href="menu.html">View Menu</a>
                 <a data-i18n class="btn btn--ghost" href="contact.html#order">Order Now</a>
               </div>
-              <div class="hero__facts">
+              <div class="hero__facts stage__fade">
                 <div class="hero__fact"><b data-i18n>Burgers from &#8382;20</b><span data-i18n>Smashed to order</span></div>
                 <div class="hero__fact"><b data-i18n>12:00 &ndash; 02:00</b><span data-i18n>Open every day</span></div>
                 <div class="hero__fact"><b data-i18n>Vashlovani St</b><span data-i18n>Tbilisi 0108</span></div>
@@ -135,17 +138,23 @@
             </div>
           </div>
 
+          <!-- Three layers: .stage__art travels and scales, .stage__spin turns
+               the burger in 3D, and .stage__halo is the light behind it,
+               narrowing and dimming as the burger turns away. -->
           <div class="stage__art">
-            <picture>
-              <source type="image/webp"
-                      srcset="images/cheeseburger-480.webp 480w,
-                              images/cheeseburger-640.webp 640w,
-                              images/cheeseburger-800.webp 800w,
-                              images/cheeseburger-1200.webp 1200w"
-                      sizes="(max-width: 900px) 74vw, 520px">
-              <img src="images/cheeseburger.png" alt="Sameo cheeseburger"
-                   width="1448" height="1016" loading="eager" fetchpriority="high" decoding="async">
-            </picture>
+            <div class="stage__halo" aria-hidden="true"></div>
+            <div class="stage__spin">
+              <picture>
+                <source type="image/webp"
+                        srcset="images/cheeseburger-480.webp 480w,
+                                images/cheeseburger-640.webp 640w,
+                                images/cheeseburger-800.webp 800w,
+                                images/cheeseburger-1200.webp 1200w"
+                        sizes="(max-width: 900px) 74vw, 520px">
+                <img src="images/cheeseburger.png" alt="Sameo cheeseburger"
+                     width="1448" height="1016" loading="eager" fetchpriority="high" decoding="async">
+              </picture>
+            </div>
           </div>
         </div>
       </div>

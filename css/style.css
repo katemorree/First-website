@@ -1327,10 +1327,28 @@ textarea:focus-visible {
   .form__grid { grid-template-columns: minmax(0, 1fr); }
   .footer__grid { grid-template-columns: minmax(0, 1fr); gap: var(--sp-4); }
   .hero__facts { gap: var(--sp-3) var(--sp-4); }
+  /* These labels are set nowrap so a price never breaks across two lines.
+     Russian and Georgian phrases in the same slot are far longer than an
+     English one — "Sides, sweet & drinks" becomes 33 Georgian characters —
+     and on a 320px screen nowrap pushed the whole page sideways. Prices have
+     no spaces in them, so letting these wrap costs nothing. */
   .course__head { flex-wrap: wrap; }
-  .course__head span { margin-left: 0; width: 100%; }
+  .course__head span { margin-left: 0; width: 100%; white-space: normal; }
+  .panel__title span { white-space: normal; }
+  /* A long Russian or Georgian product name plus its price does not fit one
+     line inside a 320px card, and the card clips: the price disappeared.
+     Wrapping only kicks in when the row actually runs out of room, so the
+     English titles are untouched. */
+  .panel__title { flex-wrap: wrap; }
   .btn { width: 100%; }
   .btn-row { flex-direction: column; }
+  /* Not in the hero. The pinned stage has exactly one screen to work with,
+     and stacking these two buttons pushed them past the bottom of it, where
+     overflow:hidden cut them off completely — on a 320x568 phone the two
+     calls to action simply were not there. They are short enough to sit
+     side by side. */
+  .stage .btn-row { flex-direction: row; flex-wrap: wrap; }
+  .stage .btn-row .btn { width: auto; }
   .actionbar .btn { width: auto; }
   /* Stack the sample-content label above its text so the copy gets full width */
   .demo-note { flex-direction: column; gap: 0.55rem; }
@@ -1371,7 +1389,7 @@ textarea:focus-visible {
 .stage__pin,
 .anatomy__pin { position: static; }
 
-.js .stage__track   { height: 230vh; }
+.js .stage__track   { height: 290vh; }   /* a full 360deg turn wants room */
 .js .anatomy__track { height: 300vh; }
 
 .js .stage__pin,
@@ -1390,8 +1408,10 @@ textarea:focus-visible {
 .stage {
   --amp-x: 12vw;    /* how far the burger travels right */
   --amp-y: -6vh;    /* and up */
-  --amp-scale: 0.38;/* how much it shrinks */
+  --amp-scale: 0.30;/* how much it shrinks (--amp-z shrinks it further) */
   --amp-split: 9vw; /* how far the two headline lines separate */
+  --amp-z: -160px;  /* how far it recedes into the scene */
+  --amp-tilt: -7deg;/* how far it tips away from the viewer */
 }
 
 .stage__pin { padding-block: var(--sp-5); }
@@ -1405,7 +1425,9 @@ textarea:focus-visible {
   background:
     radial-gradient(46% 46% at 22% 24%, rgba(255, 90, 31, 0.42), transparent 68%),
     radial-gradient(42% 42% at 78% 12%, rgba(255, 194, 74, 0.22), transparent 66%);
-  transform: scale(calc(1 - var(--p, 0) * 0.25));
+  transform:
+    translate3d(calc(var(--p, 0) * -4vw), calc(var(--p, 0) * 5vh), 0)
+    scale(calc(1 - var(--p, 0) * 0.25));
   opacity: calc(1 - var(--p, 0) * 0.5);
 }
 
@@ -1424,9 +1446,12 @@ textarea:focus-visible {
   color: transparent;
   -webkit-text-stroke: 1.5px rgba(247, 243, 236, 0.11);
   opacity: calc(0.5 + var(--p, 0) * 0.5);
+  /* The wordmark drifts against the burger — the burger goes right, this goes
+     left — which is what reads as depth rather than as one flat picture
+     sliding about. */
   transform:
-    translate3d(-50%, calc(-50% + var(--p, 0) * -4vh), 0)
-    scale(calc(1 + var(--p, 0) * 0.2));
+    translate3d(calc(-50% + var(--p, 0) * -5vw), calc(-50% + var(--p, 0) * -4vh), 0)
+    scale(calc(1 + var(--p, 0) * 0.24));
   will-change: transform;
 }
 
@@ -1468,21 +1493,93 @@ textarea:focus-visible {
   opacity: calc(1 - var(--p, 0) * 0.85);
 }
 
-/* Sub-copy, buttons and facts clear out early so the burger owns the frame */
+/* Supporting copy clears out early so the burger owns the frame. */
 .stage__fade {
   opacity: calc(1 - var(--p, 0) * 2.2);
   transform: translate3d(0, calc(var(--p, 0) * -3vh), 0);
 }
 
+/* The two calls to action are the reason the page exists, so they hold at
+   full strength for roughly two-thirds of the pin and only clear right at
+   the end. Opacity is clamped to 1 by the browser, so the number being far
+   above 1 early on simply means "solid". */
+.stage__hold {
+  opacity: calc(1 - (var(--p, 0) - 0.68) * 4.2);
+  transform: translate3d(0, calc(var(--p, 0) * -1.4vh), 0);
+}
+
+/* The burger is built in three layers so each does one job and each stays a
+   pure transform. Nesting them costs nothing — the compositor multiplies the
+   matrices — but it keeps the travel, the turn and the shadow independent,
+   and it means the spin never has to fight the drift for the same property.
+
+     .stage__art     travels across the frame and scales
+     .stage__spin    turns the burger through a full 360deg in 3D
+     .stage__halo    the light behind it
+
+   js/script.js writes three numbers for this section: --p, the plain 0-to-1
+   progress every scroll section gets, plus --spin and --face. Those last two
+   are trigonometry, which CSS cannot yet do in a way every browser this site
+   supports would understand. */
 .stage__art {
   position: relative;
   z-index: 2;
   transform-origin: 60% 50%;
   transform:
     translate3d(calc(var(--p, 0) * var(--amp-x)), calc(var(--p, 0) * var(--amp-y)), 0)
+    perspective(1150px)
+    translate3d(0, 0, calc(var(--p, 0) * var(--amp-z)))
+    rotateX(calc(2deg + var(--p, 0) * var(--amp-tilt)))
     scale(calc(1 - var(--p, 0) * var(--amp-scale)))
     rotate(calc(-4deg + var(--p, 0) * 6deg));
   will-change: transform;
+}
+
+/* The turn. --spin runs 0 to 360deg across the pin, eased so the burger
+   lingers where it looks its best — face on — and moves quickly through the
+   quarters where it is turning away. Past 180deg the browser draws the
+   picture mirrored, which for a burger shot from the side reads as its other
+   cheek rather than as a mistake.
+
+   There is deliberately NO perspective() in this rule. The depth belongs to
+   .stage__art above, which flattens whatever happens in here — and that is
+   the point. A perspective applied to the rotation itself blows the near edge
+   up as the burger swings side-on, and instead of a burger turning you get a
+   tall vertical smear. Flattened, the turn is an honest horizontal
+   compression: the height never changes and there is nothing to smear.
+
+   --fix widens the picture before the turn compresses it, so the two cancel
+   and the burger holds a readable width instead of thinning to a hairline. */
+.stage__spin {
+  transform:
+    rotateY(var(--spin, 0deg))
+    scaleX(var(--fix, 1));
+  will-change: transform;
+}
+
+/* The halo behind the burger. --face is |cos(spin)|: 1 when the burger faces
+   us, 0 when it is turning away, so the halo narrows and dims exactly as the
+   burger does — which is what sells the turn as something happening in space
+   rather than a picture being squashed.
+
+   Warm light rather than a cast shadow: the page is very nearly black, and a
+   dark shadow on a dark ground is invisible. It is also a plain gradient
+   moved by transform, not a drop-shadow filter on the photo, which would have
+   to be re-rendered on every frame of the turn. */
+.stage__halo {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 50%;
+  width: 82%;
+  aspect-ratio: 1;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(255, 132, 56, 0.26), transparent 70%);
+  transform:
+    translate3d(-50%, -50%, 0)
+    scale3d(calc(0.34 + var(--face, 1) * 0.66), 1, 1);
+  opacity: calc((0.35 + var(--face, 1) * 0.65) * (1 - var(--p, 0) * 0.35));
 }
 /* width:auto + max-width + max-height keeps the aspect ratio intact while
    fitting BOTH constraints. Setting width:100% with a max-height would
@@ -1494,8 +1591,11 @@ textarea:focus-visible {
   max-width: 100%;
   max-height: 52vh;
   margin-inline: auto;
-  filter: drop-shadow(0 30px 45px rgba(0, 0, 0, 0.65));
 }
+/* The anatomy burger only drifts, so a drop-shadow filter on it is rendered
+   once and then moved. The stage burger turns, which would mean re-rendering
+   the filter on every frame, so it uses .stage__halo instead. */
+.anatomy__art img { filter: drop-shadow(0 30px 45px rgba(0, 0, 0, 0.65)); }
 
 /* ---- Anatomy of the smash ---- */
 .anatomy {
@@ -1724,10 +1824,12 @@ textarea:focus-visible {
   .stage {
     --amp-x: 5vw;
     --amp-y: -3vh;
-    --amp-scale: 0.26;
+    --amp-scale: 0.20;
     --amp-split: 4vw;
+    --amp-z: -90px;
+    --amp-tilt: -5deg;
   }
-  .js .stage__track   { height: 185vh; }
+  .js .stage__track   { height: 225vh; }
   .js .anatomy__track { height: 260vh; }
 
   .stage__grid,
@@ -1742,7 +1844,8 @@ textarea:focus-visible {
 
 @media (max-width: 620px) {
   .stage__art img { max-height: 26vh; }
-  .js .stage__track   { height: 165vh; }
+  .stage { --amp-z: -70px; }
+  .js .stage__track   { height: 205vh; }
   .js .anatomy__track { height: 240vh; }
   .anatomy__steps { min-height: 15rem; }
 }
@@ -1754,11 +1857,25 @@ textarea:focus-visible {
   .stage .hero__facts { display: none; }
   .stage__art img { max-height: 21vh; }
   .stage__title { font-size: clamp(1.9rem, min(6vw, 7.6vh), 3.4rem); }
-  .js .stage__pin { min-height: 0; }
+  .js .stage__pin { min-height: 0; padding-block: var(--sp-3); }
+  .stage__grid { gap: clamp(0.6rem, 2vh, 1.6rem); }
 }
 
-/* ---- Reduced motion: no pinning, no tall tracks, resting state ---- */
-@media (prefers-reduced-motion: reduce) {
+
+/* ---- No pinning, no tall tracks, resting state ----
+   Two situations resolve to the same place, so they share one block.
+
+   The first is a visitor who has asked for reduced motion.
+
+   The second is a screen too short to pin against. A pinned section gets
+   exactly one viewport to fit in, and under about 600px of height — an older
+   small phone, or any phone turned sideways — the headline, the buttons and
+   the burger no longer do. What used to happen is that overflow:hidden
+   quietly ate the two calls to action, so the most important thing on the
+   page was missing on the smallest screens. Below that height the stage and
+   the anatomy stop pinning and lay themselves out like any other section:
+   everything on screen, nothing clipped, just no scroll choreography. */
+@media (prefers-reduced-motion: reduce), (max-height: 599px) {
   .js .stage__track,
   .js .anatomy__track { height: auto; }
   .js .stage__pin,
@@ -1769,12 +1886,15 @@ textarea:focus-visible {
     overflow: visible;
     padding-block: var(--sp-6);
   }
+  .stage__halo { display: none; }
   .stage__glow,
   .stage__wordmark,
   .stage__line--a,
   .stage__line--b,
   .stage__fade,
+  .stage__hold,
   .stage__art,
+  .stage__spin,
   .anatomy__art {
     transform: none !important;
     opacity: 1 !important;
