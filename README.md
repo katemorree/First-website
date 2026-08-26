@@ -147,13 +147,38 @@ information in front of customers:
 - **Email address** — no contact email is shown; the form and phone number
   are the only contact routes
 - **Instagram / Facebook** — no social links, icons, or handles anywhere
-- **Customer reviews or testimonials** — no review section exists
 - **Founding story** — the About page carries brand and process writing
   only, with no dates, founders, or history claims
 - **Photography** — the design is built to look complete without it
 
 To add any of these later, supply the real details and they can be dropped
 in. Do not fill them with sample content in the meantime.
+
+### The testimonials section (demonstration content)
+
+The home page has a testimonials section holding **fictional sample quotes**,
+added to show the layout. It is labelled as sample content in three ways:
+
+1. A dashed "Sample content" notice above the cards explaining the quotes are
+   fictional and not from Google or any delivery platform.
+2. A "Sample" badge on every individual card, so the label survives if one
+   card is screenshotted on its own.
+3. A "Demonstration text, not a real review" line under each name.
+
+Fictional first names only are used (Nino, Luka, Mariam). There are
+deliberately **no star ratings and no "verified customer" style claims**,
+because a rating nobody actually gave would be a fabricated claim.
+
+**To swap in genuine reviews**, edit the three `<figure class="quote-card">`
+blocks in `index.html`: replace the quote text and the name, then delete the
+`<span class="badge-sample">Sample</span>` line and the
+`<span>Demonstration text, not a real review</span>` in each card, and remove
+the whole `<p class="demo-note">` block above them.
+
+⚠️ **Do not add `Review` or `AggregateRating` structured data while the quotes
+are still samples.** That markup feeds ratings to Google, and publishing
+invented ratings is both dishonest and against Google's review snippet
+guidelines. Add it only once the reviews are real.
 
 ### Updating a price
 

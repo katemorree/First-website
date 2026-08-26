@@ -636,6 +636,115 @@ textarea:focus-visible {
   display: block;
 }
 
+/* --- Testimonials ---
+   NOTE: the cards below currently hold demonstration copy, not real reviews.
+   Every card carries a visible "Sample" badge so the label survives even if
+   one card is screenshotted on its own. Do NOT add schema.org Review or
+   AggregateRating markup until the quotes are genuine — that would publish
+   fabricated ratings to search engines. See README.md §7. */
+.demo-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  max-width: 70ch;
+  margin: 0 auto var(--sp-5);
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px dashed rgba(255, 194, 74, 0.45);
+  border-radius: var(--r-md);
+  background: rgba(255, 194, 74, 0.06);
+  color: var(--muted);
+  font-size: var(--step--1);
+  text-align: left;
+}
+.demo-note strong {
+  color: var(--amber);
+  font-family: var(--font-display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  white-space: nowrap;
+  padding-top: 0.15rem;
+}
+
+.quote-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: var(--sp-4);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  transition: transform var(--t-med), border-color var(--t-med), background var(--t-med);
+}
+.quote-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 90, 31, 0.45);
+  background: var(--surface-2);
+}
+
+/* Oversized decorative quote mark */
+.quote-card::before {
+  content: "\201C";
+  position: absolute;
+  top: 0.4rem;
+  right: 1.1rem;
+  font-family: var(--font-display);
+  font-size: 7rem;
+  line-height: 0.78; /* pulls the glyph's ink up into view; the card clips overflow */
+  color: var(--flame);
+  opacity: 0.14;
+  pointer-events: none;
+}
+
+.badge-sample {
+  align-self: flex-start;
+  margin-bottom: var(--sp-3);
+  padding: 0.25rem 0.7rem;
+  border: 1px solid rgba(255, 194, 74, 0.5);
+  border-radius: 999px;
+  background: rgba(255, 194, 74, 0.1);
+  color: var(--amber);
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.quote-card blockquote {
+  margin: 0 0 var(--sp-3);
+  padding: 0;
+}
+.quote-card blockquote p {
+  margin: 0;
+  color: var(--cream);
+  font-size: var(--step-1);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.quote-card figcaption {
+  margin-top: auto;
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--cream);
+}
+.quote-card figcaption span {
+  display: block;
+  margin-top: 0.25rem;
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--muted);
+}
+
 /* ---------- 9. MENU ---------- */
 .menu-nav {
   display: flex;
@@ -1074,6 +1183,9 @@ textarea:focus-visible {
   .btn { width: 100%; }
   .btn-row { flex-direction: column; }
   .actionbar .btn { width: auto; }
+  /* Stack the sample-content label above its text so the copy gets full width */
+  .demo-note { flex-direction: column; gap: 0.55rem; }
+  .demo-note strong { padding-top: 0; }
   /* A squarer map is easier to read on a phone */
   .map { aspect-ratio: 1 / 1; }
 }
