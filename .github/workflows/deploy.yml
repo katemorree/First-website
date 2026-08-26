@@ -1,0 +1,80 @@
+# =========================================================
+# Publishes the site to GitHub Pages.
+# ---------------------------------------------------------
+# The site used to be plain HTML files, which GitHub Pages
+# could serve straight from the repository. It is now a
+# Next.js app, which has to be BUILT into plain files first —
+# and GitHub Pages will not do that on its own. This does it.
+#
+# What happens on every push: this checks out the code,
+# installs what it needs, runs `npm run build` (which writes
+# a folder of ordinary HTML, CSS and JavaScript into `out/`),
+# and publishes that folder.
+#
+# ONE-TIME SETUP, and it will not work until this is done:
+# in the repository, go to Settings → Pages and set
+# "Source" to "GitHub Actions". Not a branch — GitHub
+# Actions. Then push anything and the site goes live.
+#
+# It takes a few minutes rather than the few seconds the old
+# HTML version took. That is the cost of the build step.
+# =========================================================
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Lets you run it by hand from the Actions tab, without pushing.
+  workflow_dispatch:
+
+# What the job is allowed to do: read the code, and publish Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# If two pushes land close together, let the first finish rather than
+# cancelling it — a half-finished deploy is worse than a slow one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build the site
+        # GitHub Pages serves this repository from a /First-website/ folder
+        # rather than the root of the domain, so the build has to be told.
+        # Everywhere else the default (an empty base path) is correct.
+        env:
+          BASE_PATH: /First-website
+          SITE_URL: https://katemorree.github.io/First-website
+        run: npm run build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

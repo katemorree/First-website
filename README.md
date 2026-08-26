@@ -3,47 +3,91 @@
 Website for **Sameo Smash / სამეო სმეშ**, a smash burger restaurant at
 1 Vashlovani St, Tbilisi 0108, Georgia.
 
-Built as plain HTML, CSS and JavaScript — no frameworks, no build step, no
-`npm install`. Every page is a text file you can edit directly on GitHub
-(including from an iPad) and the change goes live within about a minute.
+Built with **Next.js and React**. The pages are React components rather than
+HTML files, and a build step turns them into ordinary HTML, CSS and
+JavaScript that GitHub Pages serves.
+
+**What that changed.** The site used to be plain HTML files you could edit on
+GitHub from an iPad and see live a minute later. Now a change has to be built
+first. That happens automatically — pushing to `main` triggers the workflow in
+`.github/workflows/deploy.yml`, which builds the site and publishes it — but
+it takes a few minutes rather than a few seconds, and the files you edit are
+`.jsx` rather than `.html`.
+
+**One-time setup, without which nothing publishes:** in this repository, go to
+**Settings → Pages** and set **Source** to **GitHub Actions** (not a branch).
 
 ---
 
-## 1. Pages
+## 1. Where everything lives
 
-| File | Purpose |
+| Path | Purpose |
 |---|---|
-| `index.html` | Home — hero, category line-up, brand intro, location, order CTA |
-| `menu.html` | Full menu with prices — burgers, sliders, sides, sauces, desserts, shakes, coffee, drinks, beer |
-| `about.html` | About — brand story and how the kitchen works |
-| `contact.html` | Location, directions, ordering, and the contact form |
-| `404.html` | Shown automatically if someone hits a wrong address |
-| `css/style.css` | All styling. Section map is at the top of the file |
-| `js/script.js` | Mobile menu, scroll animations, contact form |
-| `js/i18n.js` | The language system — the chooser, the header switcher, the swapping |
-| `js/i18n-data.js` | **The Russian and Georgian text.** This is the file to edit for translations |
-| `robots.txt`, `sitemap.xml` | Search engine files |
+| `app/page.jsx` + `app/HomeView.jsx` | Home page |
+| `app/menu/` | Full menu with prices |
+| `app/about/` | About — brand story and how the kitchen works |
+| `app/contact/` | Location, directions, ordering, and the contact form |
+| `app/not-found.jsx` | Shown if someone hits a wrong address |
+| `app/layout.jsx` | The shell every page sits in: fonts, search-engine data, the no-flash boot script |
+| `app/globals.css` | **All styling.** Section map at the top of the file |
+| `components/` | The reusable pieces — Navbar, Hero, ProductCard, OrderProvider, Footer and the rest |
+| `lib/i18n-data.js` | **The Russian and Georgian text.** This is the file to edit for translations |
+| `lib/language.jsx` | The language system — the chooser, the switcher, the swapping |
+| `lib/products.js` | Every product with a photo: name, price, description, image size |
+| `lib/menu-panels.js` | The price lists with no photos — sides, sauces, coffee, drinks |
+| `lib/site.js` | Phone number, address, hours, Wolt and Glovo links — **all in one place** |
+| `public/images/` | Every photograph |
 
-The header and footer are repeated in each page rather than pulled from a
-shared file — that is the trade-off for having no build step. **If you change a
-navigation or footer link, make the same edit in all five HTML files.**
+Each route has two files: a small `page.jsx` that carries the search-engine
+metadata, and a `*View.jsx` next to it with the actual page in it. That split
+exists because the metadata has to be worked out on the build machine while
+the page itself runs in the browser.
+
+**The header and footer are written once**, in `components/Navbar.jsx` and
+`components/Footer.jsx`, and every page uses them. Changing a navigation link
+is now one edit rather than five.
 
 ---
 
 ## 2. Editing content
 
-1. Open the file on GitHub and tap the pencil / edit icon.
-2. Change the text between the tags — e.g. `<h3>Sliders</h3>`.
-3. Tap **Commit changes**.
+### Running it on your own machine
 
-The phone number appears in several places per page (header, body, footer,
-and the mobile Call bar). If it ever changes, use GitHub's search to find
-every instance of both `+995 511 10 08 35` and `tel:+995511100835`.
+```
+npm install     # once
+npm run dev     # then open http://localhost:3000/First-website
+```
+
+Changes appear as you save. `npm run build` produces the published version in
+`out/`.
+
+### Editing on GitHub
+
+1. Open the file on GitHub and tap the pencil / edit icon.
+2. Change the text between the tags — e.g. `<h3><T>Sliders</T></h3>`.
+3. Tap **Commit changes**, then wait a few minutes for the build.
+
+The `<T>` around visitor-facing text is the translation system. Leave it in
+place, and change the English inside it — then change the matching key in
+`lib/i18n-data.js` so the Russian and Georgian still match. Section 10 covers
+this properly.
+
+**The phone number, address and delivery links are in `lib/site.js` only.**
+Change them there and they change everywhere on the site.
+
+### Prices
+
+Products with a photo: `lib/products.js`. Everything else: `lib/menu-panels.js`.
 
 ### Colours and fonts
 
-Open `css/style.css` and edit the `:root` block at the top. Changing
+Open `app/globals.css` and edit the `:root` block at the top. Changing
 `--flame` (the orange) updates every button, accent and highlight at once.
+
+The four typefaces are loaded in `app/layout.jsx`. They are downloaded when
+the site is built and served from this site rather than from Google, so they
+load even for a visitor whose network blocks Google, and no third party is
+told who is reading the page.
 
 ---
 
@@ -56,11 +100,11 @@ broken or empty.
 
 ### Adding a photo — one line, one file
 
-One photo slot is left: the interior shot on `about.html`. To switch it on:
+One photo slot is left: the interior shot on `app/about/AboutView.jsx`. To switch it on:
 
-1. Put your image in the `images/` folder, named exactly as listed in
-   `images/PROMPTS.md`.
-2. Open `css/style.css`, scroll to the **PHOTO SLOTS** block at the very
+1. Put your image in the `public/images/` folder, named exactly as listed in
+   `public/images/PROMPTS.md`.
+2. Open `app/globals.css`, scroll to the **PHOTO SLOTS** block at the very
    bottom, and on the matching line delete the comment markers at the start
    and end of that line.
 3. Commit.
@@ -78,7 +122,7 @@ Every product uses a **real photograph** supplied by the business —
 transparent-background PNGs of the actual products. None is AI-generated, and
 none should be swapped for a generated image.
 
-**Cheeseburger** — files in `images/`:
+**Cheeseburger** — files in `public/images/`:
 
 | File | Size | Purpose |
 |---|---|---|
@@ -88,7 +132,7 @@ none should be swapped for a generated image.
 | `cheeseburger-1200.webp` | 379 KB | desktop at 2x (retina) |
 | `cheeseburger.png` | 523 KB | fallback for browsers without WebP |
 
-**Chili cheeseburger** — files in `images/`:
+**Chili cheeseburger** — files in `public/images/`:
 
 | File | Size | Purpose |
 |---|---|---|
@@ -98,7 +142,7 @@ none should be swapped for a generated image.
 | `chili-burger-1200.webp` | 469 KB | desktop at 2x (retina) |
 | `chili-burger.png` | 638 KB | fallback for browsers without WebP |
 
-**Veggie burger** — files in `images/`:
+**Veggie burger** — files in `public/images/`:
 
 | File | Size | Purpose |
 |---|---|---|
@@ -108,7 +152,7 @@ none should be swapped for a generated image.
 | `veggie-burger-1200.webp` | 397 KB | desktop at 2x (retina) |
 | `veggie-burger.png` | 538 KB | fallback for browsers without WebP |
 
-**Truffle burger** — files in `images/`:
+**Truffle burger** — files in `public/images/`:
 
 | File | Size | Purpose |
 |---|---|---|
@@ -166,20 +210,20 @@ never cropped or stretched. The transparent background lets the brand
 gradient show through behind it.
 
 **To update a photo later:** re-export the same five files at the same sizes
-and filenames, replacing what is in `images/`. No code changes needed. Keep
+and filenames, replacing what is in `public/images/`. No code changes needed. Keep
 the transparent background, and keep the same proportions — otherwise the
 `width`/`height` attributes in the HTML need updating too.
 
 **To add the interior photo:** switch on its line in the PHOTO SLOTS block in
-`css/style.css`, as described above. For any *new* product, copy one of the
-existing `<picture>` blocks in `menu.html` and swap the filenames, the `alt`
-text and the `width`/`height`. Wide products (burgers, sliders) use four
+`app/globals.css`, as described above. For any *new* product, copy one of the
+entries in `lib/products.js` and change the filename, the `alt` text and
+the `width`/`height`. Wide products (burgers, sliders) use four
 WebP files at 480/640/800/1200; the narrower three-across cards (sides,
 shakes, coffee) use 300/400/540/800. Both add a PNG fallback.
 
 ### If you use AI-generated images
 
-`images/PROMPTS.md` contains a ready-made prompt for each slot, written to
+`public/images/PROMPTS.md` contains a ready-made prompt for each slot, written to
 match this site's dark, warm, high-contrast look so the set stays visually
 consistent.
 
@@ -200,7 +244,7 @@ shows a burger, not *this* burger. So:
   result is original rather than a derivative of a copyrighted photo.
 
 Sizes, compression targets and free tools for shrinking files are all in
-`images/PROMPTS.md`. Keep each image under 300KB.
+`public/images/PROMPTS.md`. Keep each image under 300KB.
 
 ---
 
@@ -211,7 +255,8 @@ server to send email from, so it needs a free forwarding service.
 
 1. Create a free form at [formspree.io](https://formspree.io).
 2. Copy the endpoint it gives you (e.g. `https://formspree.io/f/abcd1234`).
-3. Open `js/script.js` and paste it into the `FORM_ENDPOINT` line near the top:
+3. Open `components/ContactForm.jsx` and paste it into the `FORM_ENDPOINT`
+   line near the top:
    ```js
    var FORM_ENDPOINT = "https://formspree.io/f/abcd1234";
    ```
@@ -224,19 +269,44 @@ to the phone number — so the page never appears broken to a customer.
 
 ## 5. Publishing
 
-The site is hosted on GitHub Pages. In **Settings → Pages**, the source is set
-to deploy from a branch. Any commit to that branch republishes the site
-automatically within roughly a minute.
+The site is hosted on GitHub Pages, built by the workflow in
+`.github/workflows/deploy.yml`.
+
+**Set this once or nothing publishes:** in **Settings → Pages**, set
+**Source** to **GitHub Actions**. Not a branch — the old setting built
+nothing, because there was nothing to build.
+
+After that, every push to `main` rebuilds and republishes the site. Watch it
+happen in the **Actions** tab; it takes a few minutes. If a build fails the
+site stays as it was rather than breaking, and the Actions tab says why.
+
+### Deploying to Vercel instead
+
+Nothing needs changing. Point Vercel at the repository and it will detect
+Next.js, run `npm run build` and serve the result. The two settings that
+differ by host both default to what Vercel needs:
+
+- **The base path is empty**, so the site sits at the root of the domain.
+  GitHub Pages is the exception, and its workflow sets `BASE_PATH` itself.
+- **The address is worked out from the deployment**, so canonical tags,
+  `sitemap.xml`, `robots.txt` and the restaurant's structured data all
+  describe the right domain without being told.
+
+Once there is a real domain, set `SITE_URL` in the Vercel project settings to
+it — the automatic value follows Vercel's own domain, which is fine for a
+preview but not what you want search engines to record.
+
+One optional improvement on Vercel: `output: 'export'` in `next.config.mjs`
+builds the site as plain files, which is what a file host needs. Vercel can
+run Next.js properly, so removing that line would switch on the image
+optimiser. The product photos would gain little — they are already exported
+at four sizes each by hand — but it costs nothing to try.
 
 ### If you register a custom domain
 
-Search and replace `https://katemorree.github.io/First-website/` with the new
-address in:
-
-- the `<link rel="canonical">` and `og:url` tags in all four main pages
-- the JSON-LD block in `index.html`
-- `robots.txt`
-- `sitemap.xml`
+Set `SITE_URL` to it wherever the site is built: in the Vercel project
+settings, or in `.github/workflows/deploy.yml` for GitHub Pages. Everything
+that mentions the address is generated from it.
 
 ---
 
@@ -264,9 +334,10 @@ details are still accurate, since public listings go out of date.
 - Wolt — `https://wolt.com/en/geo/tbilisi/restaurant/sameo`
 - Glovo — `https://glovoapp.com/en/ge/tbilisi/stores/sameo-tbi`
 
-They appear four times across two files — `index.html` (the order band) and
-`contact.html` (the order cards) — plus once each in the `sameAs` list in the
-structured data in `index.html`. If a platform ever changes a store address,
+They are written once, in `lib/site.js`, and everything else reads them from
+there — the order chooser, the order cards on the Contact page, the band at
+the foot of the home page, and the structured data. If a platform ever
+changes a store address,
 search for `wolt.com` and `glovoapp.com` to find every instance.
 
 ### Not on the site, and deliberately so
@@ -287,35 +358,71 @@ information in front of customers:
 To add any of these later, supply the real details and they can be dropped
 in. Do not fill them with sample content in the meantime.
 
-### The testimonials section (demonstration content)
+### Reviews — there is no section on the site yet
 
-The home page has a testimonials section holding **fictional sample quotes**,
-added to show the layout. It is labelled as sample content in three ways:
+The home page used to carry three quotes under a "What People Say" heading.
+They were **fictional**, written to show the layout, and labelled "Sample" on
+the page. They have been removed. A made-up review is worth nothing to a
+customer, and a section that has to explain it is not real is worse than no
+section at all.
 
-1. A dashed "Sample content" notice above the cards explaining the quotes are
-   fictional and not from Google or any delivery platform.
-2. A "Sample" badge on every individual card, so the label survives if one
-   card is screenshotted on its own.
-3. A "Demonstration text, not a real review" line under each name.
+Nothing has replaced them, because **no genuine review for Sameo Smash could
+be found on a public page.** What was searched:
 
-Fictional first names only are used (Nino, Luka, Mariam). There are
-deliberately **no star ratings and no "verified customer" style claims**,
-because a rating nobody actually gave would be a fabricated claim.
+| Source | Result |
+|---|---|
+| Wolt | Blocked to this machine. A search summary reported a 9.4 score, but that is an average, not a review with a name and words, and the page could not be read directly to confirm it. |
+| Glovo | Blocked to this machine. A search summary mentioned "recommended by 96%" — again an average, unverified. |
+| Google Maps | Blocked to this machine. |
+| Web search | Turned up review text, but all of it belongs to **a different restaurant** — a place called Smash on Ilo Mosashvili Street. Using those words here would mean putting one business's reviews on another's website. |
 
-**To swap in genuine reviews**, edit the three `<figure class="quote-card">`
-blocks in `index.html`: replace the quote text and the name, then delete the
-`<span class="badge-sample">Sample</span>` line and the
-`<span>Demonstration text, not a real review</span>` in each card, and remove
-the whole `<p class="demo-note">` block above them.
+**The trap to avoid.** There is at least one other burger restaurant in
+Tbilisi with a similar name and a similar menu. Before using any review you
+find, check that it names *this* address — 1 Vashlovani St.
 
-⚠️ **Do not add `Review` or `AggregateRating` structured data while the quotes
-are still samples.** That markup feeds ratings to Google, and publishing
-invented ratings is both dishonest and against Google's review snippet
-guidelines. Add it only once the reviews are real.
+### Adding real reviews when you have them
+
+The section is ready and waiting in `components/Reviews.jsx`. Fill in the
+`REVIEWS` array at the bottom of that file — the section draws itself as soon
+as there is anything in it, and stays away while it is empty. Three to six
+looks best; the cards sit three across.
+
+Each card takes a name, the review itself, the source, and stars:
+
+```html
+<figure class="quote-card">
+  <p class="quote-card__stars" aria-label="5 out of 5">&#9733;&#9733;&#9733;&#9733;&#9733;</p>
+  <blockquote>
+    <p>The review, exactly as it was written.</p>
+  </blockquote>
+  <figcaption>Nino <span>Google Maps</span></figcaption>
+</figure>
+```
+
+Rules worth keeping to:
+
+- **Copy the words exactly.** Do not tidy the grammar, do not shorten a
+  review to fit the card, and do not translate it — a review written in
+  Georgian stays in Georgian, and that is fine on all three language
+  settings. Only the heading above the cards is translated.
+- **First name or public display name only.** That is what the person chose
+  to show; a full name they did not publish is not yours to add.
+- **Stars only if the source shows stars.** Wolt and Glovo score out of ten,
+  not five, so either drop the stars line for those or write the score the
+  way the platform writes it.
+- **Name the source** in the `<span>` — Google Maps, Wolt, Glovo. It is what
+  lets a reader go and check.
+
+⚠️ **Do not add `Review` or `AggregateRating` structured data**, even once
+the reviews are real. That markup hands Google a score for the business as a
+whole; Google expects it to match a rating it can verify, and gets stern
+about sites that publish one it cannot. Quoting reviews on the page is fine.
+Claiming an overall score in the page's data is a different thing.
 
 ### Updating a price
 
-Prices live in `menu.html` (all of them) and `index.html` (the four burgers
+Prices live in `lib/products.js` (everything with a photo) and
+`lib/menu-panels.js` (the four burgers
 on the home page). If a burger price changes, update **both** files.
 
 ---
@@ -356,12 +463,12 @@ of the markup; only the presentation changes.
 ### How it is built
 
 - `position: sticky` does the pinning. JavaScript never positions anything.
-- `js/script.js` writes **one number** per section onto the section element:
+- `lib/useScrollSections.js` writes **one number** per section onto the section element:
   `--p` for the hero, `--q` for the anatomy, `--r` for the showcase, each
   running 0 to 1 as you scroll through it. The hero gets three more —
   `--spin`, `--face` and `--fix` — because the turn needs trigonometry and
   CSS cannot yet do that in every browser this site supports. Every movement is calculated from that number with `calc()` in
-  `css/style.css`.
+  `app/globals.css`.
 - **All the tuning lives in the CSS**, in the block headed
   `SCROLL STAGE + ANATOMY`. To make the burger travel further, change
   `--amp-x`. To make it shrink more, change `--amp-scale`. You do not need to
@@ -375,7 +482,7 @@ has no width at all, so left alone it thins to a hairline and vanishes.
 Because the turn is driven by scrolling, a visitor can stop on any angle they
 like, so "it goes past too fast to notice" is not an answer.
 
-Three things handle it, all in `js/script.js` at the top of the hero section:
+Three things handle it, all at the top of `lib/useScrollSections.js`:
 
 | Knob | What it does |
 |---|---|
@@ -443,16 +550,22 @@ order here are not the phone at all. The visitor picks.
 
 ### Editing it
 
-The window is built by `js/script.js` — look for **5. Order chooser** near
-the bottom. There is one copy of the markup there rather than one per page,
-so changing the wording or adding a fourth option is a single edit. Its text
-is written in English like the rest of the site and is translated the same
-way, through `js/i18n-data.js`.
+The window is `components/OrderProvider.jsx`. There is one copy of it,
+mounted once for the whole site, so changing the wording or adding a fourth
+option is a single edit. Its text is written in English like the rest of the
+site and is translated the same way, through `lib/i18n-data.js`.
 
-**To turn an existing button into one that opens it,** add `data-order`:
+**To turn an existing button into one that opens it,** call `openOrder` from
+the `useOrder()` hook:
 
 ```html
-<a data-i18n data-order class="btn btn--primary" href="contact.html#order">Order Now</a>
+<a
+  className="btn btn--primary"
+  href="/contact/#order"
+  onClick={(e) => { e.preventDefault(); openOrder(e.currentTarget); }}
+>
+  <T>Order Now</T>
+</a>
 ```
 
 Keep the `href`. It is what happens if JavaScript does not run — the button
@@ -460,9 +573,7 @@ still goes to the order section on the Contact page — and it is what a
 visitor gets if they open the link in a new tab on purpose.
 
 **If the Wolt or Glovo address ever changes,** it appears in three places:
-`js/script.js` (the window), `contact.html` (the order cards), and
-`index.html` (both the order cards and the `sameAs` list in the search-engine
-block at the top of the file).
+`lib/site.js`, and only there.
 
 ---
 
@@ -488,7 +599,7 @@ one in English.**
 
 ### How to change a translation
 
-Open `js/i18n-data.js`. It is a long list of pairs:
+Open `lib/i18n-data.js`. It is a long list of pairs:
 
 ```js
 "View Menu": "Смотреть меню",
@@ -507,7 +618,7 @@ languages.
 Change it in **two** places:
 
 1. The HTML file — e.g. `<h2 data-i18n>Order Your Smash</h2>`.
-2. The matching key in `js/i18n-data.js`, in **both** the `ru:` and `ka:`
+2. The matching key in `lib/i18n-data.js`, in **both** the `ru:` and `ka:`
    blocks.
 
 Nothing breaks if you forget: the text simply stays in English rather than
@@ -521,7 +632,7 @@ Put `data-i18n` inside the opening tag:
 <p data-i18n>Open on public holidays too.</p>
 ```
 
-Then add the English and its translations to `js/i18n-data.js` under `ru:` and
+Then add the English and its translations to `lib/i18n-data.js` under `ru:` and
 `ka:`. For text that lives in an attribute rather than between tags — the
 `alt` on an image, an `aria-label` — name the attribute instead:
 
@@ -531,16 +642,18 @@ Then add the English and its translations to `js/i18n-data.js` under `ru:` and
 
 ### Things worth knowing
 
-- **The chooser and the switcher are not in the HTML files.** `js/i18n.js`
-  builds them, so there is one copy to edit rather than five. The markup is at
-  the top of that file.
+- **The chooser and the switcher are components**, in
+  `components/LanguageGate.jsx` and `components/LanguageSwitcher.jsx`. One
+  copy of each, used everywhere.
 - **Fonts.** Archivo Black and Poppins have no Cyrillic and almost no Georgian,
-  so Montserrat and Noto Sans Georgian are loaded alongside them. A visitor
-  only downloads the alphabet their language actually needs.
+  so Montserrat and Noto Sans Georgian are loaded alongside them. All four are
+  downloaded when the site is built and served from this site, so they work
+  even on a network that blocks Google, and a visitor only downloads the
+  alphabet their language actually needs.
 - **Search engines index the English only.** Google reads the HTML, and the
   HTML is English; the Russian and Georgian are applied afterwards by the
   browser. Real multilingual SEO needs a separate page per language
-  (`/ru/index.html`, `/ka/index.html`), which is a bigger change and worth
+  (`/ru/`, `/ka/`), which is a bigger change and worth
   doing only if search traffic in those languages matters. Visitors are
   unaffected — they see their language immediately.
 - **If JavaScript is off,** the site stays fully in English and everything

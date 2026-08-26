@@ -39,10 +39,13 @@
   /* "Noto Sans Georgian" sits in every stack as a per-glyph fallback: it is
      already loaded for the Georgian name, and it carries the Lari sign ₾
      (U+20BE), which Archivo Black and Poppins may not. Without it, every
-     price on the menu risks rendering as a tofu box. */
-  --font-display: "Archivo Black", "Noto Sans Georgian", "Poppins", system-ui, sans-serif;
-  --font-body:    "Poppins", "Noto Sans Georgian", system-ui, -apple-system, sans-serif;
-  --font-ka:      "Noto Sans Georgian", "Poppins", sans-serif;
+     price on the menu risks rendering as a tofu box.
+
+     The var(--font-*) names come from app/layout.jsx, where next/font
+     downloads each family at build time and serves it from this site. */
+  --font-display: var(--font-archivo), var(--font-georgian), var(--font-poppins), system-ui, sans-serif;
+  --font-body:    var(--font-poppins), var(--font-georgian), system-ui, -apple-system, sans-serif;
+  --font-ka:      var(--font-georgian), var(--font-poppins), sans-serif;
 
   --step--1: clamp(0.82rem, 0.79rem + 0.13vw, 0.89rem);
   --step-0:  clamp(1rem, 0.96rem + 0.18vw, 1.09rem);
@@ -785,36 +788,14 @@ textarea:focus-visible {
   display: block;
 }
 
-/* --- Testimonials ---
-   NOTE: the cards below currently hold demonstration copy, not real reviews.
-   Every card carries a visible "Sample" badge so the label survives even if
-   one card is screenshotted on its own. Do NOT add schema.org Review or
-   AggregateRating markup until the quotes are genuine — that would publish
-   fabricated ratings to search engines. See README.md §7. */
-.demo-note {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-2);
-  max-width: 70ch;
-  margin: 0 auto var(--sp-5);
-  padding: var(--sp-2) var(--sp-3);
-  border: 1px dashed rgba(255, 194, 74, 0.45);
-  border-radius: var(--r-md);
-  background: rgba(255, 194, 74, 0.06);
-  color: var(--muted);
-  font-size: var(--step--1);
-  text-align: left;
-}
-.demo-note strong {
-  color: var(--amber);
-  font-family: var(--font-display);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-size: 0.72rem;
-  white-space: nowrap;
-  padding-top: 0.15rem;
-}
-
+/* --- Review cards ---
+   No page uses these at the moment. The three quotes that did were written to
+   show the layout rather than left by customers, and they have been removed;
+   an empty section is waiting, commented out, in index.html for real ones.
+   The styling stays here so filling that in is only a matter of typing the
+   reviews. Do NOT add schema.org Review or AggregateRating markup even once
+   they are real — that publishes an overall score to search engines, which
+   is a different claim from quoting what someone wrote. See README section 6. */
 .quote-card {
   position: relative;
   display: flex;
@@ -847,18 +828,16 @@ textarea:focus-visible {
   pointer-events: none;
 }
 
-.badge-sample {
-  align-self: flex-start;
-  margin-bottom: var(--sp-3);
-  padding: 0.25rem 0.7rem;
-  border: 1px solid rgba(255, 194, 74, 0.5);
-  border-radius: 999px;
-  background: rgba(255, 194, 74, 0.1);
+/* Star line on a review card. Sits above the quote and is only present when
+   the source it came from actually shows stars — see the template in
+   index.html. The aria-label carries the score in words, because a screen
+   reader announcing five identical star characters says nothing useful. */
+.quote-card__stars {
+  margin: 0 0 var(--sp-2);
   color: var(--amber);
-  font-family: var(--font-display);
-  font-size: 0.66rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 0.95rem;
+  letter-spacing: 0.18em;
+  line-height: 1;
 }
 
 .quote-card blockquote {
@@ -1350,9 +1329,6 @@ textarea:focus-visible {
   .stage .btn-row { flex-direction: row; flex-wrap: wrap; }
   .stage .btn-row .btn { width: auto; }
   .actionbar .btn { width: auto; }
-  /* Stack the sample-content label above its text so the copy gets full width */
-  .demo-note { flex-direction: column; gap: 0.55rem; }
-  .demo-note strong { padding-top: 0; }
   /* A squarer map is easier to read on a phone */
   .map { aspect-ratio: 1 / 1; }
 }
@@ -1379,8 +1355,17 @@ textarea:focus-visible {
      fully readable state — if JavaScript never runs.
    ========================================================= */
 
+/* overflow-x: clip, not hidden: clip trims the oversized wordmark and the
+   glow without turning the section into a scroll container, which would
+   break the sticky pinning inside it. Needed whenever the section is NOT
+   pinned — reduced motion, a short screen, or JavaScript not running — since
+   without the pin nothing else is clipping them and both are wider than the
+   viewport. It costs nothing when the pin is on. */
 .stage,
-.anatomy { position: relative; }
+.anatomy {
+  position: relative;
+  overflow-x: clip;
+}
 
 /* Without JS the tall tracks would be dead scroll space, so the
    sticky behaviour is opt-in via the .js class set in <head>. */
@@ -1943,7 +1928,11 @@ textarea:focus-visible {
    the HTML, so those slots are gone rather than commented out. The only
    picture the site still does not have is the room itself, on about.html.
    See README section 3. */
-/* .shot--interior { --shot: url("../images/interior.jpg");        --label: 0; } */
+/* .shot--interior { --shot: url("/images/interior.jpg");          --label: 0; } */
+/* ^ A stylesheet cannot see the base path from next.config.mjs, so this one
+   path has to be written out by hand. As it stands it is right for Vercel
+   and for a domain of its own. On GitHub Pages, where the site sits in a
+   folder, it would need to read "/First-website/images/interior.jpg". */
 
 
 /* ---------- MICRO-INTERACTIONS ----------
@@ -2142,12 +2131,12 @@ textarea:focus-visible {
    stack that can actually draw it. Noto Sans Georgian stays in every
    stack for the Lari sign ₾. */
 :root[lang="ru"] {
-  --font-display: "Montserrat", "Archivo Black", "Noto Sans Georgian", system-ui, sans-serif;
-  --font-body:    "Montserrat", "Poppins", "Noto Sans Georgian", system-ui, sans-serif;
+  --font-display: var(--font-montserrat), var(--font-archivo), var(--font-georgian), system-ui, sans-serif;
+  --font-body:    var(--font-montserrat), var(--font-poppins), var(--font-georgian), system-ui, sans-serif;
 }
 :root[lang="ka"] {
-  --font-display: "Noto Sans Georgian", "Archivo Black", system-ui, sans-serif;
-  --font-body:    "Noto Sans Georgian", "Poppins", system-ui, sans-serif;
+  --font-display: var(--font-georgian), var(--font-archivo), system-ui, sans-serif;
+  --font-body:    var(--font-georgian), var(--font-poppins), system-ui, sans-serif;
 }
 
 /* Archivo Black is one very heavy weight that happens to be numbered 400.
@@ -2249,7 +2238,7 @@ textarea:focus-visible {
   font-size: clamp(0.95rem, 0.8rem + 0.8vw, 1.35rem);
   letter-spacing: -0.01em;
 }
-.langgate__opt[lang="ru"] b { font-family: "Montserrat", var(--font-body); font-weight: 800; }
+.langgate__opt[lang="ru"] b { font-family: var(--font-montserrat), var(--font-body); font-weight: 800; }
 .langgate__opt[lang="ka"] b { font-family: var(--font-ka); font-weight: 700; text-transform: none; }
 .langgate__opt small {
   font-size: 0.7rem;
