@@ -692,6 +692,21 @@ textarea:focus-visible {
 .feature:hover .product-shot,
 .shot-tile:hover .product-shot { transform: scale(1.05); }
 
+/* Wide face for the slider cards. The slider shots are two-up compositions
+   at about 2.5, far wider than the single-burger cut-outs at 1.2 to 1.5, so
+   a 16:10 face would leave a dead band above and below. Matching the face to
+   the shot lets the sliders fill it edge to edge. Everything else — the
+   gradient, scrim, object-fit:contain, centring and hover — is shared with
+   the burger cards. */
+.feature__face--wide { aspect-ratio: 2.5 / 1; }
+
+/* Slider cards sit three across, so they are narrower than the two-across
+   burger cards. Archivo Black is a wide face and "Truffle Slider" wraps to a
+   second line at the burger title size, leaving the three titles uneven.
+   A step down keeps all three on one line and stays proportionate to the
+   smaller card. */
+#sliders .feature__body h3 { font-size: var(--step-0); }
+
 /* Standalone image tiles (menu page strip) — a face with no card body */
 .shot-tile .feature__face {
   border: 1px solid var(--line);
@@ -902,41 +917,6 @@ textarea:focus-visible {
   transition: border-color var(--t-med);
 }
 .panel:target { border-color: var(--flame); }
-
-/* Product image inside a menu panel (used by Sliders).
-   The slider shot is a two-up composition, so it is far wider (2.37) than
-   the single-burger cut-outs (1.2 to 1.5). Giving the frame the image's own
-   ratio lets it fill edge to edge with no dead band above and below, and it
-   spans the full panel width so its presence matches the burger cards.
-   Everything else — object-fit:contain, centring, the drop shadow and the
-   hover scale — is inherited from .product-shot, shared with the burgers. */
-.panel__media {
-  position: relative;
-  margin: calc(var(--sp-4) * -1) calc(var(--sp-4) * -1) var(--sp-3);
-  aspect-ratio: 2.37 / 1;
-  overflow: hidden;
-  border-radius: var(--r-md) var(--r-md) 0 0;
-  border-bottom: 1px solid var(--line);
-  background-color: var(--ink-2);
-  background-image:
-    radial-gradient(90% 120% at 30% 0%, rgba(255, 90, 31, 0.5), transparent 62%),
-    linear-gradient(155deg, #2a231d, #141110);
-}
-.panel__media::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(to top, rgba(13, 12, 11, 0.7), rgba(13, 12, 11, 0.1) 60%);
-  opacity: 0.4;
-}
-.panel__media picture {
-  position: absolute;
-  inset: 0;
-  display: block;
-  z-index: 2;
-}
-.panel:hover .product-shot { transform: scale(1.05); }
 
 .panel__title {
   display: flex;
