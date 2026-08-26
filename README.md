@@ -45,31 +45,55 @@ Open `css/style.css` and edit the `:root` block at the top. Changing
 
 ---
 
-## 3. Adding real photography
+## 3. Photography
 
-The site is designed to look finished **without** photos — the hero uses a
-brand disc motif and the menu uses typographic cards. Photos are an upgrade,
-not a missing piece, so nothing looks broken while you wait for them.
+The site is designed to look finished **without** photos. Every image
+position currently renders a brand graphic — a gradient panel with a ring and
+a word, or the circular brand disc in the hero. Nothing looks broken or empty
+while you wait for pictures.
 
-To place a photo in a menu card, replace this block:
+### Adding a photo — one line, one file
 
-```html
-<div class="feature__face"><span>Smash</span></div>
-```
+There are nine photo slots. To switch one on:
 
-with:
+1. Put your image in the `images/` folder, named exactly as listed in
+   `images/PROMPTS.md`.
+2. Open `css/style.css`, scroll to the **PHOTO SLOTS** block at the very
+   bottom, and on the matching line delete the comment markers at the start
+   and end of that line.
+3. Commit.
 
-```html
-<div class="feature__face">
-  <img class="photo" src="images/smash-burger.jpg" alt="Smash burger with melted cheese">
-</div>
-```
+The photo appears, and the placeholder ring and word fade out automatically,
+with a dark scrim added underneath so headings stay readable. Put the markers
+back to return to the graphic. You never need to edit the HTML.
 
-Upload the image to the `images/` folder first. The `.photo` class already
-handles correct cropping and sizing. Always write a short, literal `alt`
-description — it matters for Google and for screen readers.
+The nine slots: hero, cheeseburger, chili cheeseburger, truffle burger,
+veggie burger, fries, shakes, coffee, interior.
 
-Photos work best at roughly 1600px wide, saved as JPG under ~300KB each.
+### If you use AI-generated images
+
+`images/PROMPTS.md` contains a ready-made prompt for each slot, written to
+match this site's dark, warm, high-contrast look so the set stays visually
+consistent.
+
+**An AI-generated image is a stand-in, not a record of the real food.** It
+shows a burger, not *this* burger. So:
+
+- Replace them with real photographs of the restaurant's actual food and
+  space before the site is promoted. This matters commercially as much as
+  ethically — someone who orders from a picture expects what was pictured.
+- While generated images are still in place, say plainly to anyone the site
+  is shown to that the imagery is illustrative, not photographs of the
+  restaurant.
+- Check every generated image against the real menu and discard any showing
+  something not actually served — a sesame bun when yours is plain, bacon
+  that is not on the menu, a side that does not exist.
+- Do not feed someone else's photo into a generator and ask for a version of
+  it. The prompts describe the food in words for exactly this reason: the
+  result is original rather than a derivative of a copyrighted photo.
+
+Sizes, compression targets and free tools for shrinking files are all in
+`images/PROMPTS.md`. Keep each image under 300KB.
 
 ---
 
@@ -149,7 +173,9 @@ information in front of customers:
 - **Instagram / Facebook** — no social links, icons, or handles anywhere
 - **Founding story** — the About page carries brand and process writing
   only, with no dates, founders, or history claims
-- **Photography** — the design is built to look complete without it
+- **Photography** — the design is built to look complete without it. Nine
+  photo slots are wired and waiting; see §3. Any AI-generated stand-ins must
+  be replaced with real photographs of the restaurant before promotion.
 
 To add any of these later, supply the real details and they can be dropped
 in. Do not fill them with sample content in the meantime.

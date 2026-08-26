@@ -448,16 +448,23 @@ textarea:focus-visible {
   box-shadow: var(--shadow), 0 0 0 1px rgba(255, 194, 74, 0.25);
   animation: float 9s ease-in-out infinite;
 }
+/* Inner circle. A photo assigned via --shot fills it, leaving the orange
+   ring as a frame around the shot. */
 .disc::before {
   content: "";
   position: absolute;
   inset: 11%;
   border-radius: 50%;
-  background: var(--ink);
+  background-color: var(--ink);
+  background-image: var(--shot, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.9);
 }
 .disc__label {
   position: relative;
+  opacity: var(--label, 1);
   text-align: center;
   font-family: var(--font-display);
   text-transform: uppercase;
@@ -597,14 +604,24 @@ textarea:focus-visible {
   gap: var(--sp-3);
   padding: 0;
 }
+/* The picture frame. With no photo assigned it renders the brand gradient
+   plus a ring and a word — a finished-looking graphic. Assigning --shot in
+   the PHOTO SLOTS block at the foot of this file swaps in a photograph and
+   sets --label:0, which fades out the ring and word and fades in a scrim so
+   the card heading stays readable. */
 .feature__face {
   position: relative;
   aspect-ratio: 16 / 10;
   display: grid;
   place-items: center;
-  background:
+  background-color: var(--ink-2);
+  background-image:
+    var(--shot, none),
     radial-gradient(90% 120% at 30% 0%, rgba(255, 90, 31, 0.5), transparent 62%),
     linear-gradient(155deg, #2a231d, #141110);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   border-bottom: 1px solid var(--line);
   overflow: hidden;
 }
@@ -615,18 +632,44 @@ textarea:focus-visible {
   aspect-ratio: 1;
   border-radius: 50%;
   border: 1.5px solid rgba(255, 194, 74, 0.35);
+  opacity: var(--label, 1);
   transition: transform var(--t-med);
+}
+/* Scrim: invisible until a photo is assigned (--label flips to 0) */
+.feature__face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(13, 12, 11, 0.7), rgba(13, 12, 11, 0.1) 60%);
+  opacity: calc(1 - var(--label, 1));
+  pointer-events: none;
 }
 .feature:hover .feature__face::before { transform: scale(1.12); }
 .feature__face span {
   position: relative;
+  z-index: 2;
   font-family: var(--font-display);
   font-size: var(--step-2);
   text-transform: uppercase;
   color: var(--amber);
   letter-spacing: -0.01em;
+  opacity: var(--label, 1);
 }
+/* Slight zoom on hover once a real photo is in place */
+.feature__face { transition: background-size var(--t-med); }
 .feature__body { padding: 0 var(--sp-4) var(--sp-4); }
+
+/* Standalone image tiles (menu page strip) — a face with no card body */
+.shot-tile .feature__face {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  aspect-ratio: 4 / 3;
+  transition: transform var(--t-med), border-color var(--t-med);
+}
+.shot-tile:hover .feature__face {
+  transform: translateY(-6px);
+  border-color: rgba(255, 90, 31, 0.45);
+}
 
 /* Optional real photo — drop-in replacement for .feature__face / .disc */
 .photo {
@@ -1189,3 +1232,34 @@ textarea:focus-visible {
   /* A squarer map is easier to read on a phone */
   .map { aspect-ratio: 1 / 1; }
 }
+
+/* =========================================================
+   PHOTO SLOTS
+   ---------------------------------------------------------
+   The only place you touch to add real photography.
+
+   1. Upload your image to the images/ folder, named exactly
+      as shown on the matching line below.
+   2. On that ONE line, delete the comment markers at the
+      start and end of the line (the slash-star and star-slash).
+   3. Commit. The photo appears, and the placeholder graphic,
+      its ring and its word label fade out automatically.
+
+   Put the markers back to return to the graphic.
+
+   Sizes (JPG, quality ~80, keep each under 300KB):
+     hero and interior ...... 1200 x 1200, shown in a circle
+     burgers, fries, shake .. 1200 x 750  (16:10)
+
+   Prompts for generating each image: images/PROMPTS.md
+   ========================================================= */
+
+/* .shot--hero     { --shot: url("../images/hero-burger.jpg");     --label: 0; } */
+/* .shot--cheese   { --shot: url("../images/burger-cheese.jpg");   --label: 0; } */
+/* .shot--chili    { --shot: url("../images/burger-chili.jpg");    --label: 0; } */
+/* .shot--truffle  { --shot: url("../images/burger-truffle.jpg");  --label: 0; } */
+/* .shot--veggie   { --shot: url("../images/burger-veggie.jpg");   --label: 0; } */
+/* .shot--fries    { --shot: url("../images/fries.jpg");           --label: 0; } */
+/* .shot--shake    { --shot: url("../images/shake.jpg");           --label: 0; } */
+/* .shot--coffee   { --shot: url("../images/coffee.jpg");          --label: 0; } */
+/* .shot--interior { --shot: url("../images/interior.jpg");        --label: 0; } */
