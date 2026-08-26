@@ -280,18 +280,33 @@ After that, every push to `main` rebuilds and republishes the site. Watch it
 happen in the **Actions** tab; it takes a few minutes. If a build fails the
 site stays as it was rather than breaking, and the Actions tab says why.
 
+### Deploying to Vercel instead
+
+Nothing needs changing. Point Vercel at the repository and it will detect
+Next.js, run `npm run build` and serve the result. The two settings that
+differ by host both default to what Vercel needs:
+
+- **The base path is empty**, so the site sits at the root of the domain.
+  GitHub Pages is the exception, and its workflow sets `BASE_PATH` itself.
+- **The address is worked out from the deployment**, so canonical tags,
+  `sitemap.xml`, `robots.txt` and the restaurant's structured data all
+  describe the right domain without being told.
+
+Once there is a real domain, set `SITE_URL` in the Vercel project settings to
+it — the automatic value follows Vercel's own domain, which is fine for a
+preview but not what you want search engines to record.
+
+One optional improvement on Vercel: `output: 'export'` in `next.config.mjs`
+builds the site as plain files, which is what a file host needs. Vercel can
+run Next.js properly, so removing that line would switch on the image
+optimiser. The product photos would gain little — they are already exported
+at four sizes each by hand — but it costs nothing to try.
+
 ### If you register a custom domain
 
-Two edits:
-
-1. `lib/site.js` — change `url` to the new address.
-2. `next.config.mjs` — change `basePath` to an empty string, `''`. The site
-   would then live at the root of the domain rather than in a
-   `/First-website/` folder.
-
-The canonical tags, the Open Graph tags, `robots.txt`, `sitemap.xml` and the
-structured data are all generated from those two, so they follow
-automatically.
+Set `SITE_URL` to it wherever the site is built: in the Vercel project
+settings, or in `.github/workflows/deploy.yml` for GitHub Pages. Everything
+that mentions the address is generated from it.
 
 ---
 

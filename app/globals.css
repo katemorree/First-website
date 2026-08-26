@@ -1928,10 +1928,11 @@ textarea:focus-visible {
    the HTML, so those slots are gone rather than commented out. The only
    picture the site still does not have is the room itself, on about.html.
    See README section 3. */
-/* .shot--interior { --shot: url("/First-website/images/interior.jpg"); --label: 0; } */
-/* ^ Note the /First-website/ at the front. Stylesheets cannot see the
-   basePath setting in next.config.mjs, so a path written here has to spell
-   the folder out. If the site ever moves to its own domain, drop it. */
+/* .shot--interior { --shot: url("/images/interior.jpg");          --label: 0; } */
+/* ^ A stylesheet cannot see the base path from next.config.mjs, so this one
+   path has to be written out by hand. As it stands it is right for Vercel
+   and for a domain of its own. On GitHub Pages, where the site sits in a
+   folder, it would need to read "/First-website/images/interior.jpg". */
 
 
 /* ---------- MICRO-INTERACTIONS ----------

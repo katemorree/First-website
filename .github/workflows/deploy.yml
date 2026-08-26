@@ -55,6 +55,12 @@ jobs:
         run: npm ci
 
       - name: Build the site
+        # GitHub Pages serves this repository from a /First-website/ folder
+        # rather than the root of the domain, so the build has to be told.
+        # Everywhere else the default (an empty base path) is correct.
+        env:
+          BASE_PATH: /First-website
+          SITE_URL: https://katemorree.github.io/First-website
         run: npm run build
 
       - uses: actions/configure-pages@v5
