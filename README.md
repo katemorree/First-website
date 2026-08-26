@@ -319,20 +319,26 @@ on the home page). If a burger price changes, update **both** files.
 
 ## 8. Scroll animations
 
-The home page has two scroll-driven sections. Everything else on the site uses
-only the gentle fade-up reveals.
+The home page has three scroll-driven sections. Everything else on the site
+uses only the gentle fade-up reveals.
 
 | Section | What happens |
 |---|---|
 | **Hero stage** | Pins for about two screens. The burger shrinks and drifts right, the two headline lines separate left and right, an oversized outlined wordmark scales behind them, and the sub-copy and buttons clear out. |
 | **Anatomy of the smash** | Pins for about three screens. The burger stays centred while three captions — The Press, The Crust, The Build — step past it. |
+| **What we smash** | Pins for about three and a half screens. The four burgers hand over one to the next: the outgoing one clears, the incoming one arrives from the right and settles, and its name, price and description follow a beat behind. A glow behind the burger drifts about a third as far, so the two planes separate as you scroll. A rail underneath shows where you are in the four. |
+
+**The showcase is an override, not a rebuild.** Below 901px, with JavaScript
+off, or with reduced motion on, the pin never switches on and those four
+burgers are the same two-by-two cards they have always been. There is one copy
+of the markup; only the presentation changes.
 
 ### How it is built
 
 - `position: sticky` does the pinning. JavaScript never positions anything.
 - `js/script.js` writes **one number** per section onto the section element:
-  `--p` for the hero, `--q` for the anatomy, each running 0 to 1 as you scroll
-  through it. Every movement is calculated from that number with `calc()` in
+  `--p` for the hero, `--q` for the anatomy, `--r` for the showcase, each
+  running 0 to 1 as you scroll through it. Every movement is calculated from that number with `calc()` in
   `css/style.css`.
 - **All the tuning lives in the CSS**, in the block headed
   `SCROLL STAGE + ANATOMY`. To make the burger travel further, change
@@ -355,6 +361,11 @@ only the gentle fade-up reveals.
   all three anatomy captions are shown stacked and readable.
 - **No JavaScript:** identical result — the tracks collapse and the hero shows
   its resting state with the buttons visible.
+- **Micro-interactions** — the press on a button, the lift on a product photo,
+  the price that warms up under the pointer — are all colour or `transform`,
+  and the hover half is behind `@media (hover: hover)` so a phone never leaves
+  something stuck in its hover state after a tap. Reduced motion switches the
+  movement off and keeps the colour.
 - The pinned sections are sized so their content always fits one screen, down
   to a 320x568 phone. On very short screens the hero's facts strip is hidden,
   since the same information is repeated in the location section and footer.

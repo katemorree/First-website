@@ -209,109 +209,128 @@
     </div>
   </section>
 
-  <!-- ============ WHAT WE SMASH ============ -->
-  <section class="section">
+  <!-- ============ WHAT WE SMASH ============
+       On a wide screen this pins: the burger stays in place while the four
+       products hand over to one another and the text changes beside them.
+       On a phone, and for anyone who prefers reduced motion, the pin is
+       switched off in the CSS and these are the same four cards as before.
+  -->
+  <section class="section showcase">
     <div class="wrap">
       <div class="head head--center" data-reveal>
         <p data-i18n class="eyebrow">The line-up</p>
         <h2 data-i18n>What We Smash</h2>
         <p data-i18n class="lead">Four burgers, all pressed to order on the flat-top.</p>
       </div>
+    </div>
 
-      <div class="grid grid--2" data-reveal data-reveal-group>
-        <article class="card feature">
-          <div class="feature__face feature__face--product">
-            <picture>
-              <source type="image/webp"
-                      srcset="images/cheeseburger-480.webp 480w,
-                              images/cheeseburger-640.webp 640w,
-                              images/cheeseburger-800.webp 800w,
-                              images/cheeseburger-1200.webp 1200w"
-                      sizes="(max-width: 620px) 92vw, (max-width: 900px) 46vw, 540px">
-              <img class="product-shot" src="images/cheeseburger.png"
-                   alt="Sameo cheeseburger" width="1448" height="1016"
-                   loading="lazy" decoding="async">
-            </picture>
-          </div>
-          <div class="feature__body">
-            <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
-              <h3 data-i18n>Cheeseburger</h3>
-              <span style="color:var(--amber);font-size:var(--step-0)">₾25</span>
-            </div>
-            <p data-i18n>100% beef, bun, mixed sauce, onion, lettuce, pickles and cheese.</p>
-          </div>
-        </article>
+    <div class="showcase__track" data-track>
+      <div class="showcase__pin">
+        <div class="showcase__glow" aria-hidden="true"></div>
+        <div class="wrap">
+          <div class="grid grid--2 showcase__stack" data-reveal data-reveal-group>
+            <article class="card feature showcase__item is-on">
+              <div class="feature__face feature__face--product">
+                <picture>
+                  <source type="image/webp"
+                          srcset="images/cheeseburger-480.webp 480w,
+                                  images/cheeseburger-640.webp 640w,
+                                  images/cheeseburger-800.webp 800w,
+                                  images/cheeseburger-1200.webp 1200w"
+                          sizes="(max-width: 620px) 92vw, (max-width: 900px) 46vw, 540px">
+                  <img class="product-shot" src="images/cheeseburger.png"
+                       alt="Sameo cheeseburger" width="1448" height="1016"
+                       loading="lazy" decoding="async">
+                </picture>
+              </div>
+              <div class="feature__body">
+                <p class="showcase__num" aria-hidden="true">01<i>/04</i></p>
+                <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
+                  <h3 data-i18n>Cheeseburger</h3>
+                  <span style="color:var(--amber);font-size:var(--step-0)">₾25</span>
+                </div>
+                <p data-i18n>100% beef, bun, mixed sauce, onion, lettuce, pickles and cheese.</p>
+              </div>
+            </article>
 
-        <article class="card feature">
-          <div class="feature__face feature__face--product">
-            <picture>
-              <source type="image/webp"
-                      srcset="images/chili-burger-480.webp 480w,
-                              images/chili-burger-640.webp 640w,
-                              images/chili-burger-800.webp 800w,
-                              images/chili-burger-1200.webp 1200w"
-                      sizes="(max-width: 620px) 92vw, (max-width: 900px) 46vw, 540px">
-              <img class="product-shot" src="images/chili-burger.png"
-                   alt="Sameo chili cheeseburger" width="1231" height="1009"
-                   loading="lazy" decoding="async">
-            </picture>
-          </div>
-          <div class="feature__body">
-            <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
-              <h3 data-i18n>Chili Cheeseburger</h3>
-              <span style="color:var(--amber);font-size:var(--step-0)">₾27.50</span>
-            </div>
-            <p data-i18n>100% beef, bun, mango-chili sauce, onion, lettuce, jalape&ntilde;o and cheese.</p>
-          </div>
-        </article>
+            <article class="card feature showcase__item">
+              <div class="feature__face feature__face--product">
+                <picture>
+                  <source type="image/webp"
+                          srcset="images/chili-burger-480.webp 480w,
+                                  images/chili-burger-640.webp 640w,
+                                  images/chili-burger-800.webp 800w,
+                                  images/chili-burger-1200.webp 1200w"
+                          sizes="(max-width: 620px) 92vw, (max-width: 900px) 46vw, 540px">
+                  <img class="product-shot" src="images/chili-burger.png"
+                       alt="Sameo chili cheeseburger" width="1231" height="1009"
+                       loading="lazy" decoding="async">
+                </picture>
+              </div>
+              <div class="feature__body">
+                <p class="showcase__num" aria-hidden="true">02<i>/04</i></p>
+                <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
+                  <h3 data-i18n>Chili Cheeseburger</h3>
+                  <span style="color:var(--amber);font-size:var(--step-0)">₾27.50</span>
+                </div>
+                <p data-i18n>100% beef, bun, mango-chili sauce, onion, lettuce, jalape&ntilde;o and cheese.</p>
+              </div>
+            </article>
 
-        <article class="card feature">
-          <div class="feature__face feature__face--product">
-            <picture>
-              <source type="image/webp"
-                      srcset="images/truffle-burger-480.webp 480w,
-                              images/truffle-burger-640.webp 640w,
-                              images/truffle-burger-800.webp 800w,
-                              images/truffle-burger-1200.webp 1200w"
-                      sizes="(max-width: 620px) 92vw, (max-width: 900px) 46vw, 540px">
-              <img class="product-shot" src="images/truffle-burger.png"
-                   alt="Sameo truffle burger" width="1407" height="956"
-                   loading="lazy" decoding="async">
-            </picture>
-          </div>
-          <div class="feature__body">
-            <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
-              <h3 data-i18n>Truffle Burger</h3>
-              <span style="color:var(--amber);font-size:var(--step-0)">₾27.50</span>
-            </div>
-            <p data-i18n>100% beef, bun, truffle sauce, onion and white cheese.</p>
-          </div>
-        </article>
+            <article class="card feature showcase__item">
+              <div class="feature__face feature__face--product">
+                <picture>
+                  <source type="image/webp"
+                          srcset="images/truffle-burger-480.webp 480w,
+                                  images/truffle-burger-640.webp 640w,
+                                  images/truffle-burger-800.webp 800w,
+                                  images/truffle-burger-1200.webp 1200w"
+                          sizes="(max-width: 620px) 92vw, (max-width: 900px) 46vw, 540px">
+                  <img class="product-shot" src="images/truffle-burger.png"
+                       alt="Sameo truffle burger" width="1407" height="956"
+                       loading="lazy" decoding="async">
+                </picture>
+              </div>
+              <div class="feature__body">
+                <p class="showcase__num" aria-hidden="true">03<i>/04</i></p>
+                <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
+                  <h3 data-i18n>Truffle Burger</h3>
+                  <span style="color:var(--amber);font-size:var(--step-0)">₾27.50</span>
+                </div>
+                <p data-i18n>100% beef, bun, truffle sauce, onion and white cheese.</p>
+              </div>
+            </article>
 
-        <article class="card feature">
-          <div class="feature__face feature__face--product">
-            <picture>
-              <source type="image/webp"
-                      srcset="images/veggie-burger-480.webp 480w,
-                              images/veggie-burger-640.webp 640w,
-                              images/veggie-burger-800.webp 800w,
-                              images/veggie-burger-1200.webp 1200w"
-                      sizes="(max-width: 620px) 92vw, (max-width: 900px) 46vw, 540px">
-              <img class="product-shot" src="images/veggie-burger.png"
-                   alt="Sameo veggie burger" width="1250" height="863"
-                   loading="lazy" decoding="async">
-            </picture>
+            <article class="card feature showcase__item">
+              <div class="feature__face feature__face--product">
+                <picture>
+                  <source type="image/webp"
+                          srcset="images/veggie-burger-480.webp 480w,
+                                  images/veggie-burger-640.webp 640w,
+                                  images/veggie-burger-800.webp 800w,
+                                  images/veggie-burger-1200.webp 1200w"
+                          sizes="(max-width: 620px) 92vw, (max-width: 900px) 46vw, 540px">
+                  <img class="product-shot" src="images/veggie-burger.png"
+                       alt="Sameo veggie burger" width="1250" height="863"
+                       loading="lazy" decoding="async">
+                </picture>
+              </div>
+              <div class="feature__body">
+                <p class="showcase__num" aria-hidden="true">04<i>/04</i></p>
+                <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
+                  <h3 data-i18n>Veggie Burger</h3>
+                  <span style="color:var(--amber);font-size:var(--step-0)">₾20</span>
+                </div>
+                <p data-i18n>Falafel, bun, mixed sauce, onion, lettuce, pickles and cheese.</p>
+              </div>
+            </article>
           </div>
-          <div class="feature__body">
-            <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
-              <h3 data-i18n>Veggie Burger</h3>
-              <span style="color:var(--amber);font-size:var(--step-0)">₾20</span>
-            </div>
-            <p data-i18n>Falafel, bun, mixed sauce, onion, lettuce, pickles and cheese.</p>
-          </div>
-        </article>
+          <div class="showcase__rail" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        </div>
       </div>
+    </div>
 
+    <div class="wrap">
       <div class="btn-row btn-row--center" style="margin-top:var(--sp-5)" data-reveal>
         <a data-i18n class="btn btn--primary" href="menu.html">See the Full Menu</a>
       </div>

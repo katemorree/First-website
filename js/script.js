@@ -138,6 +138,27 @@
       dots.forEach(function (el, n) { el.classList.toggle("is-on", n <= i); });
     });
 
+    // Product showcase: one burger hands over to the next.
+    // The same helper as the anatomy — a step index derived from progress,
+    // with the DOM touched only when the step actually changes.
+    function stepper(items, marks) {
+      return function (p) {
+        if (!items.length) return;
+        var i = Math.floor(p * items.length);
+        if (i > items.length - 1) i = items.length - 1;
+        if (i < 0) i = 0;
+        if (i === this.step) return;
+        this.step = i;
+        items.forEach(function (el, n) { el.classList.toggle("is-on", n === i); });
+        marks.forEach(function (el, n) { el.classList.toggle("is-on", n === i); });
+      };
+    }
+
+    addSection(".showcase", "--r", stepper(
+      [].slice.call(document.querySelectorAll(".showcase__item")),
+      [].slice.call(document.querySelectorAll(".showcase__rail i"))
+    ));
+
     if (sections.length && !reduceMotion) {
       var queued = false;
 

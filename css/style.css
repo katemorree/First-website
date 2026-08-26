@@ -163,7 +163,33 @@ textarea:focus-visible {
 
 .section { padding-block: var(--sp-6); }
 .section--tight { padding-block: var(--sp-5); }
-.section--alt { background: var(--ink-2); }
+/* The alternating band is only a few percent lighter than the page, but at
+   full width that still reads as a hard rule where it starts and stops.
+   A short gradient at each edge lets one section become the next instead. */
+.section--alt {
+  position: relative;
+  background: var(--ink-2);
+}
+.section--alt::before,
+.section--alt::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: clamp(2rem, 6vh, 4.5rem);
+  pointer-events: none;
+}
+/* The two gradients are positioned, so without this they would paint over
+   the top and bottom of the section's own content. */
+.section--alt > * { position: relative; z-index: 1; }
+.section--alt::before {
+  top: 0;
+  background: linear-gradient(var(--ink), transparent);
+}
+.section--alt::after {
+  bottom: 0;
+  background: linear-gradient(transparent, var(--ink));
+}
 
 .head { max-width: 62ch; margin-bottom: var(--sp-5); }
 .head--center { margin-inline: auto; text-align: center; }
@@ -1513,6 +1539,167 @@ textarea:focus-visible {
 }
 .anatomy__count i.is-on { background: var(--flame); }
 
+/* ---- Product showcase: one burger hands over to the next ----
+   Everything here is an OVERRIDE. Outside the media query below, the four
+   products are the ordinary two-by-two card grid they have always been —
+   which is exactly what a phone, a browser with JavaScript off, and anyone
+   who prefers reduced motion gets. The pinned version only switches on
+   where there is room and movement is welcome. */
+
+.showcase__track { height: auto; }
+.showcase__pin   { position: static; }
+.showcase__num,
+.showcase__rail,
+.showcase__glow  { display: none; }
+
+@media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+  .js .showcase__track { height: 340vh; }   /* roughly 0.85 screens per burger */
+  .js .showcase__pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    min-height: 34rem;
+    display: grid;
+    align-content: center;
+    overflow: hidden;
+  }
+
+  .js .showcase__pin > .wrap { position: relative; z-index: 1; }
+
+  /* The four cards stop being a grid and stack in one frame instead. The
+     stack must be at least as tall as the burger inside it, or the progress
+     rail below ends up sitting on the bun. */
+  .js .showcase__stack {
+    display: block;
+    position: relative;
+    min-height: min(58vh, 30rem);
+  }
+
+  .js .showcase__item {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    align-items: center;
+    gap: clamp(2rem, 5vw, 4.5rem);
+    /* card chrome off — in this mode the burger sits on the section itself */
+    background: none;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+    padding: 0;
+    pointer-events: none;
+  }
+  .js .showcase__item.is-on { pointer-events: auto; }
+  .js .showcase__item:hover { transform: none; }   /* no card lift in this mode */
+
+  /* The swap. The outgoing burger clears before the incoming one arrives —
+     they are never both legible — and the burger leads, with its text
+     following a beat later, so the change reads as one movement rather than
+     two things fading at once. */
+  .js .showcase__item .feature__face,
+  .js .showcase__item .feature__body {
+    opacity: 0;
+    transition: opacity 0.22s ease,
+                transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* Strip the card face back to just the photo: no panel background, no
+     bottom rule, no scrim, and no clipping — the burger is rotating, and
+     overflow:hidden would shave its corners. */
+  .js .showcase__item .feature__face {
+    aspect-ratio: auto;
+    height: min(58vh, 30rem);
+    background: none;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+    transform: translate3d(3rem, 0, 0) scale(0.92);
+  }
+  .js .showcase__item .feature__face::before,
+  .js .showcase__item .feature__face::after { display: none; }
+
+  .js .showcase__item .feature__body {
+    padding: 0;
+    transform: translate3d(0, 1.5rem, 0);
+  }
+
+  .js .showcase__item.is-on .feature__face {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.5s ease 0.14s,
+                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.14s;
+  }
+  .js .showcase__item.is-on .feature__body {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.45s ease 0.26s,
+                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.26s;
+  }
+
+  .js .showcase__item .product-shot {
+    padding: 0;
+    filter: drop-shadow(0 34px 50px rgba(0, 0, 0, 0.6));
+  }
+  /* A slow drift across the whole section, so the burger is never quite
+     static while the section is pinned. This sits inside the face, which
+     carries the swap — one transform each, both GPU-composited. */
+  .js .showcase__item picture {
+    transform:
+      translate3d(0, calc(var(--r, 0) * -3vh), 0)
+      rotate(calc(-3deg + var(--r, 0) * 5deg));
+  }
+
+  /* Depth: the glow behind the burger travels a third as far, so the two
+     planes separate as you scroll. */
+  .js .showcase__glow {
+    display: block;
+    position: absolute;
+    z-index: 0;
+    left: 4%;
+    top: 50%;
+    width: min(46rem, 52vw);
+    height: min(46rem, 52vw);
+    pointer-events: none;
+    border-radius: 50%;
+    background: radial-gradient(50% 50% at 50% 50%, rgba(255, 90, 31, 0.26), transparent 70%);
+    transform:
+      translate3d(0, calc(-50% + var(--r, 0) * -1vh), 0)
+      scale(calc(0.92 + var(--r, 0) * 0.16));
+  }
+
+  .js .showcase__item h3 { font-size: var(--step-3); }
+  .js .showcase__item .panel__title span { font-size: var(--step-1) !important; }
+  .js .showcase__item .feature__body > p { font-size: var(--step-1); max-width: 34ch; }
+
+  .js .showcase__num {
+    display: block;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    color: var(--flame);
+    margin-bottom: var(--sp-2);
+  }
+  .js .showcase__num i {
+    font-style: normal;
+    color: var(--muted);
+    opacity: 0.7;
+  }
+
+  .js .showcase__rail {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: var(--sp-5);
+  }
+  .js .showcase__rail i {
+    width: 34px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--line-strong);
+    transition: background 0.4s ease;
+  }
+  .js .showcase__rail i.is-on { background: var(--flame); }
+}
+
 /* ---- Gentler on tablets and phones ---- */
 @media (max-width: 900px) {
   .stage {
@@ -1582,6 +1769,12 @@ textarea:focus-visible {
     margin-bottom: var(--sp-4);
   }
   .anatomy__count { display: none; }
+  /* Without the pin there is nothing clipping the oversized wordmark and
+     the glow, and both are wider than the viewport — that pushed the whole
+     page sideways. overflow-x: clip trims them without turning the section
+     into a scroll container. */
+  .stage,
+  .anatomy { overflow-x: clip; }
 }
 
 /* =========================================================
@@ -1615,6 +1808,41 @@ textarea:focus-visible {
 /* .shot--coffee   { --shot: url("../images/coffee.jpg");          --label: 0; } */
 /* .shot--interior { --shot: url("../images/interior.jpg");        --label: 0; } */
 
+
+/* ---------- MICRO-INTERACTIONS ----------
+   Small, physical responses to a pointer or a finger. Everything here is
+   transform, colour or opacity — nothing that causes a re-layout — and the
+   hover half is behind (hover: hover) so a phone never leaves an element
+   stuck in its hover state after a tap. */
+
+.btn:active { transform: translateY(-1px) scale(0.985); }
+.card:active { transform: translateY(-2px); }
+.langgate__opt:active,
+.langpick button:active { transform: scale(0.96); }
+
+@media (hover: hover) {
+  /* The cut-out lifts out of its frame rather than simply growing. */
+  .feature:hover .product-shot,
+  .shot-tile:hover .product-shot {
+    transform: translateY(-6px) scale(1.05) rotate(-1.2deg);
+  }
+
+  /* A long price list is easier to read across if the row under the pointer
+     answers. Colour only — the rows must not shift as you move down them. */
+  .item__price { transition: color var(--t-fast); }
+  .item:hover .item__price { color: var(--flame); }
+
+  .panel:hover { border-color: var(--line-strong); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:active,
+  .card:active,
+  .langgate__opt:active,
+  .langpick button:active { transform: none; }
+  .feature:hover .product-shot,
+  .shot-tile:hover .product-shot { transform: none; }
+}
 
 /* =========================================================
    16. LANGUAGE  (English / Русский / ქართული)
