@@ -23,6 +23,7 @@ window.SAMEO_I18N = {
 
   /* ------------------------------------------------------ */
   ru: {
+    "Sides &amp; Sauces": "Гарниры и соусы",
 
     /* --- page titles (browser tab) --- */
     "Sameo Smash — Smash Burgers in Tbilisi | სამეო სმეშ":
@@ -292,6 +293,7 @@ window.SAMEO_I18N = {
 
   /* ------------------------------------------------------ */
   ka: {
+    "Sides &amp; Sauces": "გარნირები და სოუსები",
 
     /* --- page titles (browser tab) --- */
     "Sameo Smash — Smash Burgers in Tbilisi | სამეო სმეშ":

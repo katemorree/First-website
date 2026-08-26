@@ -49,14 +49,14 @@ Open `css/style.css` and edit the `:root` block at the top. Changing
 
 ## 3. Photography
 
-The site is designed to look finished **without** photos. Every image
-position currently renders a brand graphic — a gradient panel with a ring and
-a word, or the circular brand disc in the hero. Nothing looks broken or empty
-while you wait for pictures.
+Every product on the menu now has a **real photograph**. One position is
+still waiting for a picture — the room itself, on the About page — and until
+it has one it renders a brand graphic rather than a gap, so nothing looks
+broken or empty.
 
 ### Adding a photo — one line, one file
 
-There are eight photo slots awaiting images. To switch one on:
+One photo slot is left: the interior shot on `about.html`. To switch it on:
 
 1. Put your image in the `images/` folder, named exactly as listed in
    `images/PROMPTS.md`.
@@ -69,13 +69,12 @@ The photo appears, and the placeholder ring and word fade out automatically,
 with a dark scrim added underneath so headings stay readable. Put the markers
 back to return to the graphic. You never need to edit the HTML.
 
-The eight remaining slots: hero, chili cheeseburger, truffle burger, veggie
-burger, fries, shakes, coffee, interior. (The cheeseburger has no slot — it
-already uses a real photo; see below.)
+Everything else on the site uses a real photo placed directly in the HTML,
+so it has no slot.
 
 ### Real product photos
 
-All four burgers use **real photographs** supplied by the business —
+Every product uses a **real photograph** supplied by the business —
 transparent-background PNGs of the actual products. None is AI-generated, and
 none should be swapped for a generated image.
 
@@ -124,14 +123,34 @@ A typical phone loads 186 KB, not the whole set.
 
 Where each one appears:
 
-| Photo | Used on |
-|---|---|
-| Cheeseburger | Home page hero (the scroll stage) and the anatomy section; the Cheeseburger card on the home page and on the menu page |
-| Chili cheeseburger | The Chili Cheeseburger card on the home page and on the menu page |
-| Truffle burger | The Truffle Burger card on the home page and on the menu page |
-| Veggie burger | The Veggie Burger card on the home page and on the menu page |
+| Photo | File stem | Used on |
+|---|---|---|
+| Cheeseburger | `cheeseburger` | Home page hero (the scroll stage) and the anatomy section; the Cheeseburger card on the home page and on the menu page |
+| Chili cheeseburger | `chili-burger` | The Chili Cheeseburger card on the home page and on the menu page |
+| Truffle burger | `truffle-burger` | The Truffle Burger card on the home page and on the menu page |
+| Veggie burger | `veggie-burger` | The Veggie Burger card on the home page and on the menu page |
+| Classic sliders | `classic-slider` | The Sliders section of the menu |
+| Truffle sliders | `truffle-slider` | The Sliders section of the menu |
+| Chili sliders | `chili-slider` | The Sliders section of the menu |
+| Fries | `fries` | Sides &amp; Sauces on the menu |
+| Toast | `toast` | Sides &amp; Sauces on the menu |
+| Sauces | `sauces` | Sides &amp; Sauces on the menu |
+| Vanilla shake | `vanilla-shake` | The Shakes section of the menu |
+| Chocolate shake | `chocolate-shake` | The Shakes section of the menu |
+| Strawberry shake | `strawberry-shake` | The Shakes section of the menu |
+| Iced coffee | `iced-coffee-black` | The Coffee section of the menu |
+| Iced coffee with ice cream | `iced-coffee-cream` | The Coffee section of the menu |
 
 Each photo is used **only for its own product**.
+
+**Two rules keep the sizes even.** First, every photo is trimmed hard to the
+product itself — an invisible margin of near-transparent pixels around the
+edge would push the product away from its frame and make it look smaller than
+its neighbours. Second, where two photos show the *same physical object* —
+the three shake cups, and the two iced coffee cups — they are placed on one
+shared canvas at one shared scale, so they come out identical by construction
+rather than by tuning. The three shakes and the two coffees are drawn at
+exactly the same height as each other at every screen size.
 
 > **Check the patty before changing the Veggie Burger photo.** During this
 > build an image was first supplied for the Veggie Burger that actually
@@ -151,11 +170,12 @@ and filenames, replacing what is in `images/`. No code changes needed. Keep
 the transparent background, and keep the same proportions — otherwise the
 `width`/`height` attributes in the HTML need updating too.
 
-**To add a photo for anything else** (fries, shakes, coffee, interior):
-follow the same pattern — five files at 480/640/800/1200 plus a PNG
-fallback — then either switch on that product's line in the PHOTO SLOTS block
-in `css/style.css`, or copy one of the existing `<picture>` blocks and swap
-the filenames, the `alt` text and the `width`/`height`.
+**To add the interior photo:** switch on its line in the PHOTO SLOTS block in
+`css/style.css`, as described above. For any *new* product, copy one of the
+existing `<picture>` blocks in `menu.html` and swap the filenames, the `alt`
+text and the `width`/`height`. Wide products (burgers, sliders) use four
+WebP files at 480/640/800/1200; the narrower three-across cards (sides,
+shakes, coffee) use 300/400/540/800. Both add a PNG fallback.
 
 ### If you use AI-generated images
 

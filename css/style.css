@@ -738,6 +738,25 @@ textarea:focus-visible {
    construction rather than by tuning. */
 .feature__face--tall { aspect-ratio: 1 / 1; }
 
+/* Sides face. The three products in that row are shaped very differently —
+   fries stand up (0.71), the toast lies flat (2.11), the sauces sit between
+   (1.38) — and each is scaled to fill the frame in whichever direction is
+   its longer one, the same rule the burgers and shakes already follow. A
+   3:2 frame is the shape that gives all three a fair share of it: a square
+   would leave the toast small, and anything wider would shrink the fries. */
+.feature__face--side { aspect-ratio: 3 / 2; }
+
+/* A row of two products, held to the cell width of a row of three and
+   centred. Without this the two iced coffees would each take half the row
+   and tower over the shakes they sit beside. */
+@media (min-width: 901px) {
+  .grid--3.grid--two-up {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: calc((100% - 2 * var(--sp-3)) / 3 * 2 + var(--sp-3));
+    margin-inline: auto;
+  }
+}
+
 /* Slider cards sit three across, so they are narrower than the two-across
    burger cards. Archivo Black is a wide face and "Truffle Slider" wraps to a
    second line at the burger title size, leaving the three titles uneven.
@@ -1798,14 +1817,12 @@ textarea:focus-visible {
    Prompts for generating each image: images/PROMPTS.md
    ========================================================= */
 
-/* No slots for the hero or any burger here: all four burgers now use real
-   transparent product photos placed directly in the HTML. The homepage hero is now a scroll
-   stage built around the real transparent cheeseburger cut-out; the
-   cheeseburger and truffle burger both use real cut-outs placed directly
-   in the HTML of index.html and menu.html. See README section 3. */
-/* .shot--fries    { --shot: url("../images/fries.jpg");           --label: 0; } */
-/* .shot--shake    { --shot: url("../images/shake.jpg");           --label: 0; } */
-/* .shot--coffee   { --shot: url("../images/coffee.jpg");          --label: 0; } */
+/* One slot left. Everything else on the menu — all four burgers, all three
+   sliders, the shakes, the fries, the toast, the sauces and both iced
+   coffees — now uses a real transparent product photo placed directly in
+   the HTML, so those slots are gone rather than commented out. The only
+   picture the site still does not have is the room itself, on about.html.
+   See README section 3. */
 /* .shot--interior { --shot: url("../images/interior.jpg");        --label: 0; } */
 
 

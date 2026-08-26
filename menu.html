@@ -277,6 +277,82 @@
 
 
   <!-- ============ SHAKES ============ -->
+  <!-- ============ SIDES &amp; SAUCES ============ -->
+  <section class="section course">
+    <div class="wrap">
+      <div class="course__head" data-reveal>
+        <h2 data-i18n>Sides &amp; Sauces</h2>
+        <span data-i18n>From &#8382;3</span>
+      </div>
+
+      <div class="grid grid--3" data-reveal data-reveal-group>
+        <article class="card feature">
+          <div class="feature__face feature__face--product feature__face--side">
+            <picture>
+              <source type="image/webp"
+                      srcset="images/fries-300.webp 300w,
+                              images/fries-400.webp 400w,
+                              images/fries-540.webp 540w,
+                              images/fries-800.webp 800w"
+                      sizes="(max-width: 620px) 92vw, (max-width: 900px) 46vw, 360px">
+              <img class="product-shot" src="images/fries.png"
+                   alt="Sameo fries" width="922" height="1306"
+                   loading="lazy" decoding="async">
+            </picture>
+          </div>
+          <div class="feature__body">
+            <div class="panel__title" style="border:0;padding:0;margin-bottom:0">
+              <h3 data-i18n>Fries</h3>
+              <span style="color:var(--amber);font-size:var(--step-0)">&#8382;6</span>
+            </div>
+          </div>
+        </article>
+        <article class="card feature">
+          <div class="feature__face feature__face--product feature__face--side">
+            <picture>
+              <source type="image/webp"
+                      srcset="images/toast-300.webp 300w,
+                              images/toast-400.webp 400w,
+                              images/toast-540.webp 540w,
+                              images/toast-800.webp 800w"
+                      sizes="(max-width: 620px) 92vw, (max-width: 900px) 46vw, 360px">
+              <img class="product-shot" src="images/toast.png"
+                   alt="Sameo toast" width="1414" height="671"
+                   loading="lazy" decoding="async">
+            </picture>
+          </div>
+          <div class="feature__body">
+            <div class="panel__title" style="border:0;padding:0;margin-bottom:0">
+              <h3 data-i18n>Toast</h3>
+              <span style="color:var(--amber);font-size:var(--step-0)">&#8382;10</span>
+            </div>
+          </div>
+        </article>
+        <article class="card feature">
+          <div class="feature__face feature__face--product feature__face--side">
+            <picture>
+              <source type="image/webp"
+                      srcset="images/sauces-300.webp 300w,
+                              images/sauces-400.webp 400w,
+                              images/sauces-540.webp 540w,
+                              images/sauces-800.webp 800w"
+                      sizes="(max-width: 620px) 92vw, (max-width: 900px) 46vw, 360px">
+              <img class="product-shot" src="images/sauces.png"
+                   alt="Sameo sauces" width="1379" height="1002"
+                   loading="lazy" decoding="async">
+            </picture>
+          </div>
+          <div class="feature__body">
+            <div class="panel__title" style="border:0;padding:0;margin-bottom:0">
+              <h3 data-i18n>Sauces</h3>
+              <span style="color:var(--amber);font-size:var(--step-0)">From &#8382;3</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <section class="section course" id="shakes">
     <div class="wrap">
       <div class="course__head" data-reveal>
@@ -352,15 +428,60 @@
     </div>
   </section>
 
-  <!-- ============ IMAGE STRIP ============
-       Photo slots for sides, shakes and coffee. Until photos are added
-       these render as brand graphic tiles. See PHOTO SLOTS in css/style.css. -->
-  <section class="section" style="padding-top:0">
+  <!-- ============ ICED COFFEE ============
+       Two products rather than three, so the row is held to the same cell
+       width as a three-across row and centred — otherwise the cups would
+       grow to fill half the page each and stop matching the shakes. -->
+  <section class="section course">
     <div class="wrap">
-      <div class="grid grid--3" data-reveal data-reveal-group>
-        <div class="shot-tile"><div class="feature__face shot--fries"><span data-i18n>Fries</span></div></div>
-        <div class="shot-tile"><div class="feature__face shot--shake"><span data-i18n>Shakes</span></div></div>
-        <div class="shot-tile"><div class="feature__face shot--coffee"><span data-i18n>Coffee</span></div></div>
+      <div class="course__head" data-reveal>
+        <h2 data-i18n>Coffee</h2>
+        <span data-i18n>Hot &amp; iced</span>
+      </div>
+
+      <div class="grid grid--3 grid--two-up" data-reveal data-reveal-group>
+        <article class="card feature">
+          <div class="feature__face feature__face--product feature__face--tall">
+            <picture>
+              <source type="image/webp"
+                      srcset="images/iced-coffee-black-300.webp 300w,
+                              images/iced-coffee-black-400.webp 400w,
+                              images/iced-coffee-black-540.webp 540w,
+                              images/iced-coffee-black-800.webp 800w"
+                      sizes="(max-width: 620px) 40vw, (max-width: 900px) 22vw, 160px">
+              <img class="product-shot" src="images/iced-coffee-black.png"
+                   alt="Sameo iced coffee" width="710" height="1442"
+                   loading="lazy" decoding="async">
+            </picture>
+          </div>
+          <div class="feature__body">
+            <div class="panel__title" style="border:0;padding:0;margin-bottom:0">
+              <h3 data-i18n>Iced Coffee</h3>
+              <span style="color:var(--amber);font-size:var(--step-0)">&#8382;9</span>
+            </div>
+          </div>
+        </article>
+        <article class="card feature">
+          <div class="feature__face feature__face--product feature__face--tall">
+            <picture>
+              <source type="image/webp"
+                      srcset="images/iced-coffee-cream-300.webp 300w,
+                              images/iced-coffee-cream-400.webp 400w,
+                              images/iced-coffee-cream-540.webp 540w,
+                              images/iced-coffee-cream-800.webp 800w"
+                      sizes="(max-width: 620px) 40vw, (max-width: 900px) 22vw, 160px">
+              <img class="product-shot" src="images/iced-coffee-cream.png"
+                   alt="Sameo iced coffee with ice cream" width="710" height="1442"
+                   loading="lazy" decoding="async">
+            </picture>
+          </div>
+          <div class="feature__body">
+            <div class="panel__title" style="border:0;padding:0;margin-bottom:0">
+              <h3 data-i18n>Iced Coffee with Ice Cream</h3>
+              <span style="color:var(--amber);font-size:var(--step-0)">&#8382;17</span>
+            </div>
+          </div>
+        </article>
       </div>
     </div>
   </section>
