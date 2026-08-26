@@ -16,6 +16,7 @@
    13. Mobile action bar
    14. Motion
    15. Responsive
+   16. Language (EN / RU / KA)
    ========================================================= */
 
 /* ---------- 1. DESIGN TOKENS ---------- */
@@ -125,7 +126,11 @@ p {
   text-wrap: pretty;
 }
 
-:lang(ka) { font-family: var(--font-ka); }
+/* Georgian words dropped inside an English or Russian page (the brand name,
+   for instance) need the Georgian face. When the WHOLE page is Georgian,
+   the stacks above already handle it, and this rule would otherwise match
+   every element on the page and flatten the display font. */
+:root:not([lang="ka"]) :lang(ka) { font-family: var(--font-ka); }
 
 /* Focus visibility for keyboard users */
 a:focus-visible,
@@ -1609,3 +1614,213 @@ textarea:focus-visible {
 /* .shot--shake    { --shot: url("../images/shake.jpg");           --label: 0; } */
 /* .shot--coffee   { --shot: url("../images/coffee.jpg");          --label: 0; } */
 /* .shot--interior { --shot: url("../images/interior.jpg");        --label: 0; } */
+
+
+/* =========================================================
+   16. LANGUAGE  (English / Русский / ქართული)
+   ---------------------------------------------------------
+   Three parts: the fonts each language needs, the full-screen
+   chooser shown on a first visit, and the EN/RU/KA switcher in
+   the header. The chooser and the switcher are built by
+   js/i18n.js, so they exist on every page without being copied
+   into five HTML files.
+   ========================================================= */
+
+/* Archivo Black and Poppins carry no Cyrillic at all, and only a few
+   Georgian glyphs, so a whole page in Russian or Georgian would fall
+   back to whatever the device happens to have. Each language gets a
+   stack that can actually draw it. Noto Sans Georgian stays in every
+   stack for the Lari sign ₾. */
+:root[lang="ru"] {
+  --font-display: "Montserrat", "Archivo Black", "Noto Sans Georgian", system-ui, sans-serif;
+  --font-body:    "Montserrat", "Poppins", "Noto Sans Georgian", system-ui, sans-serif;
+}
+:root[lang="ka"] {
+  --font-display: "Noto Sans Georgian", "Archivo Black", system-ui, sans-serif;
+  --font-body:    "Noto Sans Georgian", "Poppins", system-ui, sans-serif;
+}
+
+/* Archivo Black is one very heavy weight that happens to be numbered 400.
+   Its stand-ins are ordinary families, so headings must ask for the heavy
+   weight explicitly or Russian and Georgian look thin next to English. */
+:root[lang="ru"] h1, :root[lang="ru"] h2, :root[lang="ru"] h3, :root[lang="ru"] h4,
+:root[lang="ka"] h1, :root[lang="ka"] h2, :root[lang="ka"] h3, :root[lang="ka"] h4 {
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+/* Georgian is unicase — it has no capitals — so forcing uppercase only
+   costs the letters their proper shapes and adds nothing. */
+:root[lang="ka"] h1, :root[lang="ka"] h2, :root[lang="ka"] h3, :root[lang="ka"] h4 {
+  text-transform: none;
+}
+
+/* Two languages are longer than English almost everywhere. Slightly more
+   room between lines stops headings from locking together. */
+:root[lang="ru"] h1, :root[lang="ru"] h2,
+:root[lang="ka"] h1, :root[lang="ka"] h2 { line-height: 1.08; }
+
+/* No flash of the wrong language: the inline script in each <head> hides
+   the page until js/i18n.js has run, and takes the class off again after
+   1.5s on its own so a script that never loads can never leave a blank
+   page behind. */
+.lang-boot body { opacity: 0; }
+.lang-choosing  { overflow: hidden; }
+
+/* ---------- the first-visit chooser ---------- */
+
+.langgate {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-4) var(--sp-3);
+  background:
+    radial-gradient(80% 60% at 50% 0%, rgba(255, 90, 31, 0.16), transparent 70%),
+    var(--ink);
+  opacity: 1;
+  transition: opacity 0.55s ease;
+}
+.langgate.is-out { opacity: 0; pointer-events: none; }
+
+.langgate__inner {
+  width: min(46rem, 100%);
+  text-align: center;
+}
+
+.langgate__brand {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.5rem, 1.1rem + 2vw, 2.4rem);
+  color: var(--cream);
+  margin: 0 0 var(--sp-4);
+}
+.langgate__brand em {
+  display: block;
+  font-family: var(--font-ka);
+  font-style: normal;
+  font-size: 0.42em;
+  letter-spacing: 0.16em;
+  color: var(--flame);
+  margin-top: 0.5rem;
+}
+
+.langgate__title {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0 0 var(--sp-4);
+  font-size: var(--step--1);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.langgate__opts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.9rem;
+}
+
+.langgate__opt {
+  display: grid;
+  gap: 0.4rem;
+  padding: clamp(1.1rem, 0.8rem + 1.4vw, 1.9rem) 0.6rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--cream);
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+.langgate__opt b {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(0.95rem, 0.8rem + 0.8vw, 1.35rem);
+  letter-spacing: -0.01em;
+}
+.langgate__opt[lang="ru"] b { font-family: "Montserrat", var(--font-body); font-weight: 800; }
+.langgate__opt[lang="ka"] b { font-family: var(--font-ka); font-weight: 700; text-transform: none; }
+.langgate__opt small {
+  font-size: 0.7rem;
+  letter-spacing: 0.26em;
+  color: var(--muted);
+}
+/* The language already in force, when the chooser is reopened later. */
+.langgate__opt.is-on {
+  border-color: var(--flame);
+  background: var(--surface-2);
+}
+.langgate__opt.is-on small { color: var(--flame); }
+
+.langgate__opt:hover,
+.langgate__opt:focus-visible {
+  transform: translateY(-3px);
+  border-color: var(--flame);
+  background: var(--surface-2);
+}
+
+@media (max-width: 30rem) {
+  .langgate__opts { grid-template-columns: 1fr; }
+  .langgate__opt  { padding: 0.95rem 0.6rem; }
+}
+
+/* ---------- the header switcher ---------- */
+
+.langpick {
+  display: flex;
+  align-items: center;
+}
+.langpick__opts {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(247, 243, 236, 0.04);
+}
+.langpick button {
+  min-width: 34px;
+  min-height: 30px;
+  padding: 0 0.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.langpick button:hover { color: var(--cream); }
+.langpick button.is-on {
+  background: var(--flame);
+  color: #fff;
+}
+
+/* The single-button form, used where three pills will not fit. */
+.langpick__now {
+  display: none;
+  min-width: 44px;
+  min-height: 38px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(247, 243, 236, 0.04);
+  color: var(--cream);
+}
+
+/* At 320px the logo and the menu button already use nearly the whole bar,
+   so three pills push the header off-screen. Below this width the switcher
+   becomes one button that reopens the full-screen chooser. */
+@media (max-width: 560px) {
+  .langpick__opts { display: none; }
+  .langpick__now  { display: block; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .langgate,
+  .langgate__opt,
+  .langpick button { transition: none; }
+}

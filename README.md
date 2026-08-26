@@ -20,6 +20,8 @@ Built as plain HTML, CSS and JavaScript — no frameworks, no build step, no
 | `404.html` | Shown automatically if someone hits a wrong address |
 | `css/style.css` | All styling. Section map is at the top of the file |
 | `js/script.js` | Mobile menu, scroll animations, contact form |
+| `js/i18n.js` | The language system — the chooser, the header switcher, the swapping |
+| `js/i18n-data.js` | **The Russian and Georgian text.** This is the file to edit for translations |
 | `robots.txt`, `sitemap.xml` | Search engine files |
 
 The header and footer are repeated in each page rather than pulled from a
@@ -356,3 +358,85 @@ only the gentle fade-up reveals.
 - The pinned sections are sized so their content always fits one screen, down
   to a 320x568 phone. On very short screens the hero's facts strip is hidden,
   since the same information is repeated in the location section and footer.
+
+---
+
+## 9. Languages (English / Русский / ქართული)
+
+The site is in three languages. English is the original: it is what is written
+in the HTML files. Russian and Georgian are swapped in by the browser.
+
+**⚠️ The Russian and Georgian were written by Claude, not by a native speaker.
+Have someone local read the Georgian before you rely on it — that is the
+restaurant's home market, and a clumsy sentence there costs more than a clumsy
+one in English.**
+
+### What a visitor sees
+
+1. On a first visit, a full-screen chooser: *Choose your language / Выберите
+   язык / აირჩიეთ ენა*, with three buttons.
+2. The choice is remembered in their browser, so they are never asked again.
+3. A switcher stays in the header. On a computer or iPad it is three pills —
+   EN, RU, KA. On a phone there is no room beside the logo, so it becomes one
+   button showing the current language; tapping it reopens the full-screen
+   chooser.
+
+### How to change a translation
+
+Open `js/i18n-data.js`. It is a long list of pairs:
+
+```js
+"View Menu": "Смотреть меню",
+```
+
+The **left side is the English exactly as it appears on the site**, and the
+right side is the translation. Edit the right side and commit. That is the
+whole job.
+
+### How to change English text
+
+This is the part to be careful about. The English is the key, so changing it in
+the HTML alone breaks the link and the sentence stays English in all three
+languages.
+
+Change it in **two** places:
+
+1. The HTML file — e.g. `<h2 data-i18n>Order Your Smash</h2>`.
+2. The matching key in `js/i18n-data.js`, in **both** the `ru:` and `ka:`
+   blocks.
+
+Nothing breaks if you forget: the text simply stays in English rather than
+going blank.
+
+### How to add a new translatable line
+
+Put `data-i18n` inside the opening tag:
+
+```html
+<p data-i18n>Open on public holidays too.</p>
+```
+
+Then add the English and its translations to `js/i18n-data.js` under `ru:` and
+`ka:`. For text that lives in an attribute rather than between tags — the
+`alt` on an image, an `aria-label` — name the attribute instead:
+
+```html
+<img data-i18n-attr="alt" alt="Sameo cheeseburger" src="...">
+```
+
+### Things worth knowing
+
+- **The chooser and the switcher are not in the HTML files.** `js/i18n.js`
+  builds them, so there is one copy to edit rather than five. The markup is at
+  the top of that file.
+- **Fonts.** Archivo Black and Poppins have no Cyrillic and almost no Georgian,
+  so Montserrat and Noto Sans Georgian are loaded alongside them. A visitor
+  only downloads the alphabet their language actually needs.
+- **Search engines index the English only.** Google reads the HTML, and the
+  HTML is English; the Russian and Georgian are applied afterwards by the
+  browser. Real multilingual SEO needs a separate page per language
+  (`/ru/index.html`, `/ka/index.html`), which is a bigger change and worth
+  doing only if search traffic in those languages matters. Visitors are
+  unaffected — they see their language immediately.
+- **If JavaScript is off,** the site stays fully in English and everything
+  still works.

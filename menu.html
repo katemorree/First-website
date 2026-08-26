@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Menu &amp; Prices — Sameo Smash | Burgers, Sliders &amp; Shakes in Tbilisi</title>
+<title data-i18n>Menu &amp; Prices — Sameo Smash | Burgers, Sliders &amp; Shakes in Tbilisi</title>
 <meta name="description" content="The full Sameo Smash menu with prices: cheeseburger ₾25, chili cheeseburger and truffle burger ₾27.50, veggie burger ₾20, plus sliders, fries, sauces, cookies, shakes, coffee and drinks.">
 <meta name="theme-color" content="#0d0c0b">
 <link rel="canonical" href="https://katemorree.github.io/First-website/menu.html">
@@ -19,26 +19,38 @@
 <link rel="apple-touch-icon" href="images/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Noto+Sans+Georgian:wght@400;600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Montserrat covers Cyrillic and Noto Sans Georgian covers Georgian; the
+     browser only downloads the alphabets a page actually uses. -->
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Montserrat:wght@500;600;800&family=Noto+Sans+Georgian:wght@400;600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
-<script>document.documentElement.classList.add('js');</script>
+<script>
+/* Marks that JavaScript is running, and hides the page for a moment so a
+   returning Russian or Georgian visitor never sees English flash past
+   first. The timer clears it on its own, so if js/i18n.js ever fails to
+   load the page still appears. */
+(function (d) {
+  var e = d.documentElement;
+  e.classList.add('js', 'lang-boot');
+  setTimeout(function () { e.classList.remove('lang-boot'); }, 1500);
+})(document);
+</script>
 </head>
 <body>
-<a class="skip-link" href="#main">Skip to content</a>
+<a data-i18n class="skip-link" href="#main">Skip to content</a>
 
 <header class="header">
   <div class="wrap nav">
     <a class="brand" href="index.html">SAMEO SMASH<em lang="ka">სამეო სმეშ</em></a>
     <nav class="nav__links" aria-label="Primary">
-      <a href="index.html">Home</a>
-      <a href="menu.html" aria-current="page">Menu</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Location</a>
-      <a class="nav__links-cta" href="contact.html#order">Order Now</a>
+      <a data-i18n href="index.html">Home</a>
+      <a data-i18n href="menu.html" aria-current="page">Menu</a>
+      <a data-i18n href="about.html">About</a>
+      <a data-i18n href="contact.html">Location</a>
+      <a data-i18n class="nav__links-cta" href="contact.html#order">Order Now</a>
     </nav>
     <div class="nav__actions">
-      <a class="btn btn--primary nav__cta" href="contact.html#order">Order Now</a>
-      <button class="nav__toggle" type="button" aria-label="Open menu" aria-expanded="false">
+      <a data-i18n class="btn btn--primary nav__cta" href="contact.html#order">Order Now</a>
+      <button data-i18n-attr="aria-label" class="nav__toggle" type="button" aria-label="Open menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -50,28 +62,28 @@
   <section class="section" style="padding-bottom:0">
     <div class="wrap">
       <div class="head" data-reveal>
-        <p class="eyebrow">The Menu</p>
-        <h1>Burgers, Sliders<br>&amp; Everything Else</h1>
-        <p class="lead">
+        <p data-i18n class="eyebrow">The Menu</p>
+        <h1 data-i18n>Burgers, Sliders<br>&amp; Everything Else</h1>
+        <p data-i18n class="lead">
           Everything is smashed and built to order. Open every day from
           12:00 to 02:00 — eat in, take away, or get it delivered.
         </p>
         <div class="btn-row">
-          <a class="btn btn--primary" href="tel:+995511100835">Call to Order</a>
-          <a class="btn btn--ghost" href="contact.html#order">Delivery Options</a>
+          <a data-i18n class="btn btn--primary" href="tel:+995511100835">Call to Order</a>
+          <a data-i18n class="btn btn--ghost" href="contact.html#order">Delivery Options</a>
         </div>
       </div>
 
       <nav class="menu-nav" aria-label="Menu categories" data-reveal>
-        <a href="#burgers">Burgers</a>
-        <a href="#sliders">Sliders</a>
-        <a href="#sides">Sides</a>
-        <a href="#sauces">Sauces</a>
-        <a href="#desserts">Desserts</a>
-        <a href="#shakes">Shakes</a>
-        <a href="#coffee">Coffee</a>
-        <a href="#drinks">Drinks</a>
-        <a href="#beer">Beer</a>
+        <a data-i18n href="#burgers">Burgers</a>
+        <a data-i18n href="#sliders">Sliders</a>
+        <a data-i18n href="#sides">Sides</a>
+        <a data-i18n href="#sauces">Sauces</a>
+        <a data-i18n href="#desserts">Desserts</a>
+        <a data-i18n href="#shakes">Shakes</a>
+        <a data-i18n href="#coffee">Coffee</a>
+        <a data-i18n href="#drinks">Drinks</a>
+        <a data-i18n href="#beer">Beer</a>
       </nav>
     </div>
   </section>
@@ -80,10 +92,10 @@
   <section class="section course" id="burgers">
     <div class="wrap">
       <div class="course__head" data-reveal>
-        <h2>Burgers</h2>
-        <span>From ₾20</span>
+        <h2 data-i18n>Burgers</h2>
+        <span data-i18n>From ₾20</span>
       </div>
-      <p class="course__note lead" data-reveal>
+      <p data-i18n class="course__note lead" data-reveal>
         The heart of the menu. Every patty is pressed hard on a hot flat-top so the edges
         go crisp and caramelised, then stacked and served straight away.
       </p>
@@ -106,11 +118,11 @@
           </div>
           <div class="feature__body">
             <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
-              <h3>Cheeseburger</h3>
+              <h3 data-i18n>Cheeseburger</h3>
               <span style="color:var(--amber);font-size:var(--step-0)">₾25</span>
             </div>
-            <p>100% beef, bun, mixed sauce, onion, lettuce, pickles and cheese.</p>
-            <span class="item__note">Also available in S / M / L — ask in store</span>
+            <p data-i18n>100% beef, bun, mixed sauce, onion, lettuce, pickles and cheese.</p>
+            <span data-i18n class="item__note">Also available in S / M / L — ask in store</span>
           </div>
         </article>
 
@@ -130,10 +142,10 @@
           </div>
           <div class="feature__body">
             <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
-              <h3>Chili Cheeseburger</h3>
+              <h3 data-i18n>Chili Cheeseburger</h3>
               <span style="color:var(--amber);font-size:var(--step-0)">₾27.50</span>
             </div>
-            <p>100% beef, bun, mango-chili sauce, onion, lettuce, jalape&ntilde;o and cheese.</p>
+            <p data-i18n>100% beef, bun, mango-chili sauce, onion, lettuce, jalape&ntilde;o and cheese.</p>
           </div>
         </article>
 
@@ -153,10 +165,10 @@
           </div>
           <div class="feature__body">
             <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
-              <h3>Truffle Burger</h3>
+              <h3 data-i18n>Truffle Burger</h3>
               <span style="color:var(--amber);font-size:var(--step-0)">₾27.50</span>
             </div>
-            <p>100% beef, bun, truffle sauce, onion and white cheese.</p>
+            <p data-i18n>100% beef, bun, truffle sauce, onion and white cheese.</p>
           </div>
         </article>
 
@@ -176,10 +188,10 @@
           </div>
           <div class="feature__body">
             <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
-              <h3>Veggie Burger</h3>
+              <h3 data-i18n>Veggie Burger</h3>
               <span style="color:var(--amber);font-size:var(--step-0)">₾20</span>
             </div>
-            <p>Falafel, bun, mixed sauce, onion, lettuce, pickles and cheese.</p>
+            <p data-i18n>Falafel, bun, mixed sauce, onion, lettuce, pickles and cheese.</p>
           </div>
         </article>
       </div>
@@ -191,8 +203,8 @@
   <section class="section course section--alt" id="sliders">
     <div class="wrap">
       <div class="course__head" data-reveal>
-        <h2>Sliders</h2>
-        <span>From &#8382;25</span>
+        <h2 data-i18n>Sliders</h2>
+        <span data-i18n>From &#8382;25</span>
       </div>
 
       <div class="grid grid--3" data-reveal data-reveal-group>
@@ -212,7 +224,7 @@
           </div>
           <div class="feature__body">
             <div class="panel__title" style="border:0;padding:0;margin-bottom:0">
-              <h3>Classic Slider</h3>
+              <h3 data-i18n>Classic Slider</h3>
               <span style="color:var(--amber);font-size:var(--step-0)">&#8382;25</span>
             </div>
           </div>
@@ -233,7 +245,7 @@
           </div>
           <div class="feature__body">
             <div class="panel__title" style="border:0;padding:0;margin-bottom:0">
-              <h3>Truffle Slider</h3>
+              <h3 data-i18n>Truffle Slider</h3>
               <span style="color:var(--amber);font-size:var(--step-0)">&#8382;27.50</span>
             </div>
           </div>
@@ -254,7 +266,7 @@
           </div>
           <div class="feature__body">
             <div class="panel__title" style="border:0;padding:0;margin-bottom:0">
-              <h3>Chili Slider</h3>
+              <h3 data-i18n>Chili Slider</h3>
               <span style="color:var(--amber);font-size:var(--step-0)">&#8382;27.50</span>
             </div>
           </div>
@@ -268,8 +280,8 @@
   <section class="section course" id="shakes">
     <div class="wrap">
       <div class="course__head" data-reveal>
-        <h2>Shakes</h2>
-        <span>All &#8382;15</span>
+        <h2 data-i18n>Shakes</h2>
+        <span data-i18n>All &#8382;15</span>
       </div>
 
       <div class="grid grid--3" data-reveal data-reveal-group>
@@ -289,7 +301,7 @@
           </div>
           <div class="feature__body">
             <div class="panel__title" style="border:0;padding:0;margin-bottom:0">
-              <h3>Vanilla Shake</h3>
+              <h3 data-i18n>Vanilla Shake</h3>
               <span style="color:var(--amber);font-size:var(--step-0)">&#8382;15</span>
             </div>
           </div>
@@ -310,7 +322,7 @@
           </div>
           <div class="feature__body">
             <div class="panel__title" style="border:0;padding:0;margin-bottom:0">
-              <h3>Chocolate Shake</h3>
+              <h3 data-i18n>Chocolate Shake</h3>
               <span style="color:var(--amber);font-size:var(--step-0)">&#8382;15</span>
             </div>
           </div>
@@ -331,7 +343,7 @@
           </div>
           <div class="feature__body">
             <div class="panel__title" style="border:0;padding:0;margin-bottom:0">
-              <h3>Strawberry Shake</h3>
+              <h3 data-i18n>Strawberry Shake</h3>
               <span style="color:var(--amber);font-size:var(--step-0)">&#8382;15</span>
             </div>
           </div>
@@ -346,9 +358,9 @@
   <section class="section" style="padding-top:0">
     <div class="wrap">
       <div class="grid grid--3" data-reveal data-reveal-group>
-        <div class="shot-tile"><div class="feature__face shot--fries"><span>Fries</span></div></div>
-        <div class="shot-tile"><div class="feature__face shot--shake"><span>Shakes</span></div></div>
-        <div class="shot-tile"><div class="feature__face shot--coffee"><span>Coffee</span></div></div>
+        <div class="shot-tile"><div class="feature__face shot--fries"><span data-i18n>Fries</span></div></div>
+        <div class="shot-tile"><div class="feature__face shot--shake"><span data-i18n>Shakes</span></div></div>
+        <div class="shot-tile"><div class="feature__face shot--coffee"><span data-i18n>Coffee</span></div></div>
       </div>
     </div>
   </section>
@@ -357,120 +369,120 @@
   <section class="section section--alt">
     <div class="wrap">
       <div class="course__head" data-reveal>
-        <h2>Alongside</h2>
-        <span>Sides, sweet &amp; drinks</span>
+        <h2 data-i18n>Alongside</h2>
+        <span data-i18n>Sides, sweet &amp; drinks</span>
       </div>
 
       <div class="panels" data-reveal data-reveal-group>
 
         <section class="panel" id="sides">
-          <div class="panel__title"><h3>Sides</h3><span>From ₾6</span></div>
+          <div class="panel__title"><h3 data-i18n>Sides</h3><span data-i18n>From ₾6</span></div>
           <div class="item">
-            <p class="item__name">Fries</p>
+            <p data-i18n class="item__name">Fries</p>
             <span class="item__price">₾6</span>
           </div>
           <div class="item">
-            <p class="item__name">Toast</p>
+            <p data-i18n class="item__name">Toast</p>
             <span class="item__price">₾10</span>
           </div>
         </section>
 
         <section class="panel" id="sauces">
-          <div class="panel__title"><h3>Sauces</h3><span>From ₾3</span></div>
+          <div class="panel__title"><h3 data-i18n>Sauces</h3><span data-i18n>From ₾3</span></div>
           <div class="item">
-            <p class="item__name">Mango Sauce</p>
+            <p data-i18n class="item__name">Mango Sauce</p>
             <span class="item__price">₾4</span>
           </div>
           <div class="item">
-            <p class="item__name">Truffle Sauce</p>
+            <p data-i18n class="item__name">Truffle Sauce</p>
             <span class="item__price">₾4</span>
           </div>
           <div class="item">
-            <p class="item__name">Ketchup</p>
+            <p data-i18n class="item__name">Ketchup</p>
             <span class="item__price">₾3</span>
           </div>
           <div class="item">
-            <p class="item__name">Mustard</p>
+            <p data-i18n class="item__name">Mustard</p>
             <span class="item__price">₾3</span>
           </div>
         </section>
 
         <section class="panel" id="desserts">
-          <div class="panel__title"><h3>Desserts</h3><span>Freshly baked</span></div>
+          <div class="panel__title"><h3 data-i18n>Desserts</h3><span data-i18n>Freshly baked</span></div>
           <div class="item">
-            <p class="item__name">Chocolate Cookie</p>
+            <p data-i18n class="item__name">Chocolate Cookie</p>
             <span class="item__price">₾11</span>
           </div>
           <div class="item">
-            <p class="item__name">Vanilla Cookie</p>
+            <p data-i18n class="item__name">Vanilla Cookie</p>
             <span class="item__price">₾10</span>
           </div>
         </section>
 
         <section class="panel" id="coffee">
-          <div class="panel__title"><h3>Coffee</h3><span>Hot &amp; iced</span></div>
+          <div class="panel__title"><h3 data-i18n>Coffee</h3><span data-i18n>Hot &amp; iced</span></div>
           <div class="item">
-            <p class="item__name">Espresso</p>
+            <p data-i18n class="item__name">Espresso</p>
             <span class="item__price">₾5</span>
           </div>
           <div class="item">
-            <p class="item__name">Double Espresso</p>
+            <p data-i18n class="item__name">Double Espresso</p>
             <span class="item__price">₾8</span>
           </div>
           <div class="item">
-            <p class="item__name">Americano</p>
+            <p data-i18n class="item__name">Americano</p>
             <span class="item__price">₾8</span>
           </div>
           <div class="item">
-            <p class="item__name">Cappuccino</p>
+            <p data-i18n class="item__name">Cappuccino</p>
             <span class="item__price">₾9</span>
           </div>
           <div class="item">
-            <p class="item__name">Latte</p>
+            <p data-i18n class="item__name">Latte</p>
             <span class="item__price">₾12</span>
           </div>
           <div class="item">
-            <p class="item__name">Iced Coffee</p>
+            <p data-i18n class="item__name">Iced Coffee</p>
             <span class="item__price">₾9</span>
           </div>
           <div class="item">
-            <p class="item__name">Iced Latte</p>
+            <p data-i18n class="item__name">Iced Latte</p>
             <span class="item__price">₾12</span>
           </div>
           <div class="item">
-            <p class="item__name">Iced Coffee with Ice Cream</p>
+            <p data-i18n class="item__name">Iced Coffee with Ice Cream</p>
             <span class="item__price">₾17</span>
           </div>
         </section>
 
         <section class="panel" id="drinks">
-          <div class="panel__title"><h3>Soft Drinks</h3><span>From ₾3</span></div>
+          <div class="panel__title"><h3 data-i18n>Soft Drinks</h3><span data-i18n>From ₾3</span></div>
           <div class="item">
-            <p class="item__name">Water</p>
+            <p data-i18n class="item__name">Water</p>
             <span class="item__price">₾3</span>
           </div>
           <div class="item">
-            <p class="item__name">Coca-Cola</p>
+            <p data-i18n class="item__name">Coca-Cola</p>
             <span class="item__price">₾4</span>
           </div>
           <div class="item">
-            <p class="item__name">Coca-Cola Zero</p>
+            <p data-i18n class="item__name">Coca-Cola Zero</p>
             <span class="item__price">₾4</span>
           </div>
           <div class="item">
-            <p class="item__name">Fanta</p>
+            <p data-i18n class="item__name">Fanta</p>
             <span class="item__price">₾4</span>
           </div>
           <div class="item">
-            <p class="item__name">Sprite</p>
+            <p data-i18n class="item__name">Sprite</p>
             <span class="item__price">₾4</span>
           </div>
         </section>
 
         <section class="panel" id="beer">
-          <div class="panel__title"><h3>Beer</h3><span>Local</span></div>
+          <div class="panel__title"><h3 data-i18n>Beer</h3><span data-i18n>Local</span></div>
           <div class="item">
-            <p class="item__name">Alkhanidze Beer</p>
+            <p data-i18n class="item__name">Alkhanidze Beer</p>
             <span class="item__price">₾11</span>
           </div>
         </section>
@@ -483,12 +495,12 @@
   <section class="section">
     <div class="wrap">
       <div class="cta-band" data-reveal>
-        <p class="eyebrow" style="justify-content:center">Ready when you are</p>
-        <h2>Order Your Smash</h2>
-        <p class="lead">Call the kitchen directly, or order for delivery through Wolt or Glovo.</p>
+        <p data-i18n class="eyebrow" style="justify-content:center">Ready when you are</p>
+        <h2 data-i18n>Order Your Smash</h2>
+        <p data-i18n class="lead">Call the kitchen directly, or order for delivery through Wolt or Glovo.</p>
         <div class="btn-row btn-row--center">
-          <a class="btn btn--primary" href="tel:+995511100835">Call to Order</a>
-          <a class="btn btn--ghost" href="contact.html#order">Delivery Options</a>
+          <a data-i18n class="btn btn--primary" href="tel:+995511100835">Call to Order</a>
+          <a data-i18n class="btn btn--ghost" href="contact.html#order">Delivery Options</a>
         </div>
       </div>
     </div>
@@ -501,42 +513,44 @@
     <div class="footer__grid">
       <div>
         <a class="brand" href="index.html">SAMEO SMASH<em lang="ka">სამეო სმეშ</em></a>
-        <p style="margin-top:var(--sp-3)">
+        <p data-i18n style="margin-top:var(--sp-3)">
           Smash burgers, sliders and shakes on Vashlovani Street in Tbilisi.
           Open every day, 12:00–02:00.
         </p>
       </div>
       <div>
-        <h3>Explore</h3>
+        <h3 data-i18n>Explore</h3>
         <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="menu.html">Menu</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="contact.html">Location &amp; Contact</a></li>
+          <li><a data-i18n href="index.html">Home</a></li>
+          <li><a data-i18n href="menu.html">Menu</a></li>
+          <li><a data-i18n href="about.html">About</a></li>
+          <li><a data-i18n href="contact.html">Location &amp; Contact</a></li>
         </ul>
       </div>
       <div>
-        <h3>Visit &amp; Order</h3>
+        <h3 data-i18n>Visit &amp; Order</h3>
         <ul>
           <li><a href="tel:+995511100835">+995 511 10 08 35</a></li>
-          <li>1 Vashlovani St<br>Tbilisi 0108, Georgia</li>
-          <li>Open daily 12:00–02:00</li>
-          <li><a href="https://www.google.com/maps/search/?api=1&query=41.7060776,44.7885149" target="_blank" rel="noopener">Get directions</a></li>
+          <li data-i18n>1 Vashlovani St<br>Tbilisi 0108, Georgia</li>
+          <li data-i18n>Open daily 12:00–02:00</li>
+          <li><a data-i18n href="https://www.google.com/maps/search/?api=1&query=41.7060776,44.7885149" target="_blank" rel="noopener">Get directions</a></li>
         </ul>
       </div>
     </div>
     <div class="footer__bottom">
-      <p>&copy; 2026 Sameo Smash</p>
-      <p>1 Vashlovani St, Tbilisi 0108, Georgia</p>
+      <p data-i18n>&copy; 2026 Sameo Smash</p>
+      <p data-i18n>1 Vashlovani St, Tbilisi 0108, Georgia</p>
     </div>
   </div>
 </footer>
 
 <div class="actionbar">
-  <a class="btn btn--primary" href="tel:+995511100835">Call</a>
-  <a class="btn btn--ghost" href="https://www.google.com/maps/search/?api=1&query=41.7060776,44.7885149" target="_blank" rel="noopener">Directions</a>
+  <a data-i18n class="btn btn--primary" href="tel:+995511100835">Call</a>
+  <a data-i18n class="btn btn--ghost" href="https://www.google.com/maps/search/?api=1&query=41.7060776,44.7885149" target="_blank" rel="noopener">Directions</a>
 </div>
 
+<script src="js/i18n-data.js"></script>
+<script src="js/i18n.js"></script>
 <script src="js/script.js"></script>
 </body>
 </html>
