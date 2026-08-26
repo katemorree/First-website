@@ -35,8 +35,12 @@
   --amber:          #ffc24a;
 
   /* Type */
-  --font-display: "Archivo Black", "Poppins", system-ui, sans-serif;
-  --font-body:    "Poppins", system-ui, -apple-system, sans-serif;
+  /* "Noto Sans Georgian" sits in every stack as a per-glyph fallback: it is
+     already loaded for the Georgian name, and it carries the Lari sign ₾
+     (U+20BE), which Archivo Black and Poppins may not. Without it, every
+     price on the menu risks rendering as a tofu box. */
+  --font-display: "Archivo Black", "Noto Sans Georgian", "Poppins", system-ui, sans-serif;
+  --font-body:    "Poppins", "Noto Sans Georgian", system-ui, -apple-system, sans-serif;
   --font-ka:      "Noto Sans Georgian", "Poppins", sans-serif;
 
   --step--1: clamp(0.82rem, 0.79rem + 0.13vw, 0.89rem);
@@ -690,6 +694,96 @@ textarea:focus-visible {
   margin-bottom: var(--sp-4);
 }
 
+/* --- Priced menu panels ---
+   Laid out as CSS columns rather than a grid: panels vary a lot in length
+   (Coffee has 8 items, Beer has 1), and a grid would align rows and leave
+   dead space under the short ones. Columns let each panel flow directly
+   after the last, like a printed menu. */
+.panels {
+  column-count: 2;
+  column-gap: var(--sp-3);
+}
+
+.panel {
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  width: 100%;
+  margin-bottom: var(--sp-3);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: var(--sp-4);
+  scroll-margin-top: 6.5rem;
+  transition: border-color var(--t-med);
+}
+.panel:target { border-color: var(--flame); }
+
+.panel__title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding-bottom: var(--sp-2);
+  margin-bottom: var(--sp-1);
+  border-bottom: 1px solid var(--line);
+}
+.panel__title h3 { margin: 0; font-size: var(--step-1); }
+.panel__title span {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--flame);
+  white-space: nowrap;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.35rem var(--sp-3);
+  padding-block: var(--sp-2);
+  border-bottom: 1px solid var(--line);
+}
+.item:last-child { border-bottom: 0; padding-bottom: 0; }
+
+.item__name {
+  margin: 0;
+  color: var(--cream);
+  font-weight: 600;
+  line-height: 1.35;
+}
+.item__price {
+  grid-column: 2;
+  grid-row: 1;
+  font-family: var(--font-display);
+  font-size: var(--step-0);
+  color: var(--amber);
+  white-space: nowrap;
+}
+.item__desc {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: var(--step--1);
+  line-height: 1.5;
+}
+.item__note {
+  display: inline-block;
+  margin-top: 0.35rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+}
+
+/* Delivery partner buttons */
+.btn--wolt  { --btn-bg: #00c2e8; --btn-fg: #05323a; --btn-bd: #00c2e8; }
+.btn--wolt:hover  { --btn-bg: #29d3f4; --btn-bd: #29d3f4; }
+.btn--glovo { --btn-bg: #ffc244; --btn-fg: #3a2a00; --btn-bd: #ffc244; }
+.btn--glovo:hover { --btn-bg: #ffd36f; --btn-bd: #ffd36f; }
+
 /* ---------- 10. LOCATION & INFO ---------- */
 .info { border-top: 1px solid var(--line); }
 .info li {
@@ -971,6 +1065,7 @@ textarea:focus-visible {
   .grid--2,
   .grid--3,
   .grid--4 { grid-template-columns: minmax(0, 1fr); }
+  .panels { column-count: 1; }
   .form__grid { grid-template-columns: minmax(0, 1fr); }
   .footer__grid { grid-template-columns: minmax(0, 1fr); gap: var(--sp-4); }
   .hero__facts { gap: var(--sp-3) var(--sp-4); }

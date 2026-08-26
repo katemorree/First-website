@@ -1,6 +1,6 @@
 # Sameo Smash — Website
 
-Website for **Sameo Smash / სეიმო სმეშ**, a smash burger restaurant at
+Website for **Sameo Smash / სამეო სმეშ**, a smash burger restaurant at
 1 Vashlovani St, Tbilisi 0108, Georgia.
 
 Built as plain HTML, CSS and JavaScript — no frameworks, no build step, no
@@ -14,7 +14,7 @@ Built as plain HTML, CSS and JavaScript — no frameworks, no build step, no
 | File | Purpose |
 |---|---|
 | `index.html` | Home — hero, category line-up, brand intro, location, order CTA |
-| `menu.html` | Menu — Burgers, plus Sliders, Sides, Sauces, Desserts, Coffee, Shakes, Drinks |
+| `menu.html` | Full menu with prices — burgers, sliders, sides, sauces, desserts, shakes, coffee, drinks, beer |
 | `about.html` | About — brand story and how the kitchen works |
 | `contact.html` | Location, directions, ordering, and the contact form |
 | `404.html` | Shown automatically if someone hits a wrong address |
@@ -111,22 +111,44 @@ address in:
 
 ## 6. What is verified vs. still needed
 
-Everything published on the site uses confirmed information only: the name,
-address, phone number, product categories, and that delivery and takeaway are
-offered. No opening hours, prices, ingredients, reviews, or social accounts
-have been invented.
+Everything published uses confirmed information only: name (English and
+Georgian), address, phone, opening hours (daily 12:00–02:00), the full menu
+with prices, and that delivery runs through Wolt and Glovo. Nothing has been
+invented.
 
-Still to be supplied by the business:
+**Deliberately not stated**, because it is unverified:
 
-- **Opening hours** — currently not stated anywhere on the site
-- **Prices and full item names** — the menu presents categories and points
-  customers to the phone
+- Per-size pricing for the cheeseburger. The S/M/L options are shown as a
+  note only — no size prices are listed.
+- Any Glovo or Wolt promotional pricing. The site lists standard menu
+  prices, which do not change with temporary platform discounts.
+
+**Needs checking before showing this to the business:**
+
+- ⚠️ **The two delivery links.** The Wolt and Glovo store URLs were found by
+  search and could not be opened to confirm, because both domains are
+  blocked from the build environment. Both listings are named "Sameo" rather
+  than "Sameo Smash". Open each link and confirm it is the right restaurant:
+  - `https://wolt.com/en/geo/tbilisi/restaurant/sameo`
+  - `https://glovoapp.com/en/ge/tbilisi/stores/sameo-tbi`
+
+  They appear four times in two files — `index.html` (the order band) and
+  `contact.html` (the order cards). Search for `wolt.com` and `glovoapp.com`
+  to find them all.
+
+**Still to be supplied:**
+
 - **Photography** — food, interior, and team
-- **Instagram / Facebook accounts** — no social links are shown
-- **Delivery platform links** (Wolt, Glovo, Bolt Food) if any are used
+- **Instagram / Facebook accounts** — no social links are shown anywhere,
+  by request, until the official handles are confirmed
 - **A contact email address**
 - **Real customer reviews**, ideally pulled from Google
 - **The founding story** — dates, people, and history
+
+### Updating a price
+
+Prices live in `menu.html` (all of them) and `index.html` (the four burgers
+on the home page). If a burger price changes, update **both** files.
 
 ---
 

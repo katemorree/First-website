@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sameo Smash — Smash Burgers in Tbilisi | სეიმო სმეშ</title>
-<meta name="description" content="Sameo Smash is a smash burger restaurant on Vashlovani Street in Tbilisi. Smash burgers, cheeseburgers, truffle burgers, sliders, fries, shakes and coffee — for takeaway and delivery.">
+<title>Sameo Smash — Smash Burgers in Tbilisi | სამეო სმეშ</title>
+<meta name="description" content="Sameo Smash is a smash burger restaurant at 1 Vashlovani St, Tbilisi. Burgers from ₾20, sliders, fries, shakes and coffee. Open every day 12:00–02:00. Delivery via Wolt and Glovo.">
 <meta name="theme-color" content="#0d0c0b">
 <link rel="canonical" href="https://katemorree.github.io/First-website/">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Sameo Smash">
 <meta property="og:title" content="Sameo Smash — Smash Burgers in Tbilisi">
-<meta property="og:description" content="Smash burgers, sliders, fries and shakes on Vashlovani Street, Tbilisi. Takeaway and delivery.">
+<meta property="og:description" content="Burgers from ₾20, sliders, fries and shakes on Vashlovani Street, Tbilisi. Open daily 12:00–02:00. Delivery via Wolt and Glovo.">
 <meta property="og:url" content="https://katemorree.github.io/First-website/">
 <meta property="og:locale" content="en_GE">
 <meta name="twitter:card" content="summary_large_image">
@@ -29,11 +29,19 @@
   "@type": "Restaurant",
   "@id": "https://katemorree.github.io/First-website/#restaurant",
   "name": "Sameo Smash",
-  "alternateName": "სეიმო სმეშ",
+  "alternateName": "სამეო სმეშ",
   "url": "https://katemorree.github.io/First-website/",
   "telephone": "+995511100835",
   "servesCuisine": ["Burgers", "American", "Fast Casual"],
   "hasMenu": "https://katemorree.github.io/First-website/menu.html",
+  "priceRange": "₾20–₾30",
+  "currenciesAccepted": "GEL",
+  "openingHoursSpecification": [{
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+    "opens": "12:00",
+    "closes": "02:00"
+  }],
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "1 Vashlovani St",
@@ -55,7 +63,7 @@
 
 <header class="header">
   <div class="wrap nav">
-    <a class="brand" href="index.html">SAMEO SMASH<em lang="ka">სეიმო სმეშ</em></a>
+    <a class="brand" href="index.html">SAMEO SMASH<em lang="ka">სამეო სმეშ</em></a>
     <nav class="nav__links" aria-label="Primary">
       <a href="index.html" aria-current="page">Home</a>
       <a href="menu.html">Menu</a>
@@ -92,12 +100,12 @@
 
         <div class="hero__facts">
           <div class="hero__fact">
-            <b>Smash Burgers</b>
-            <span>The specialty</span>
+            <b>Burgers from ₾20</b>
+            <span>Smashed to order</span>
           </div>
           <div class="hero__fact">
-            <b>Delivery &amp; Takeaway</b>
-            <span>Order by phone</span>
+            <b>12:00 – 02:00</b>
+            <span>Open every day</span>
           </div>
           <div class="hero__fact">
             <b>Vashlovani St</b>
@@ -110,7 +118,7 @@
         <div class="disc">
           <p class="disc__label">
             Sameo<br>Smash
-            <small lang="ka">სეიმო სმეშ</small>
+            <small lang="ka">სამეო სმეშ</small>
           </p>
         </div>
       </div>
@@ -135,31 +143,51 @@
       <div class="head head--center" data-reveal>
         <p class="eyebrow">The line-up</p>
         <h2>What We Smash</h2>
-        <p class="lead">Three ways into the menu. Everything is made to order.</p>
+        <p class="lead">Four burgers, all pressed to order on the flat-top.</p>
       </div>
 
-      <div class="grid grid--3" data-reveal data-reveal-group>
+      <div class="grid grid--2" data-reveal data-reveal-group>
         <article class="card feature">
-          <div class="feature__face"><span>Smash</span></div>
+          <div class="feature__face"><span>Cheese</span></div>
           <div class="feature__body">
-            <h3>Smash Burgers</h3>
-            <p>The house specialty — pressed thin and hard on the flat-top for crisp, caramelised edges.</p>
+            <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
+              <h3>Cheeseburger</h3>
+              <span style="color:var(--amber);font-size:var(--step-0)">₾25</span>
+            </div>
+            <p>100% beef, bun, mixed sauce, onion, lettuce, pickles and cheese.</p>
           </div>
         </article>
 
         <article class="card feature">
-          <div class="feature__face"><span>Cheese</span></div>
+          <div class="feature__face"><span>Chili</span></div>
           <div class="feature__body">
-            <h3>Cheeseburgers</h3>
-            <p>The classic build, done properly. Simple, stacked and melted through.</p>
+            <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
+              <h3>Chili Cheeseburger</h3>
+              <span style="color:var(--amber);font-size:var(--step-0)">₾27.50</span>
+            </div>
+            <p>100% beef, bun, mango-chili sauce, onion, lettuce, jalape&ntilde;o and cheese.</p>
           </div>
         </article>
 
         <article class="card feature">
           <div class="feature__face"><span>Truffle</span></div>
           <div class="feature__body">
-            <h3>Truffle Burgers</h3>
-            <p>The richer end of the menu, for when you want something deeper and more indulgent.</p>
+            <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
+              <h3>Truffle Burger</h3>
+              <span style="color:var(--amber);font-size:var(--step-0)">₾27.50</span>
+            </div>
+            <p>100% beef, bun, truffle sauce, onion and white cheese.</p>
+          </div>
+        </article>
+
+        <article class="card feature">
+          <div class="feature__face"><span>Veggie</span></div>
+          <div class="feature__body">
+            <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
+              <h3>Veggie Burger</h3>
+              <span style="color:var(--amber);font-size:var(--step-0)">₾20</span>
+            </div>
+            <p>Falafel, bun, mixed sauce, onion, lettuce, pickles and cheese.</p>
           </div>
         </article>
       </div>
@@ -248,8 +276,17 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 17V6a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h1"/><path d="M14 9h4l3 3v5a1 1 0 0 1-1 1h-1"/><circle cx="6.5" cy="18" r="2"/><circle cx="17.5" cy="18" r="2"/></svg>
             </span>
             <div>
-              <h3>Delivery &amp; Takeaway</h3>
-              <p>Call to place an order for collection or delivery.</p>
+              <h3>Opening Hours</h3>
+              <p>Every day, 12:00 – 02:00</p>
+            </div>
+          </li>
+          <li>
+            <span class="info__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 17V6a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h1"/><path d="M14 9h4l3 3v5a1 1 0 0 1-1 1h-1"/><circle cx="6.5" cy="18" r="2"/><circle cx="17.5" cy="18" r="2"/></svg>
+            </span>
+            <div>
+              <h3>Delivery</h3>
+              <p>Available through Wolt and Glovo, or call for takeaway.</p>
             </div>
           </li>
         </ul>
@@ -276,10 +313,11 @@
       <div class="cta-band" data-reveal>
         <p class="eyebrow" style="justify-content:center">Hungry?</p>
         <h2>Order Your Smash</h2>
-        <p class="lead">Call the kitchen directly for takeaway and delivery, or drop us a message.</p>
+        <p class="lead">Call the kitchen for takeaway, or get it delivered through Wolt or Glovo.</p>
         <div class="btn-row btn-row--center">
           <a class="btn btn--primary" href="tel:+995511100835">+995 511 10 08 35</a>
-          <a class="btn btn--ghost" href="contact.html#message">Send a Message</a>
+          <a class="btn btn--wolt" href="https://wolt.com/en/geo/tbilisi/restaurant/sameo" target="_blank" rel="noopener">Order on Wolt</a>
+          <a class="btn btn--glovo" href="https://glovoapp.com/en/ge/tbilisi/stores/sameo-tbi" target="_blank" rel="noopener">Order on Glovo</a>
         </div>
       </div>
     </div>
@@ -291,10 +329,10 @@
   <div class="wrap">
     <div class="footer__grid">
       <div>
-        <a class="brand" href="index.html">SAMEO SMASH<em lang="ka">სეიმო სმეშ</em></a>
+        <a class="brand" href="index.html">SAMEO SMASH<em lang="ka">სამეო სმეშ</em></a>
         <p style="margin-top:var(--sp-3)">
           Smash burgers, sliders and shakes on Vashlovani Street in Tbilisi.
-          Made to order for dine-in, takeaway and delivery.
+          Open every day, 12:00–02:00.
         </p>
       </div>
       <div>
@@ -311,6 +349,7 @@
         <ul>
           <li><a href="tel:+995511100835">+995 511 10 08 35</a></li>
           <li>1 Vashlovani St<br>Tbilisi 0108, Georgia</li>
+          <li>Open daily 12:00–02:00</li>
           <li><a href="https://www.google.com/maps/search/?api=1&query=41.7060776,44.7885149" target="_blank" rel="noopener">Get directions</a></li>
         </ul>
       </div>
