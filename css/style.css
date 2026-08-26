@@ -1,982 +1,2336 @@
 /* =========================================================
-   SAMEO SMASH — Main Stylesheet
-   How this file is organized (look for these section titles):
-   1. Variables (colors, fonts, spacing) — edit these to re-theme the whole site
-   2. Reset & base
-   3. Layout helpers
-   4. Buttons
-   5. Header / Navigation
-   6. Hero
-   7. Sections (about, featured, menu, location, reviews, instagram)
-   8. Cards
-   9. Forms
-   10. Footer
-   11. Animations
-   12. Responsive breakpoints
+   SAMEO SMASH — Stylesheet
+   -----------------------------------------------------
+   1.  Design tokens (colours, type, spacing)
+   2.  Base & resets
+   3.  Utilities
+   4.  Buttons
+   5.  Header / navigation
+   6.  Hero
+   7.  Marquee
+   8.  Cards & editorial grids
+   9.  Menu
+   10. Location & info
+   11. Forms
+   12. Footer
+   13. Mobile action bar
+   14. Motion
+   15. Responsive
+   16. Language (EN / RU / KA)
    ========================================================= */
 
-/* ---------- 1. VARIABLES ---------- */
+/* ---------- 1. DESIGN TOKENS ---------- */
 :root {
-  --color-bg: #121110;
-  --color-bg-alt: #1a1816;
-  --color-surface: #211f1d;
-  --color-text: #f5f1ea;
-  --color-text-muted: #b8b0a4;
-  --color-primary: #ff5a1f;      /* smash orange */
-  --color-primary-dark: #e0470f;
-  --color-accent: #ffc94a;       /* mustard yellow */
-  --color-line: rgba(245, 241, 234, 0.1);
+  /* Brand */
+  --ink:            #0d0c0b;
+  --ink-2:          #141210;
+  --surface:        #1b1815;
+  --surface-2:      #221e1a;
+  --line:           rgba(247, 243, 236, 0.10);
+  --line-strong:    rgba(247, 243, 236, 0.18);
 
-  --font-display: "Archivo Black", "Poppins", "Helvetica Neue", Arial, sans-serif;
-  --font-body: "Poppins", "Helvetica Neue", Arial, sans-serif;
-  --font-georgian: "Noto Sans Georgian", "Poppins", sans-serif;
+  --cream:          #f7f3ec;
+  --muted:          #a89f92;
+  --flame:          #ff5a1f;
+  --flame-dark:     #db4310;
+  --amber:          #ffc24a;
 
-  --container-width: 1200px;
-  --radius-md: 14px;
-  --radius-lg: 26px;
-  --space-1: 0.5rem;
-  --space-2: 1rem;
-  --space-3: 1.5rem;
-  --space-4: 2.5rem;
-  --space-5: 4rem;
-  --space-6: 6rem;
+  /* Type */
+  /* "Noto Sans Georgian" sits in every stack as a per-glyph fallback: it is
+     already loaded for the Georgian name, and it carries the Lari sign ₾
+     (U+20BE), which Archivo Black and Poppins may not. Without it, every
+     price on the menu risks rendering as a tofu box. */
+  --font-display: "Archivo Black", "Noto Sans Georgian", "Poppins", system-ui, sans-serif;
+  --font-body:    "Poppins", "Noto Sans Georgian", system-ui, -apple-system, sans-serif;
+  --font-ka:      "Noto Sans Georgian", "Poppins", sans-serif;
 
-  --shadow-soft: 0 20px 45px rgba(0, 0, 0, 0.35);
-  --transition-fast: 180ms ease;
-  --transition-med: 350ms cubic-bezier(0.22, 1, 0.36, 1);
+  --step--1: clamp(0.82rem, 0.79rem + 0.13vw, 0.89rem);
+  --step-0:  clamp(1rem, 0.96rem + 0.18vw, 1.09rem);
+  --step-1:  clamp(1.2rem, 1.12rem + 0.4vw, 1.45rem);
+  --step-2:  clamp(1.5rem, 1.34rem + 0.8vw, 2.05rem);
+  --step-3:  clamp(1.95rem, 1.65rem + 1.5vw, 3rem);
+  --step-4:  clamp(2.5rem, 1.9rem + 3vw, 4.6rem);
+  --step-5:  clamp(3rem, 2rem + 5vw, 6.5rem);
+
+  /* Space */
+  --sp-1: 0.5rem;
+  --sp-2: 1rem;
+  --sp-3: 1.5rem;
+  --sp-4: 2.25rem;
+  --sp-5: 3.5rem;
+  --sp-6: clamp(4rem, 3rem + 5vw, 7.5rem);
+
+  --wrap: 1180px;
+  --r-sm: 10px;
+  --r-md: 18px;
+  --r-lg: 30px;
+
+  --shadow: 0 24px 60px -18px rgba(0, 0, 0, 0.65);
+  --t-fast: 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  --t-med:  420ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* ---------- 2. RESET & BASE ---------- */
-* ,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+/* ---------- 2. BASE ---------- */
+*, *::before, *::after { box-sizing: border-box; }
 
 html {
   scroll-behavior: smooth;
+  /* Offset for the sticky header when jumping to an anchor */
+  scroll-padding-top: 5.5rem;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
-  background: var(--color-bg);
-  color: var(--color-text);
+  background: var(--ink);
+  color: var(--cream);
   font-family: var(--font-body);
-  font-size: 1rem;
-  line-height: 1.65;
+  font-size: var(--step-0);
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
-img {
-  max-width: 100%;
-  display: block;
+/* Subtle film grain — adds warmth so flat colour never looks cheap */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+ul { margin: 0; padding: 0; list-style: none; }
+button { font: inherit; }
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  line-height: 1.05;
-  margin: 0 0 var(--space-2);
-  letter-spacing: -0.01em;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
   text-transform: uppercase;
+  margin: 0 0 var(--sp-2);
+  text-wrap: balance;
 }
+
+h1 { font-size: var(--step-4); }
+h2 { font-size: var(--step-3); }
+h3 { font-size: var(--step-1); }
 
 p {
-  margin: 0 0 var(--space-2);
-  color: var(--color-text-muted);
+  margin: 0 0 var(--sp-2);
+  color: var(--muted);
+  text-wrap: pretty;
 }
 
-ul {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
+/* Georgian words dropped inside an English or Russian page (the brand name,
+   for instance) need the Georgian face. When the WHOLE page is Georgian,
+   the stacks above already handle it, and this rule would otherwise match
+   every element on the page and flatten the display font. */
+:root:not([lang="ka"]) :lang(ka) { font-family: var(--font-ka); }
 
-button {
-  font-family: inherit;
-}
-
-/* Respect users who prefer less motion */
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* Accessible focus outline */
+/* Focus visibility for keyboard users */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 3px solid var(--amber);
   outline-offset: 3px;
+  border-radius: 4px;
 }
 
-/* Skip link for keyboard/screen reader users */
 .skip-link {
   position: absolute;
-  left: -999px;
-  top: auto;
-  background: var(--color-accent);
-  color: #121110;
-  padding: 12px 20px;
-  z-index: 1000;
+  left: -9999px;
+  background: var(--amber);
+  color: var(--ink);
+  padding: 0.9rem 1.4rem;
   font-weight: 700;
-  border-radius: 0 0 8px 0;
+  z-index: 10000;
 }
-.skip-link:focus {
-  left: 0;
-  top: 0;
-}
+.skip-link:focus { left: 0; top: 0; }
 
-/* ---------- 3. LAYOUT HELPERS ---------- */
-.container {
+/* ---------- 3. UTILITIES ---------- */
+.wrap {
   width: 100%;
-  max-width: var(--container-width);
+  max-width: var(--wrap);
   margin-inline: auto;
-  padding-inline: var(--space-3);
+  padding-inline: clamp(1.15rem, 4vw, 2rem);
 }
 
-.section {
-  padding-block: var(--space-6);
-}
-
-.section-alt {
-  background: var(--color-bg-alt);
-}
-
-.section-head {
-  max-width: 640px;
-  margin-bottom: var(--space-4);
-}
-
-.section-head.center {
-  margin-inline: auto;
-  text-align: center;
-}
-
-.eyebrow {
-  display: inline-block;
-  color: var(--color-primary);
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  margin-bottom: var(--space-1);
-}
-
-.text-lead {
-  font-size: 1.15rem;
-}
-
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-}
-
-/* ---------- 4. BUTTONS ---------- */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.95rem 1.9rem;
-  border-radius: 999px;
-  font-family: var(--font-display);
-  font-size: 0.9rem;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
-  white-space: nowrap;
-}
-
-.btn:hover {
-  transform: translateY(-3px);
-}
-
-.btn:active {
-  transform: translateY(0);
-}
-
-.btn-primary {
-  background: var(--color-primary);
-  color: #fff;
-  box-shadow: 0 10px 30px rgba(255, 90, 31, 0.35);
-}
-
-.btn-primary:hover {
-  background: var(--color-primary-dark);
-  box-shadow: 0 14px 34px rgba(255, 90, 31, 0.45);
-}
-
-.btn-secondary {
-  background: transparent;
-  color: var(--color-text);
-  border-color: var(--color-line);
-}
-
-.btn-secondary:hover {
-  border-color: var(--color-text);
-  background: rgba(245, 241, 234, 0.06);
-}
-
-.btn-accent {
-  background: var(--color-accent);
-  color: #1a1206;
-}
-
-.btn-accent:hover {
-  background: #ffd873;
-}
-
-.btn-block {
-  width: 100%;
-}
-
-.btn-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-/* ---------- 5. HEADER / NAVIGATION ---------- */
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 500;
-  background: rgba(18, 17, 16, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--color-line);
-}
-
-.nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-block: var(--space-2);
-}
-
-.brand {
-  display: flex;
-  flex-direction: column;
-  line-height: 1;
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  letter-spacing: 0.01em;
-}
-
-.brand span.brand-ka {
-  font-family: var(--font-georgian);
-  font-size: 0.7rem;
-  color: var(--color-text-muted);
-  text-transform: none;
-  letter-spacing: 0;
-  margin-top: 2px;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-}
-
-.nav-links a {
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding-block: 0.4rem;
+.section { padding-block: var(--sp-6); }
+.section--tight { padding-block: var(--sp-5); }
+/* The alternating band is only a few percent lighter than the page, but at
+   full width that still reads as a hard rule where it starts and stops.
+   A short gradient at each edge lets one section become the next instead. */
+.section--alt {
   position: relative;
+  background: var(--ink-2);
 }
-
-.nav-links a::after {
+.section--alt::before,
+.section--alt::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -2px;
-  height: 2px;
-  background: var(--color-primary);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--transition-fast);
+  height: clamp(2rem, 6vh, 4.5rem);
+  pointer-events: none;
+}
+/* The two gradients are positioned, so without this they would paint over
+   the top and bottom of the section's own content. */
+.section--alt > * { position: relative; z-index: 1; }
+.section--alt::before {
+  top: 0;
+  background: linear-gradient(var(--ink), transparent);
+}
+.section--alt::after {
+  bottom: 0;
+  background: linear-gradient(transparent, var(--ink));
 }
 
-.nav-links a:hover::after,
-.nav-links a[aria-current="page"]::after {
-  transform: scaleX(1);
-}
+.head { max-width: 62ch; margin-bottom: var(--sp-5); }
+.head--center { margin-inline: auto; text-align: center; }
 
-.nav-links a[aria-current="page"] {
-  color: var(--color-primary);
-}
-
-.nav-cta {
+.eyebrow {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 0.6rem;
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--flame);
+  margin-bottom: var(--sp-2);
+}
+.eyebrow::before {
+  content: "";
+  width: 28px;
+  height: 2px;
+  background: var(--flame);
+  flex: none;
+}
+.head--center .eyebrow { justify-content: center; }
+
+.lead { font-size: var(--step-1); color: var(--muted); line-height: 1.5; }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 
-.nav-toggle {
-  display: none;
-  flex-direction: column;
+/* ---------- 4. BUTTONS ---------- */
+.btn {
+  --btn-bg: transparent;
+  --btn-fg: var(--cream);
+  --btn-bd: var(--line-strong);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  gap: 5px;
-  width: 42px;
-  height: 42px;
-  border: 1px solid var(--color-line);
-  border-radius: 10px;
+  gap: 0.55rem;
+  padding: 1rem 1.9rem;
+  min-height: 52px;
+  border: 2px solid var(--btn-bd);
+  border-radius: 999px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform var(--t-fast), box-shadow var(--t-fast),
+              background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+}
+
+.btn:hover { transform: translateY(-3px); }
+.btn:active { transform: translateY(-1px); }
+
+.btn--primary {
+  --btn-bg: var(--flame);
+  --btn-fg: #fff;
+  --btn-bd: var(--flame);
+  box-shadow: 0 12px 30px -8px rgba(255, 90, 31, 0.55);
+}
+.btn--primary:hover {
+  --btn-bg: var(--flame-dark);
+  --btn-bd: var(--flame-dark);
+  box-shadow: 0 18px 40px -10px rgba(255, 90, 31, 0.7);
+}
+
+.btn--ghost:hover {
+  --btn-bd: var(--cream);
+  background: rgba(247, 243, 236, 0.07);
+}
+
+.btn--amber {
+  --btn-bg: var(--amber);
+  --btn-fg: #241703;
+  --btn-bd: var(--amber);
+}
+.btn--amber:hover { --btn-bg: #ffd275; --btn-bd: #ffd275; }
+
+.btn--block { width: 100%; }
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+.btn-row--center { justify-content: center; }
+
+/* ---------- 5. HEADER / NAV ---------- */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  background: rgba(13, 12, 11, 0.72);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid transparent;
+  transition: background var(--t-fast), border-color var(--t-fast);
+}
+.header.is-stuck {
+  background: rgba(13, 12, 11, 0.94);
+  border-bottom-color: var(--line);
+}
+
+.nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding-block: 0.9rem;
+}
+
+.brand {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1;
+  font-family: var(--font-display);
+  font-size: 1.22rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.brand em {
+  font-family: var(--font-ka);
+  font-style: normal;
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--muted);
+  text-transform: none;
+  margin-top: 3px;
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.2rem, 3vw, 2.4rem);
+}
+
+.nav__links a {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding-block: 0.45rem;
+  color: var(--cream);
+  transition: color var(--t-fast);
+}
+.nav__links a::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 2px;
+  background: var(--flame);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--t-fast);
+}
+.nav__links a:hover::after,
+.nav__links a[aria-current="page"]::after { transform: scaleX(1); }
+.nav__links a[aria-current="page"] { color: var(--flame); }
+
+/* Order CTA that appears only inside the open mobile menu */
+.nav__links-cta { display: none; }
+
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.nav__cta {
+  padding: 0.7rem 1.4rem;
+  min-height: 44px;
+  font-size: 0.78rem;
+}
+
+.nav__toggle {
+  display: none;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
   background: transparent;
   cursor: pointer;
+  padding: 0;
 }
-
-.nav-toggle span {
+.nav__toggle span {
   display: block;
   width: 20px;
   height: 2px;
-  background: var(--color-text);
-  margin-inline: auto;
-  transition: transform var(--transition-fast), opacity var(--transition-fast);
+  margin: 4px auto;
+  background: var(--cream);
+  transition: transform var(--t-fast), opacity var(--t-fast);
 }
-
-.nav-toggle[aria-expanded="true"] span:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
-}
-.nav-toggle[aria-expanded="true"] span:nth-child(2) {
-  opacity: 0;
-}
-.nav-toggle[aria-expanded="true"] span:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
-}
+.nav__toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.nav__toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav__toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
 /* ---------- 6. HERO ---------- */
 .hero {
   position: relative;
-  padding-block: var(--space-6) var(--space-5);
+  padding-block: clamp(3.5rem, 3rem + 6vw, 7rem) var(--sp-6);
   overflow: hidden;
+  isolation: isolate;
 }
 
-.hero::before {
-  content: "";
+.hero__glow {
   position: absolute;
-  inset: -20% -10% auto -10%;
-  height: 700px;
-  background: radial-gradient(circle at 30% 20%, rgba(255, 90, 31, 0.35), transparent 60%),
-              radial-gradient(circle at 80% 10%, rgba(255, 201, 74, 0.18), transparent 55%);
-  filter: blur(10px);
+  z-index: -1;
+  inset: -30% -20% auto -20%;
+  height: 820px;
+  background:
+    radial-gradient(46% 46% at 22% 24%, rgba(255, 90, 31, 0.42), transparent 68%),
+    radial-gradient(42% 42% at 78% 12%, rgba(255, 194, 74, 0.22), transparent 66%);
   pointer-events: none;
-  z-index: 0;
 }
 
-.hero-inner {
-  position: relative;
-  z-index: 1;
+.hero__grid {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: var(--space-5);
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
   align-items: center;
 }
 
-.hero-title {
-  font-size: clamp(2.6rem, 6vw, 4.6rem);
-  margin-bottom: var(--space-3);
+.hero__title {
+  font-size: var(--step-5);
+  margin-bottom: var(--sp-3);
+}
+.hero__title span {
+  display: block;
+  color: var(--flame);
 }
 
-.hero-title .highlight {
-  color: var(--color-primary);
-  -webkit-text-stroke: 1px var(--color-accent);
+.hero__sub {
+  font-size: var(--step-1);
+  max-width: 44ch;
+  margin-bottom: var(--sp-4);
 }
 
-.hero-sub {
-  font-size: 1.2rem;
-  max-width: 46ch;
+.hero__facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--sp-3) var(--sp-4);
+  margin-top: var(--sp-5);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line);
 }
-
-.hero-media {
-  position: relative;
-  aspect-ratio: 4 / 5;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-soft);
-}
-
-.hero-badge {
-  position: absolute;
-  bottom: var(--space-3);
-  left: var(--space-3);
-  background: rgba(18, 17, 16, 0.75);
-  backdrop-filter: blur(6px);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  padding: var(--space-2) var(--space-3);
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-/* Placeholder photo blocks — swap for real <img> photography.
-   See README.md for exactly how to do this. */
-.photo-placeholder {
-  width: 100%;
-  height: 100%;
-  min-height: 220px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  text-align: center;
-  padding: var(--space-3);
-  background: repeating-linear-gradient(
-      135deg,
-      var(--color-surface),
-      var(--color-surface) 18px,
-      #262320 18px,
-      #262320 36px
-    );
-  color: var(--color-text-muted);
-  border: 1px dashed var(--color-line);
-  border-radius: inherit;
-  font-size: 0.85rem;
-}
-
-.photo-placeholder .ph-icon {
-  font-size: 2rem;
-}
-
-.hero-stats {
-  display: flex;
-  gap: var(--space-4);
-  margin-top: var(--space-4);
-}
-
-.hero-stat b {
+.hero__fact b {
   display: block;
   font-family: var(--font-display);
-  font-size: 1.6rem;
-  color: var(--color-accent);
+  font-size: var(--step-1);
+  color: var(--amber);
+  letter-spacing: -0.01em;
+}
+.hero__fact span {
+  font-size: var(--step--1);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
 }
 
-.hero-stat span {
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
+/* Decorative "smash disc" — a designed brand motif, not a photo slot.
+   To use a real photo instead, see README.md §3. */
+.disc {
+  position: relative;
+  width: min(100%, 480px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 34% 30%, rgba(255, 194, 74, 0.9), transparent 42%),
+    conic-gradient(from 210deg, var(--flame), #ff8a4c, var(--amber), var(--flame));
+  box-shadow: var(--shadow), 0 0 0 1px rgba(255, 194, 74, 0.25);
+  animation: float 9s ease-in-out infinite;
+}
+/* Inner circle. A photo assigned via --shot fills it, leaving the orange
+   ring as a frame around the shot. */
+.disc::before {
+  content: "";
+  position: absolute;
+  inset: 11%;
+  border-radius: 50%;
+  background-color: var(--ink);
+  background-image: var(--shot, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.9);
+}
+.disc__label {
+  position: relative;
+  opacity: var(--label, 1);
+  text-align: center;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  line-height: 0.94;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.6rem, 1rem + 3.4vw, 3rem);
+}
+.disc__label small {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  color: var(--amber);
+  margin-top: 0.7rem;
+  text-transform: uppercase;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-16px) rotate(2deg); }
+}
+
+/* ---------- 7. MARQUEE ---------- */
+.marquee {
+  border-block: 1px solid var(--line);
+  background: var(--ink-2);
+  padding-block: 1.1rem;
+  overflow: hidden;
+  display: flex;
+  user-select: none;
+}
+.marquee__track {
+  display: flex;
+  flex: none;
+  gap: 2.5rem;
+  padding-right: 2.5rem;
+  align-items: center;
+  animation: slide 32s linear infinite;
+}
+.marquee:hover .marquee__track { animation-play-state: paused; }
+.marquee__track li {
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 0.85rem + 0.4vw, 1.25rem);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  color: var(--cream);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+.marquee__track li::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--flame);
+  flex: none;
 }
 
-/* ---------- 7. GENERIC SECTIONS ---------- */
-.grid-2 {
+@keyframes slide {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+/* ---------- 8. CARDS & EDITORIAL GRIDS ---------- */
+.grid { display: grid; gap: var(--sp-3); }
+.grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+/* Used by the menu's "Alongside" set — 8 tiles divide evenly by 4, 2 and 1,
+   so no orphaned last row at any breakpoint. */
+.grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.split {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-5);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(2rem, 5vw, 4.5rem);
   align-items: center;
 }
 
-.grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-3);
-}
-
-.grid-4 {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-3);
-}
-
-/* ---------- 8. CARDS ---------- */
 .card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  padding: var(--space-3);
-  transition: transform var(--transition-med), box-shadow var(--transition-med), border-color var(--transition-med);
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: var(--sp-4);
+  overflow: hidden;
+  transition: transform var(--t-med), border-color var(--t-med), background var(--t-med);
 }
-
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--flame), var(--amber));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--t-med);
+}
 .card:hover {
   transform: translateY(-6px);
-  box-shadow: var(--shadow-soft);
-  border-color: rgba(255, 90, 31, 0.4);
+  border-color: var(--line-strong);
+  background: var(--surface-2);
 }
+.card:hover::before { transform: scaleX(1); }
 
-.burger-card .photo-placeholder {
-  aspect-ratio: 4 / 3;
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-2);
+.card h3 { margin-bottom: 0.5rem; }
+.card p:last-child { margin-bottom: 0; }
+
+/* Editorial numbered card */
+.tile {
+  display: flex;
+  flex-direction: column;
+  min-height: 230px;
 }
-
-.burger-card h3 {
-  font-size: 1.1rem;
-  margin-bottom: 0.35rem;
-}
-
-.burger-card .price {
+.tile__num {
   font-family: var(--font-display);
-  color: var(--color-accent);
-  font-size: 1.05rem;
+  font-size: var(--step-2);
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--line-strong);
+  letter-spacing: 0.02em;
+  margin-bottom: var(--sp-3);
+  transition: -webkit-text-stroke-color var(--t-med);
 }
+.tile:hover .tile__num { -webkit-text-stroke-color: var(--flame); }
 
-.burger-card .desc {
-  font-size: 0.92rem;
-  margin-bottom: var(--space-2);
+/* Content flows from the top so headings line up across a row, whatever
+   length the copy is. Any button in a tile still pins to the bottom. */
+.tile h3 { margin-top: 0; }
+.tile p:last-of-type { margin-bottom: 0; }
+.tile .btn { margin-top: auto; }
+
+/* Feature card with brand gradient face */
+.feature {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: 0;
 }
-
-.tag {
-  display: inline-block;
-  font-size: 0.7rem;
+/* The picture frame. With no photo assigned it renders the brand gradient
+   plus a ring and a word — a finished-looking graphic. Assigning --shot in
+   the PHOTO SLOTS block at the foot of this file swaps in a photograph and
+   sets --label:0, which fades out the ring and word and fades in a scrim so
+   the card heading stays readable. */
+.feature__face {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  display: grid;
+  place-items: center;
+  background-color: var(--ink-2);
+  background-image:
+    var(--shot, none),
+    radial-gradient(90% 120% at 30% 0%, rgba(255, 90, 31, 0.5), transparent 62%),
+    linear-gradient(155deg, #2a231d, #141110);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+.feature__face::before {
+  content: "";
+  position: absolute;
+  width: 58%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 194, 74, 0.35);
+  opacity: var(--label, 1);
+  transition: transform var(--t-med);
+}
+/* Scrim: invisible until a photo is assigned (--label flips to 0) */
+.feature__face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(13, 12, 11, 0.7), rgba(13, 12, 11, 0.1) 60%);
+  opacity: calc(1 - var(--label, 1));
+  pointer-events: none;
+}
+.feature:hover .feature__face::before { transform: scale(1.12); }
+.feature__face span {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-size: var(--step-2);
   text-transform: uppercase;
+  color: var(--amber);
+  letter-spacing: -0.01em;
+  opacity: var(--label, 1);
+}
+/* Slight zoom on hover once a real photo is in place */
+.feature__face { transition: background-size var(--t-med); }
+.feature__body { padding: 0 var(--sp-4) var(--sp-4); }
+
+/* --- Transparent product cut-outs ---
+   A real <img> (not a CSS background) so the photo carries alt text.
+   object-fit:contain, never cover: the burger is scaled to fit inside the
+   frame, so it is never cropped and never stretched out of proportion. The
+   brand gradient shows through the PNG's transparency. */
+.feature__face--product { --label: 0; }        /* hides the ring and word */
+.feature__face--product::after { opacity: 0.4; } /* lighter scrim; gradient stays visible */
+
+/* The grid item here is the <picture>, not the <img>. A <picture> is an
+   inline box that sizes to its content, so an <img> set to height:100%
+   resolves against that content height, not the 16:10 face — the image ends
+   up taller than the face and gets clipped top and bottom by overflow:hidden.
+   Taking the <picture> out of flow and pinning it to the face fixes the
+   reference box, so object-fit:contain can letterbox the burger correctly. */
+.feature__face--product picture {
+  position: absolute;
+  inset: 0;
+  display: block;
+  z-index: 2;
+}
+
+.product-shot {
+  width: 100%;
+  height: 100%;
+  padding: 4% 5%;
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.55));
+  transition: transform var(--t-med);
+}
+.feature:hover .product-shot,
+.shot-tile:hover .product-shot { transform: scale(1.05); }
+
+/* Wide face for the slider cards. The slider shots are two-up compositions
+   at about 2.5, far wider than the single-burger cut-outs at 1.2 to 1.5, so
+   a 16:10 face would leave a dead band above and below. Matching the face to
+   the shot lets the sliders fill it edge to edge. Everything else — the
+   gradient, scrim, object-fit:contain, centring and hover — is shared with
+   the burger cards. */
+.feature__face--wide { aspect-ratio: 2.5 / 1; }
+
+/* Tall face for the shake cards. The cups are portrait (0.435), so a square
+   face lets each drink fill the frame height and sit centred with even space
+   either side. All three shake images share one 610x1401 canvas with the cups
+   centred and bottom-aligned, so they render at identical size by
+   construction rather than by tuning. */
+.feature__face--tall { aspect-ratio: 1 / 1; }
+
+/* Sides face. The three products in that row are shaped very differently —
+   fries stand up (0.71), the toast lies flat (2.11), the sauces sit between
+   (1.38) — and each is scaled to fill the frame in whichever direction is
+   its longer one, the same rule the burgers and shakes already follow. A
+   3:2 frame is the shape that gives all three a fair share of it: a square
+   would leave the toast small, and anything wider would shrink the fries. */
+.feature__face--side { aspect-ratio: 3 / 2; }
+
+/* A row of two products, held to the cell width of a row of three and
+   centred. Without this the two iced coffees would each take half the row
+   and tower over the shakes they sit beside. */
+@media (min-width: 901px) {
+  .grid--3.grid--two-up {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: calc((100% - 2 * var(--sp-3)) / 3 * 2 + var(--sp-3));
+    margin-inline: auto;
+  }
+}
+
+/* Slider cards sit three across, so they are narrower than the two-across
+   burger cards. Archivo Black is a wide face and "Truffle Slider" wraps to a
+   second line at the burger title size, leaving the three titles uneven.
+   A step down keeps all three on one line and stays proportionate to the
+   smaller card. */
+#sliders .feature__body h3,
+#shakes .feature__body h3 { font-size: var(--step-0); }
+
+/* Standalone image tiles (menu page strip) — a face with no card body */
+.shot-tile .feature__face {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  aspect-ratio: 4 / 3;
+  transition: transform var(--t-med), border-color var(--t-med);
+}
+.shot-tile:hover .feature__face {
+  transform: translateY(-6px);
+  border-color: rgba(255, 90, 31, 0.45);
+}
+
+/* Optional real photo — drop-in replacement for .feature__face / .disc */
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* --- Testimonials ---
+   NOTE: the cards below currently hold demonstration copy, not real reviews.
+   Every card carries a visible "Sample" badge so the label survives even if
+   one card is screenshotted on its own. Do NOT add schema.org Review or
+   AggregateRating markup until the quotes are genuine — that would publish
+   fabricated ratings to search engines. See README.md §7. */
+.demo-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  max-width: 70ch;
+  margin: 0 auto var(--sp-5);
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px dashed rgba(255, 194, 74, 0.45);
+  border-radius: var(--r-md);
+  background: rgba(255, 194, 74, 0.06);
+  color: var(--muted);
+  font-size: var(--step--1);
+  text-align: left;
+}
+.demo-note strong {
+  color: var(--amber);
+  font-family: var(--font-display);
   letter-spacing: 0.06em;
-  background: rgba(255, 90, 31, 0.15);
-  color: var(--color-primary);
-  border: 1px solid rgba(255, 90, 31, 0.35);
-  padding: 0.2rem 0.6rem;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  white-space: nowrap;
+  padding-top: 0.15rem;
+}
+
+.quote-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: var(--sp-4);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  transition: transform var(--t-med), border-color var(--t-med), background var(--t-med);
+}
+.quote-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 90, 31, 0.45);
+  background: var(--surface-2);
+}
+
+/* Oversized decorative quote mark */
+.quote-card::before {
+  content: "\201C";
+  position: absolute;
+  top: 0.4rem;
+  right: 1.1rem;
+  font-family: var(--font-display);
+  font-size: 7rem;
+  line-height: 0.78; /* pulls the glyph's ink up into view; the card clips overflow */
+  color: var(--flame);
+  opacity: 0.14;
+  pointer-events: none;
+}
+
+.badge-sample {
+  align-self: flex-start;
+  margin-bottom: var(--sp-3);
+  padding: 0.25rem 0.7rem;
+  border: 1px solid rgba(255, 194, 74, 0.5);
   border-radius: 999px;
-  margin-bottom: var(--space-2);
+  background: rgba(255, 194, 74, 0.1);
+  color: var(--amber);
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
-.tag.placeholder-tag {
-  background: rgba(255, 201, 74, 0.12);
-  color: var(--color-accent);
-  border-color: rgba(255, 201, 74, 0.35);
+.quote-card blockquote {
+  margin: 0 0 var(--sp-3);
+  padding: 0;
+}
+.quote-card blockquote p {
+  margin: 0;
+  color: var(--cream);
+  font-size: var(--step-1);
+  line-height: 1.45;
+  text-wrap: pretty;
 }
 
-/* Menu page */
-.menu-section {
-  margin-bottom: var(--space-6);
-  scroll-margin-top: 6rem;
+.quote-card figcaption {
+  margin-top: auto;
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--cream);
+}
+.quote-card figcaption span {
+  display: block;
+  margin-top: 0.25rem;
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--muted);
 }
 
-.menu-jump {
+/* ---------- 9. MENU ---------- */
+.menu-nav {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--sp-5);
 }
-
-.menu-jump a {
-  border: 1px solid var(--color-line);
-  padding: 0.5rem 1.1rem;
+.menu-nav a {
+  border: 1px solid var(--line-strong);
   border-radius: 999px;
+  padding: 0.6rem 1.25rem;
   font-family: var(--font-display);
-  font-size: 0.78rem;
-  letter-spacing: 0.05em;
+  font-size: 0.76rem;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
-  transition: background var(--transition-fast), border-color var(--transition-fast);
+  transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
 }
-
-.menu-jump a:hover {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
+.menu-nav a:hover,
+.menu-nav a:focus-visible {
+  background: var(--flame);
+  border-color: var(--flame);
   color: #fff;
 }
 
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-3);
+.course,
+.anchor { scroll-margin-top: 6.5rem; }
+.course + .course { margin-top: var(--sp-6); }
+
+/* Briefly flag the card a visitor jumped to from the category nav */
+.anchor:target {
+  border-color: var(--flame);
+  box-shadow: 0 0 0 3px rgba(255, 90, 31, 0.18);
 }
 
-.menu-item {
+.course__head {
   display: flex;
-  justify-content: space-between;
-  gap: var(--space-2);
-  padding: var(--space-2) 0;
-  border-bottom: 1px solid var(--color-line);
+  align-items: baseline;
+  gap: var(--sp-3);
+  padding-bottom: var(--sp-2);
+  margin-bottom: var(--sp-4);
+  border-bottom: 1px solid var(--line);
 }
-
-.menu-item:last-child {
-  border-bottom: none;
-}
-
-.menu-item .item-name {
-  color: var(--color-text);
-  font-weight: 600;
-  margin-bottom: 0.2rem;
-}
-
-.menu-item .item-desc {
-  font-size: 0.88rem;
-  margin: 0;
-}
-
-.menu-item .item-price {
+.course__head h2 { margin: 0; }
+.course__head span {
   font-family: var(--font-display);
-  color: var(--color-accent);
+  font-size: var(--step--1);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--flame);
+  margin-left: auto;
   white-space: nowrap;
 }
 
-.menu-list-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  padding: var(--space-3) var(--space-4);
+.course__note {
+  max-width: 60ch;
+  margin-bottom: var(--sp-4);
 }
 
-.notice-box {
-  background: rgba(255, 201, 74, 0.08);
-  border: 1px dashed rgba(255, 201, 74, 0.4);
-  border-radius: var(--radius-md);
-  padding: var(--space-3);
-  font-size: 0.9rem;
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-5);
+/* --- Priced menu panels ---
+   Laid out as CSS columns rather than a grid: panels vary a lot in length
+   (Coffee has 8 items, Beer has 1), and a grid would align rows and leave
+   dead space under the short ones. Columns let each panel flow directly
+   after the last, like a printed menu. */
+.panels {
+  column-count: 2;
+  column-gap: var(--sp-3);
 }
 
-.notice-box strong {
-  color: var(--color-accent);
+.panel {
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  width: 100%;
+  margin-bottom: var(--sp-3);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: var(--sp-4);
+  scroll-margin-top: 6.5rem;
+  transition: border-color var(--t-med);
 }
+.panel:target { border-color: var(--flame); }
 
-/* Location */
-.location-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-4);
-}
-
-.info-list li {
+.panel__title {
   display: flex;
-  gap: var(--space-2);
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding-bottom: var(--sp-2);
+  margin-bottom: var(--sp-1);
+  border-bottom: 1px solid var(--line);
+}
+.panel__title h3 { margin: 0; font-size: var(--step-1); }
+.panel__title span {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--flame);
+  white-space: nowrap;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.35rem var(--sp-3);
+  padding-block: var(--sp-2);
+  border-bottom: 1px solid var(--line);
+}
+.item:last-child { border-bottom: 0; padding-bottom: 0; }
+
+.item__name {
+  margin: 0;
+  color: var(--cream);
+  font-weight: 600;
+  line-height: 1.35;
+}
+.item__price {
+  grid-column: 2;
+  grid-row: 1;
+  font-family: var(--font-display);
+  font-size: var(--step-0);
+  color: var(--amber);
+  white-space: nowrap;
+}
+.item__desc {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: var(--step--1);
+  line-height: 1.5;
+}
+.item__note {
+  display: inline-block;
+  margin-top: 0.35rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+}
+
+/* Delivery partner buttons */
+.btn--wolt  { --btn-bg: #00c2e8; --btn-fg: #05323a; --btn-bd: #00c2e8; }
+.btn--wolt:hover  { --btn-bg: #29d3f4; --btn-bd: #29d3f4; }
+.btn--glovo { --btn-bg: #ffc244; --btn-fg: #3a2a00; --btn-bd: #ffc244; }
+.btn--glovo:hover { --btn-bg: #ffd36f; --btn-bd: #ffd36f; }
+
+/* ---------- 10. LOCATION & INFO ---------- */
+.info { border-top: 1px solid var(--line); }
+.info li {
+  display: flex;
+  gap: var(--sp-3);
   align-items: flex-start;
-  padding-block: var(--space-2);
-  border-bottom: 1px solid var(--color-line);
+  padding-block: var(--sp-3);
+  border-bottom: 1px solid var(--line);
+}
+.info__icon {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(255, 90, 31, 0.12);
+  border: 1px solid rgba(255, 90, 31, 0.28);
+  color: var(--flame);
+}
+.info__icon svg { width: 20px; height: 20px; }
+.info h3 {
+  font-size: 0.82rem;
+  letter-spacing: 0.11em;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+.info p {
+  margin: 0;
+  color: var(--cream);
+  font-size: var(--step-0);
+}
+.info a:hover { color: var(--flame); }
+
+.map {
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  aspect-ratio: 4 / 3;
+  background: var(--surface);
+}
+/* NB: never pair aspect-ratio with a min-height here — together they force a
+   minimum *width* that overflows narrow phones. Adjust the ratio instead. */
+.map iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+/* Big closing call-to-action band */
+.cta-band {
+  position: relative;
+  border-radius: var(--r-lg);
+  padding: clamp(2.5rem, 2rem + 4vw, 5rem) clamp(1.5rem, 4vw, 4rem);
+  text-align: center;
+  overflow: hidden;
+  background:
+    radial-gradient(70% 130% at 50% 0%, rgba(255, 90, 31, 0.28), transparent 70%),
+    var(--surface);
+  border: 1px solid var(--line-strong);
+}
+.cta-band h2 { margin-bottom: var(--sp-2); }
+.cta-band p { max-width: 52ch; margin-inline: auto; margin-bottom: var(--sp-4); }
+
+/* ---------- 11. FORMS ---------- */
+.form {
+  max-width: 720px;
+  margin-inline: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: clamp(1.5rem, 1rem + 2.5vw, 2.75rem);
 }
 
-.info-list li:last-child {
-  border-bottom: none;
+.form__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
 }
 
-.info-list .icon {
-  font-size: 1.3rem;
+.field { display: flex; flex-direction: column; gap: 0.45rem; }
+.field--full { grid-column: 1 / -1; }
+
+.field label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  background: var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 0.9rem 1rem;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 1rem; /* 16px minimum stops iOS Safari zooming on focus */
+  transition: border-color var(--t-fast), background var(--t-fast);
+}
+.field input:focus,
+.field textarea:focus {
+  border-color: var(--flame);
+  background: var(--ink);
+}
+.field textarea { resize: vertical; min-height: 150px; }
+
+.form__status {
+  margin-top: var(--sp-3);
+  padding: 0.9rem 1.15rem;
+  border-radius: var(--r-sm);
+  font-size: var(--step--1);
+  display: none;
+}
+.form__status.is-shown { display: block; }
+.form__status.is-ok {
+  background: rgba(104, 199, 138, 0.12);
+  border: 1px solid rgba(104, 199, 138, 0.42);
+  color: #a9e7c0;
+}
+.form__status.is-err {
+  background: rgba(255, 90, 31, 0.12);
+  border: 1px solid rgba(255, 90, 31, 0.42);
+  color: #ffb495;
+}
+
+/* ---------- 12. FOOTER ---------- */
+.footer {
+  background: #0a0908;
+  border-top: 1px solid var(--line);
+  padding-block: var(--sp-6) var(--sp-3);
+}
+.footer__grid {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(2, 1fr);
+  gap: var(--sp-5);
+  padding-bottom: var(--sp-5);
+}
+.footer__grid p { max-width: 34ch; }
+.footer h3 {
+  font-size: 0.76rem;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  margin-bottom: var(--sp-3);
+}
+.footer li + li { margin-top: 0.7rem; }
+.footer a { color: var(--cream); transition: color var(--t-fast); }
+.footer a:hover { color: var(--flame); }
+
+.footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--line);
+  font-size: var(--step--1);
+  color: var(--muted);
+}
+.footer__bottom p { margin: 0; }
+
+/* ---------- 13. MOBILE ACTION BAR ---------- */
+/* Always-reachable Call / Directions on phones — the two actions a hungry
+   visitor actually wants. Hidden on tablet and desktop. */
+.actionbar {
+  display: none;
+  position: fixed;
+  z-index: 950;
+  inset: auto 0 0 0;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem calc(0.6rem + env(safe-area-inset-bottom));
+  background: rgba(13, 12, 11, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--line);
+}
+.actionbar .btn {
+  flex: 1;
+  padding-inline: 0.75rem;
+  font-size: 0.74rem;
+  min-height: 50px;
+}
+
+/* ---------- 14. MOTION ---------- */
+/* Reveal-on-scroll is progressive enhancement only: the hidden state is
+   scoped to .js, which an inline snippet in <head> sets. If JavaScript is
+   blocked or fails, every section simply renders visible instead of
+   staying stuck at opacity 0. */
+[data-reveal] {
+  transition: opacity 0.75s ease, transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.js [data-reveal]:not(.is-in) {
+  opacity: 0;
+  transform: translateY(26px);
+}
+
+/* Stagger children for a more considered entrance */
+[data-reveal-group] > * { transition-delay: calc(var(--i, 0) * 90ms); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .js [data-reveal]:not(.is-in) { opacity: 1; transform: none; }
+  .disc { animation: none; }
+  .marquee__track { animation: none; }
+}
+
+/* ---------- 15. RESPONSIVE ---------- */
+@media (max-width: 1020px) {
+  .footer__grid { grid-template-columns: 1fr 1fr; }
+  .footer__grid > :first-child { grid-column: 1 / -1; }
+}
+
+@media (max-width: 900px) {
+  .hero__grid,
+  .split { grid-template-columns: minmax(0, 1fr); }
+  .hero__media { order: -1; }
+  .disc { width: min(74%, 340px); }
+  .grid--3,
+  .grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .nav__links,
+  .nav__actions .nav__cta { display: none; }
+  .nav__toggle { display: block; }
+
+  .nav.is-open .nav__links {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    position: absolute;
+    top: calc(100% + 0.9rem);
+    left: 0;
+    right: 0;
+    background: var(--ink-2);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 0.5rem;
+    box-shadow: var(--shadow);
+  }
+  .nav.is-open .nav__links a {
+    padding: 0.95rem 1rem;
+    border-radius: var(--r-sm);
+  }
+  .nav.is-open .nav__links a::after { display: none; }
+  .nav.is-open .nav__links a:hover { background: var(--surface); }
+
+  .nav.is-open .nav__links-cta {
+    display: block;
+    margin-top: 0.4rem;
+    background: var(--flame);
+    color: #fff;
+    text-align: center;
+  }
+  .nav.is-open .nav__links-cta:hover { background: var(--flame-dark); }
+}
+
+@media (max-width: 700px) {
+  .actionbar { display: flex; }
+  /* Keep the fixed bar from covering the end of the page */
+  body { padding-bottom: 4.8rem; }
+  .footer { padding-bottom: var(--sp-2); }
+
+  /* Give text links a ~44px tap area on touch screens */
+  .footer a,
+  .info a {
+    display: inline-block;
+    padding-block: 0.8rem;
+  }
+  .footer li + li { margin-top: 0; }
+}
+
+@media (max-width: 620px) {
+  .grid--2,
+  .grid--3,
+  .grid--4 { grid-template-columns: minmax(0, 1fr); }
+  .panels { column-count: 1; }
+  .form__grid { grid-template-columns: minmax(0, 1fr); }
+  .footer__grid { grid-template-columns: minmax(0, 1fr); gap: var(--sp-4); }
+  .hero__facts { gap: var(--sp-3) var(--sp-4); }
+  /* These labels are set nowrap so a price never breaks across two lines.
+     Russian and Georgian phrases in the same slot are far longer than an
+     English one — "Sides, sweet & drinks" becomes 33 Georgian characters —
+     and on a 320px screen nowrap pushed the whole page sideways. Prices have
+     no spaces in them, so letting these wrap costs nothing. */
+  .course__head { flex-wrap: wrap; }
+  .course__head span { margin-left: 0; width: 100%; white-space: normal; }
+  .panel__title span { white-space: normal; }
+  /* A long Russian or Georgian product name plus its price does not fit one
+     line inside a 320px card, and the card clips: the price disappeared.
+     Wrapping only kicks in when the row actually runs out of room, so the
+     English titles are untouched. */
+  .panel__title { flex-wrap: wrap; }
+  .btn { width: 100%; }
+  .btn-row { flex-direction: column; }
+  /* Not in the hero. The pinned stage has exactly one screen to work with,
+     and stacking these two buttons pushed them past the bottom of it, where
+     overflow:hidden cut them off completely — on a 320x568 phone the two
+     calls to action simply were not there. They are short enough to sit
+     side by side. */
+  .stage .btn-row { flex-direction: row; flex-wrap: wrap; }
+  .stage .btn-row .btn { width: auto; }
+  .actionbar .btn { width: auto; }
+  /* Stack the sample-content label above its text so the copy gets full width */
+  .demo-note { flex-direction: column; gap: 0.55rem; }
+  .demo-note strong { padding-top: 0; }
+  /* A squarer map is easier to read on a phone */
+  .map { aspect-ratio: 1 / 1; }
+}
+
+/* =========================================================
+   SCROLL STAGE + ANATOMY  (scroll-driven sections)
+   ---------------------------------------------------------
+   How this works, so it stays maintainable:
+
+   * A tall .*__track wraps a .*__pin that is position:sticky.
+     The browser does the pinning natively — JavaScript never
+     positions anything.
+   * js/script.js writes ONE custom property per section
+     (--p for the stage, --q for the anatomy) holding scroll
+     progress from 0 to 1. Every transform below is derived
+     from it with calc(), so all the tuning numbers live here
+     in the CSS, not buried in the JavaScript.
+   * Only transform and opacity are animated. Both are
+     GPU-composited, so scrolling never triggers layout or
+     repaint.
+   * Amplitudes are variables (--amp-*) so phones can use
+     gentler movement without duplicating the transforms.
+   * Everything falls back to var(--p, 0) — the resting,
+     fully readable state — if JavaScript never runs.
+   ========================================================= */
+
+.stage,
+.anatomy { position: relative; }
+
+/* Without JS the tall tracks would be dead scroll space, so the
+   sticky behaviour is opt-in via the .js class set in <head>. */
+.stage__track,
+.anatomy__track { height: auto; }
+.stage__pin,
+.anatomy__pin { position: static; }
+
+.js .stage__track   { height: 290vh; }   /* a full 360deg turn wants room */
+.js .anatomy__track { height: 300vh; }
+
+.js .stage__pin,
+.js .anatomy__pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  min-height: 34rem;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ---- Hero stage ---- */
+.stage {
+  --amp-x: 12vw;    /* how far the burger travels right */
+  --amp-y: -6vh;    /* and up */
+  --amp-scale: 0.30;/* how much it shrinks (--amp-z shrinks it further) */
+  --amp-split: 9vw; /* how far the two headline lines separate */
+  --amp-z: -160px;  /* how far it recedes into the scene */
+  --amp-tilt: -7deg;/* how far it tips away from the viewer */
+}
+
+.stage__pin { padding-block: var(--sp-5); }
+
+.stage__glow {
+  position: absolute;
+  z-index: -1;
+  inset: -25% -15% auto -15%;
+  height: 820px;
+  pointer-events: none;
+  background:
+    radial-gradient(46% 46% at 22% 24%, rgba(255, 90, 31, 0.42), transparent 68%),
+    radial-gradient(42% 42% at 78% 12%, rgba(255, 194, 74, 0.22), transparent 66%);
+  transform:
+    translate3d(calc(var(--p, 0) * -4vw), calc(var(--p, 0) * 5vh), 0)
+    scale(calc(1 - var(--p, 0) * 0.25));
+  opacity: calc(1 - var(--p, 0) * 0.5);
+}
+
+/* Oversized outlined wordmark forming the back plane */
+.stage__wordmark {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: 50%;
+  white-space: nowrap;
+  pointer-events: none;
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 19vw, 17rem);
+  letter-spacing: -0.045em;
   line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(247, 243, 236, 0.11);
+  opacity: calc(0.5 + var(--p, 0) * 0.5);
+  /* The wordmark drifts against the burger — the burger goes right, this goes
+     left — which is what reads as depth rather than as one flat picture
+     sliding about. */
+  transform:
+    translate3d(calc(-50% + var(--p, 0) * -5vw), calc(-50% + var(--p, 0) * -4vh), 0)
+    scale(calc(1 + var(--p, 0) * 0.24));
+  will-change: transform;
 }
 
-.info-list h4 {
+.stage__grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+  gap: clamp(1.5rem, 5vw, 4.5rem);
+  align-items: center;
+  width: 100%;
+}
+
+/* The stage is pinned to exactly one viewport, so its content must fit in
+   one viewport at every size — otherwise overflow:hidden silently eats the
+   buttons. Every size below is capped by viewport HEIGHT as well as width. */
+.stage__title {
+  font-size: clamp(2.1rem, min(6.4vw, 8.4vh), 4.8rem);
+  margin-bottom: clamp(0.5rem, 1.6vh, 1.4rem);
+}
+.stage__copy .hero__sub {
+  font-size: clamp(0.94rem, min(1.5vw, 2vh), 1.18rem);
+  margin-bottom: clamp(0.8rem, 2vh, 1.7rem);
+}
+.stage .hero__facts {
+  margin-top: clamp(0.9rem, 2.4vh, 2.2rem);
+  padding-top: clamp(0.7rem, 1.8vh, 1.5rem);
+  gap: clamp(0.4rem, 1.4vh, 1rem) var(--sp-4);
+}
+.stage .hero__fact b { font-size: clamp(0.95rem, min(1.5vw, 2vh), 1.35rem); }
+.stage__line { display: block; }
+.stage__line--a {
+  transform: translate3d(calc(var(--p, 0) * var(--amp-split) * -1), 0, 0);
+  opacity: calc(1 - var(--p, 0) * 0.85);
+}
+.stage__line--b {
+  color: var(--flame);
+  transform: translate3d(calc(var(--p, 0) * var(--amp-split)), 0, 0);
+  opacity: calc(1 - var(--p, 0) * 0.85);
+}
+
+/* Supporting copy clears out early so the burger owns the frame. */
+.stage__fade {
+  opacity: calc(1 - var(--p, 0) * 2.2);
+  transform: translate3d(0, calc(var(--p, 0) * -3vh), 0);
+}
+
+/* The two calls to action are the reason the page exists, so they hold at
+   full strength for roughly two-thirds of the pin and only clear right at
+   the end. Opacity is clamped to 1 by the browser, so the number being far
+   above 1 early on simply means "solid". */
+.stage__hold {
+  opacity: calc(1 - (var(--p, 0) - 0.68) * 4.2);
+  transform: translate3d(0, calc(var(--p, 0) * -1.4vh), 0);
+}
+
+/* The burger is built in three layers so each does one job and each stays a
+   pure transform. Nesting them costs nothing — the compositor multiplies the
+   matrices — but it keeps the travel, the turn and the shadow independent,
+   and it means the spin never has to fight the drift for the same property.
+
+     .stage__art     travels across the frame and scales
+     .stage__spin    turns the burger through a full 360deg in 3D
+     .stage__halo    the light behind it
+
+   js/script.js writes three numbers for this section: --p, the plain 0-to-1
+   progress every scroll section gets, plus --spin and --face. Those last two
+   are trigonometry, which CSS cannot yet do in a way every browser this site
+   supports would understand. */
+.stage__art {
+  position: relative;
+  z-index: 2;
+  transform-origin: 60% 50%;
+  transform:
+    translate3d(calc(var(--p, 0) * var(--amp-x)), calc(var(--p, 0) * var(--amp-y)), 0)
+    perspective(1150px)
+    translate3d(0, 0, calc(var(--p, 0) * var(--amp-z)))
+    rotateX(calc(2deg + var(--p, 0) * var(--amp-tilt)))
+    scale(calc(1 - var(--p, 0) * var(--amp-scale)))
+    rotate(calc(-4deg + var(--p, 0) * 6deg));
+  will-change: transform;
+}
+
+/* The turn. --spin runs 0 to 360deg across the pin, eased so the burger
+   lingers where it looks its best — face on — and moves quickly through the
+   quarters where it is turning away. Past 180deg the browser draws the
+   picture mirrored, which for a burger shot from the side reads as its other
+   cheek rather than as a mistake.
+
+   There is deliberately NO perspective() in this rule. The depth belongs to
+   .stage__art above, which flattens whatever happens in here — and that is
+   the point. A perspective applied to the rotation itself blows the near edge
+   up as the burger swings side-on, and instead of a burger turning you get a
+   tall vertical smear. Flattened, the turn is an honest horizontal
+   compression: the height never changes and there is nothing to smear.
+
+   --fix widens the picture before the turn compresses it, so the two cancel
+   and the burger holds a readable width instead of thinning to a hairline. */
+.stage__spin {
+  transform:
+    rotateY(var(--spin, 0deg))
+    scaleX(var(--fix, 1));
+  will-change: transform;
+}
+
+/* The halo behind the burger. --face is |cos(spin)|: 1 when the burger faces
+   us, 0 when it is turning away, so the halo narrows and dims exactly as the
+   burger does — which is what sells the turn as something happening in space
+   rather than a picture being squashed.
+
+   Warm light rather than a cast shadow: the page is very nearly black, and a
+   dark shadow on a dark ground is invisible. It is also a plain gradient
+   moved by transform, not a drop-shadow filter on the photo, which would have
+   to be re-rendered on every frame of the turn. */
+.stage__halo {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 50%;
+  width: 82%;
+  aspect-ratio: 1;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(255, 132, 56, 0.26), transparent 70%);
+  transform:
+    translate3d(-50%, -50%, 0)
+    scale3d(calc(0.34 + var(--face, 1) * 0.66), 1, 1);
+  opacity: calc((0.35 + var(--face, 1) * 0.65) * (1 - var(--p, 0) * 0.35));
+}
+/* width:auto + max-width + max-height keeps the aspect ratio intact while
+   fitting BOTH constraints. Setting width:100% with a max-height would
+   squash the burger instead. */
+.stage__art img,
+.anatomy__art img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 52vh;
+  margin-inline: auto;
+}
+/* The anatomy burger only drifts, so a drop-shadow filter on it is rendered
+   once and then moved. The stage burger turns, which would mean re-rendering
+   the filter on every frame, so it uses .stage__halo instead. */
+.anatomy__art img { filter: drop-shadow(0 30px 45px rgba(0, 0, 0, 0.65)); }
+
+/* ---- Anatomy of the smash ---- */
+.anatomy {
+  --amp-rise: -4vh;
+  background: var(--ink-2);
+}
+
+.anatomy__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 5vw, 4rem);
+  align-items: center;
+  width: 100%;
+}
+
+.anatomy__art {
+  transform:
+    translate3d(0, calc(var(--q, 0) * var(--amp-rise)), 0)
+    scale(calc(0.88 + var(--q, 0) * 0.18))
+    rotate(calc(-2deg + var(--q, 0) * 5deg));
+  will-change: transform;
+}
+
+.anatomy__steps {
+  position: relative;
+  min-height: 15rem;
+}
+/* The steps are stacked in the same box, so the outgoing caption must clear
+   before the incoming one arrives — otherwise two blocks of text sit on top
+   of each other mid-transition and neither is readable. The outgoing fade is
+   short; the incoming one is delayed just past it. */
+.anatomy__step {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translate3d(0, 1.6rem, 0);
+  transition: opacity 0.22s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.anatomy__step.is-on {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  transition: opacity 0.42s ease 0.18s, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.18s;
+}
+.anatomy__step h3 { font-size: var(--step-2); margin-bottom: var(--sp-2); }
+.anatomy__step p  { font-size: var(--step-1); max-width: 34ch; }
+
+.anatomy__count {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: var(--sp-4);
+}
+.anatomy__count i {
+  width: 34px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--line-strong);
+  transition: background 0.4s ease;
+}
+.anatomy__count i.is-on { background: var(--flame); }
+
+/* ---- Product showcase: one burger hands over to the next ----
+   Everything here is an OVERRIDE. Outside the media query below, the four
+   products are the ordinary two-by-two card grid they have always been —
+   which is exactly what a phone, a browser with JavaScript off, and anyone
+   who prefers reduced motion gets. The pinned version only switches on
+   where there is room and movement is welcome. */
+
+.showcase__track { height: auto; }
+.showcase__pin   { position: static; }
+.showcase__num,
+.showcase__rail,
+.showcase__glow  { display: none; }
+
+@media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+  .js .showcase__track { height: 340vh; }   /* roughly 0.85 screens per burger */
+  .js .showcase__pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    min-height: 34rem;
+    display: grid;
+    align-content: center;
+    overflow: hidden;
+  }
+
+  .js .showcase__pin > .wrap { position: relative; z-index: 1; }
+
+  /* The four cards stop being a grid and stack in one frame instead. The
+     stack must be at least as tall as the burger inside it, or the progress
+     rail below ends up sitting on the bun. */
+  .js .showcase__stack {
+    display: block;
+    position: relative;
+    min-height: min(58vh, 30rem);
+  }
+
+  .js .showcase__item {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    align-items: center;
+    gap: clamp(2rem, 5vw, 4.5rem);
+    /* card chrome off — in this mode the burger sits on the section itself */
+    background: none;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+    padding: 0;
+    pointer-events: none;
+  }
+  .js .showcase__item.is-on { pointer-events: auto; }
+  .js .showcase__item:hover { transform: none; }   /* no card lift in this mode */
+
+  /* The swap. The outgoing burger clears before the incoming one arrives —
+     they are never both legible — and the burger leads, with its text
+     following a beat later, so the change reads as one movement rather than
+     two things fading at once. */
+  .js .showcase__item .feature__face,
+  .js .showcase__item .feature__body {
+    opacity: 0;
+    transition: opacity 0.22s ease,
+                transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* Strip the card face back to just the photo: no panel background, no
+     bottom rule, no scrim, and no clipping — the burger is rotating, and
+     overflow:hidden would shave its corners. */
+  .js .showcase__item .feature__face {
+    aspect-ratio: auto;
+    height: min(58vh, 30rem);
+    background: none;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+    transform: translate3d(3rem, 0, 0) scale(0.92);
+  }
+  .js .showcase__item .feature__face::before,
+  .js .showcase__item .feature__face::after { display: none; }
+
+  .js .showcase__item .feature__body {
+    padding: 0;
+    transform: translate3d(0, 1.5rem, 0);
+  }
+
+  .js .showcase__item.is-on .feature__face {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.5s ease 0.14s,
+                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.14s;
+  }
+  .js .showcase__item.is-on .feature__body {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.45s ease 0.26s,
+                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.26s;
+  }
+
+  .js .showcase__item .product-shot {
+    padding: 0;
+    filter: drop-shadow(0 34px 50px rgba(0, 0, 0, 0.6));
+  }
+  /* A slow drift across the whole section, so the burger is never quite
+     static while the section is pinned. This sits inside the face, which
+     carries the swap — one transform each, both GPU-composited. */
+  .js .showcase__item picture {
+    transform:
+      translate3d(0, calc(var(--r, 0) * -3vh), 0)
+      rotate(calc(-3deg + var(--r, 0) * 5deg));
+  }
+
+  /* Depth: the glow behind the burger travels a third as far, so the two
+     planes separate as you scroll. */
+  .js .showcase__glow {
+    display: block;
+    position: absolute;
+    z-index: 0;
+    left: 4%;
+    top: 50%;
+    width: min(46rem, 52vw);
+    height: min(46rem, 52vw);
+    pointer-events: none;
+    border-radius: 50%;
+    background: radial-gradient(50% 50% at 50% 50%, rgba(255, 90, 31, 0.26), transparent 70%);
+    transform:
+      translate3d(0, calc(-50% + var(--r, 0) * -1vh), 0)
+      scale(calc(0.92 + var(--r, 0) * 0.16));
+  }
+
+  .js .showcase__item h3 { font-size: var(--step-3); }
+  .js .showcase__item .panel__title span { font-size: var(--step-1) !important; }
+  .js .showcase__item .feature__body > p { font-size: var(--step-1); max-width: 34ch; }
+
+  .js .showcase__num {
+    display: block;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    color: var(--flame);
+    margin-bottom: var(--sp-2);
+  }
+  .js .showcase__num i {
+    font-style: normal;
+    color: var(--muted);
+    opacity: 0.7;
+  }
+
+  .js .showcase__rail {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: var(--sp-5);
+  }
+  .js .showcase__rail i {
+    width: 34px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--line-strong);
+    transition: background 0.4s ease;
+  }
+  .js .showcase__rail i.is-on { background: var(--flame); }
+}
+
+/* ---- Gentler on tablets and phones ---- */
+@media (max-width: 900px) {
+  .stage {
+    --amp-x: 5vw;
+    --amp-y: -3vh;
+    --amp-scale: 0.20;
+    --amp-split: 4vw;
+    --amp-z: -90px;
+    --amp-tilt: -5deg;
+  }
+  .js .stage__track   { height: 225vh; }
+  .js .anatomy__track { height: 260vh; }
+
+  .stage__grid,
+  .anatomy__grid { grid-template-columns: minmax(0, 1fr); }
+  .stage__art { order: -1; max-width: 74%; margin-inline: auto; }
+  .stage__art img { max-height: 30vh; }
+  .anatomy__art { max-width: 72%; margin-inline: auto; }
+  .anatomy__art img { max-height: 34vh; }
+  .anatomy__steps { min-height: 13rem; }
+  .stage__wordmark { font-size: clamp(4rem, 26vw, 9rem); }
+}
+
+@media (max-width: 620px) {
+  .stage__art img { max-height: 26vh; }
+  .stage { --amp-z: -70px; }
+  .js .stage__track   { height: 205vh; }
+  .js .anatomy__track { height: 240vh; }
+  .anatomy__steps { min-height: 15rem; }
+}
+
+/* Very short viewports (small phones, landscape): the stage still has to fit
+   one screen, so drop the facts strip — the same information is repeated in
+   the location section and the footer — and shrink the burger further. */
+@media (max-height: 640px) {
+  .stage .hero__facts { display: none; }
+  .stage__art img { max-height: 21vh; }
+  .stage__title { font-size: clamp(1.9rem, min(6vw, 7.6vh), 3.4rem); }
+  .js .stage__pin { min-height: 0; padding-block: var(--sp-3); }
+  .stage__grid { gap: clamp(0.6rem, 2vh, 1.6rem); }
+}
+
+
+/* ---- No pinning, no tall tracks, resting state ----
+   Two situations resolve to the same place, so they share one block.
+
+   The first is a visitor who has asked for reduced motion.
+
+   The second is a screen too short to pin against. A pinned section gets
+   exactly one viewport to fit in, and under about 600px of height — an older
+   small phone, or any phone turned sideways — the headline, the buttons and
+   the burger no longer do. What used to happen is that overflow:hidden
+   quietly ate the two calls to action, so the most important thing on the
+   page was missing on the smallest screens. Below that height the stage and
+   the anatomy stop pinning and lay themselves out like any other section:
+   everything on screen, nothing clipped, just no scroll choreography. */
+@media (prefers-reduced-motion: reduce), (max-height: 599px) {
+  .js .stage__track,
+  .js .anatomy__track { height: auto; }
+  .js .stage__pin,
+  .js .anatomy__pin {
+    position: static;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    padding-block: var(--sp-6);
+  }
+  .stage__halo { display: none; }
+  .stage__glow,
+  .stage__wordmark,
+  .stage__line--a,
+  .stage__line--b,
+  .stage__fade,
+  .stage__hold,
+  .stage__art,
+  .stage__spin,
+  .anatomy__art {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .stage__wordmark { opacity: 0.5 !important; }
+  .anatomy__steps { min-height: 0; }
+  .anatomy__step {
+    position: static;
+    opacity: 1 !important;
+    transform: none !important;
+    margin-bottom: var(--sp-4);
+  }
+  .anatomy__count { display: none; }
+  /* Without the pin there is nothing clipping the oversized wordmark and
+     the glow, and both are wider than the viewport — that pushed the whole
+     page sideways. overflow-x: clip trims them without turning the section
+     into a scroll container. */
+  .stage,
+  .anatomy { overflow-x: clip; }
+}
+
+/* =========================================================
+   PHOTO SLOTS
+   ---------------------------------------------------------
+   The only place you touch to add real photography.
+
+   1. Upload your image to the images/ folder, named exactly
+      as shown on the matching line below.
+   2. On that ONE line, delete the comment markers at the
+      start and end of the line (the slash-star and star-slash).
+   3. Commit. The photo appears, and the placeholder graphic,
+      its ring and its word label fade out automatically.
+
+   Put the markers back to return to the graphic.
+
+   Sizes (JPG, quality ~80, keep each under 300KB):
+     hero and interior ...... 1200 x 1200, shown in a circle
+     burgers, fries, shake .. 1200 x 750  (16:10)
+
+   Prompts for generating each image: images/PROMPTS.md
+   ========================================================= */
+
+/* One slot left. Everything else on the menu — all four burgers, all three
+   sliders, the shakes, the fries, the toast, the sauces and both iced
+   coffees — now uses a real transparent product photo placed directly in
+   the HTML, so those slots are gone rather than commented out. The only
+   picture the site still does not have is the room itself, on about.html.
+   See README section 3. */
+/* .shot--interior { --shot: url("../images/interior.jpg");        --label: 0; } */
+
+
+/* ---------- MICRO-INTERACTIONS ----------
+   Small, physical responses to a pointer or a finger. Everything here is
+   transform, colour or opacity — nothing that causes a re-layout — and the
+   hover half is behind (hover: hover) so a phone never leaves an element
+   stuck in its hover state after a tap. */
+
+.btn:active { transform: translateY(-1px) scale(0.985); }
+.card:active { transform: translateY(-2px); }
+.langgate__opt:active,
+.langpick button:active { transform: scale(0.96); }
+
+@media (hover: hover) {
+  /* The cut-out lifts out of its frame rather than simply growing. */
+  .feature:hover .product-shot,
+  .shot-tile:hover .product-shot {
+    transform: translateY(-6px) scale(1.05) rotate(-1.2deg);
+  }
+
+  /* A long price list is easier to read across if the row under the pointer
+     answers. Colour only — the rows must not shift as you move down them. */
+  .item__price { transition: color var(--t-fast); }
+  .item:hover .item__price { color: var(--flame); }
+
+  .panel:hover { border-color: var(--line-strong); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:active,
+  .card:active,
+  .langgate__opt:active,
+  .langpick button:active { transform: none; }
+  .feature:hover .product-shot,
+  .shot-tile:hover .product-shot { transform: none; }
+}
+
+/* =========================================================
+   ORDER CHOOSER
+   ---------------------------------------------------------
+   Opened by every "Order Now" on the site. Built by
+   js/script.js, so there is one copy of it rather than one
+   per page. It borrows the language chooser's shape — same
+   backdrop, same panel, same rhythm — because a visitor who
+   has already met that one should recognise this.
+   ========================================================= */
+
+.orderbox {
+  position: fixed;
+  inset: 0;
+  z-index: 990;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-4) var(--sp-3);
+  background: rgba(8, 7, 6, 0.72);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.32s ease, visibility 0s linear 0.32s;
+}
+.orderbox.is-open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.32s ease, visibility 0s;
+}
+
+.orderbox__panel {
+  position: relative;
+  width: min(30rem, 100%);
+  padding: clamp(1.6rem, 1.2rem + 2vw, 2.6rem);
+  text-align: center;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 90, 31, 0.16), transparent 68%),
+    var(--surface);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+  /* The panel arrives a beat after the backdrop and settles rather than
+     snapping, which is the whole difference between a dialog appearing and
+     a dialog being thrown at you. */
+  transform: translate3d(0, 14px, 0) scale(0.97);
+  opacity: 0;
+  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.28s ease;
+}
+.orderbox.is-open .orderbox__panel {
+  transform: none;
+  opacity: 1;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.06s,
+              opacity 0.34s ease 0.06s;
+}
+
+.orderbox__eyebrow { justify-content: center; margin-bottom: var(--sp-2); }
+.orderbox__title { font-size: var(--step-2); margin-bottom: var(--sp-2); }
+.orderbox__sub {
+  font-size: var(--step--1);
+  max-width: 34ch;
+  margin-inline: auto;
+  margin-bottom: var(--sp-4);
+}
+
+.orderbox__close {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.orderbox__close:hover { color: var(--cream); background: rgba(247, 243, 236, 0.07); }
+
+.orderbox__opts { display: grid; gap: 0.7rem; }
+
+.orderbox__opt {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.85rem 1rem;
+  min-height: 62px;
+  align-content: center;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  color: var(--cream);
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.22s ease, background 0.22s ease;
+}
+.orderbox__opt b {
+  font-family: var(--font-display);
+  font-weight: 400;
   font-size: 0.95rem;
-  margin-bottom: 0.2rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.orderbox__opt small { font-size: 0.74rem; color: var(--muted); }
+
+/* Each option arrives just behind the one above it, so the three read as a
+   list being dealt out rather than three things flashing at once. */
+.orderbox__opt { opacity: 0; transform: translate3d(0, 10px, 0); }
+.orderbox.is-open .orderbox__opt {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.3s ease, transform 0.44s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.22s ease, background 0.22s ease;
+}
+.orderbox.is-open .orderbox__opt:nth-child(1) { transition-delay: 0.14s; }
+.orderbox.is-open .orderbox__opt:nth-child(2) { transition-delay: 0.20s; }
+.orderbox.is-open .orderbox__opt:nth-child(3) { transition-delay: 0.26s; }
+
+/* The delivery services keep their own colours, which is what makes them
+   recognisable at a glance. */
+.orderbox__opt--wolt  { border-color: rgba(41, 211, 244, 0.42); }
+.orderbox__opt--glovo { border-color: rgba(255, 211, 111, 0.42); }
+.orderbox__opt--call  { border-color: rgba(255, 90, 31, 0.45); }
+
+@media (hover: hover) {
+  .orderbox__opt:hover { transform: translateY(-2px); background: #2a241f; }
+  .orderbox__opt--wolt:hover  { border-color: #29d3f4; }
+  .orderbox__opt--glovo:hover { border-color: #ffd36f; }
+  .orderbox__opt--call:hover  { border-color: var(--flame); }
+}
+.orderbox__opt:active { transform: scale(0.985); }
+
+.order-open { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .orderbox,
+  .orderbox__panel,
+  .orderbox__opt { transition: none; }
+  .orderbox__panel { transform: none; }
+  .orderbox.is-open .orderbox__opt { transition-delay: 0s; }
+}
+
+/* =========================================================
+   16. LANGUAGE  (English / Русский / ქართული)
+   ---------------------------------------------------------
+   Three parts: the fonts each language needs, the full-screen
+   chooser shown on a first visit, and the EN/RU/KA switcher in
+   the header. The chooser and the switcher are built by
+   js/i18n.js, so they exist on every page without being copied
+   into five HTML files.
+   ========================================================= */
+
+/* Archivo Black and Poppins carry no Cyrillic at all, and only a few
+   Georgian glyphs, so a whole page in Russian or Georgian would fall
+   back to whatever the device happens to have. Each language gets a
+   stack that can actually draw it. Noto Sans Georgian stays in every
+   stack for the Lari sign ₾. */
+:root[lang="ru"] {
+  --font-display: "Montserrat", "Archivo Black", "Noto Sans Georgian", system-ui, sans-serif;
+  --font-body:    "Montserrat", "Poppins", "Noto Sans Georgian", system-ui, sans-serif;
+}
+:root[lang="ka"] {
+  --font-display: "Noto Sans Georgian", "Archivo Black", system-ui, sans-serif;
+  --font-body:    "Noto Sans Georgian", "Poppins", system-ui, sans-serif;
+}
+
+/* Archivo Black is one very heavy weight that happens to be numbered 400.
+   Its stand-ins are ordinary families, so headings must ask for the heavy
+   weight explicitly or Russian and Georgian look thin next to English. */
+:root[lang="ru"] h1, :root[lang="ru"] h2, :root[lang="ru"] h3, :root[lang="ru"] h4,
+:root[lang="ka"] h1, :root[lang="ka"] h2, :root[lang="ka"] h3, :root[lang="ka"] h4 {
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+/* Georgian is unicase — it has no capitals — so forcing uppercase only
+   costs the letters their proper shapes and adds nothing. */
+:root[lang="ka"] h1, :root[lang="ka"] h2, :root[lang="ka"] h3, :root[lang="ka"] h4 {
   text-transform: none;
 }
 
-.info-list p {
-  margin: 0;
-  font-size: 0.92rem;
+/* Two languages are longer than English almost everywhere. Slightly more
+   room between lines stops headings from locking together. */
+:root[lang="ru"] h1, :root[lang="ru"] h2,
+:root[lang="ka"] h1, :root[lang="ka"] h2 { line-height: 1.08; }
+
+/* No flash of the wrong language: the inline script in each <head> hides
+   the page until js/i18n.js has run, and takes the class off again after
+   1.5s on its own so a script that never loads can never leave a blank
+   page behind. */
+.lang-boot body { opacity: 0; }
+.lang-choosing  { overflow: hidden; }
+
+/* ---------- the first-visit chooser ---------- */
+
+.langgate {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-4) var(--sp-3);
+  background:
+    radial-gradient(80% 60% at 50% 0%, rgba(255, 90, 31, 0.16), transparent 70%),
+    var(--ink);
+  opacity: 1;
+  transition: opacity 0.55s ease;
+}
+.langgate.is-out { opacity: 0; pointer-events: none; }
+
+.langgate__inner {
+  width: min(46rem, 100%);
+  text-align: center;
 }
 
-.map-frame-wrap {
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  border: 1px solid var(--color-line);
-  box-shadow: var(--shadow-soft);
-  aspect-ratio: 4 / 3;
-}
-
-.map-frame-wrap iframe {
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-
-/* Reviews */
-.review-card p.quote {
-  color: var(--color-text);
-  font-size: 1rem;
-  font-style: italic;
-}
-
-.review-stars {
-  color: var(--color-accent);
-  letter-spacing: 0.2em;
-  margin-bottom: var(--space-2);
-}
-
-.review-name {
+.langgate__brand {
   font-family: var(--font-display);
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
   text-transform: uppercase;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.5rem, 1.1rem + 2vw, 2.4rem);
+  color: var(--cream);
+  margin: 0 0 var(--sp-4);
+}
+.langgate__brand em {
+  display: block;
+  font-family: var(--font-ka);
+  font-style: normal;
+  font-size: 0.42em;
+  letter-spacing: 0.16em;
+  color: var(--flame);
+  margin-top: 0.5rem;
 }
 
-/* Instagram */
-.insta-grid {
+.langgate__title {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-2);
+  gap: 0.35rem;
+  margin: 0 0 var(--sp-4);
+  font-size: var(--step--1);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
-.insta-tile {
-  aspect-ratio: 1 / 1;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-}
-
-.insta-tile .photo-placeholder {
-  border-radius: var(--radius-md);
-}
-
-/* About */
-.about-hero {
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: var(--space-5);
-  align-items: center;
-}
-
-.values-grid {
+.langgate__opts {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-3);
-  margin-top: var(--space-4);
+  gap: 0.9rem;
 }
 
-.value-card .icon {
-  font-size: 1.8rem;
-  margin-bottom: var(--space-1);
-}
-
-/* ---------- 9. FORMS ---------- */
-.form-grid {
+.langgate__opt {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-3);
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
   gap: 0.4rem;
-  margin-bottom: var(--space-3);
+  padding: clamp(1.1rem, 0.8rem + 1.4vw, 1.9rem) 0.6rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--cream);
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
 }
-
-.form-field.full {
-  grid-column: 1 / -1;
-}
-
-.form-field label {
+.langgate__opt b {
   font-family: var(--font-display);
-  font-size: 0.75rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
+  font-weight: 400;
+  font-size: clamp(0.95rem, 0.8rem + 0.8vw, 1.35rem);
+  letter-spacing: -0.01em;
+}
+.langgate__opt[lang="ru"] b { font-family: "Montserrat", var(--font-body); font-weight: 800; }
+.langgate__opt[lang="ka"] b { font-family: var(--font-ka); font-weight: 700; text-transform: none; }
+.langgate__opt small {
+  font-size: 0.7rem;
+  letter-spacing: 0.26em;
+  color: var(--muted);
+}
+/* The language already in force, when the chooser is reopened later. */
+.langgate__opt.is-on {
+  border-color: var(--flame);
+  background: var(--surface-2);
+}
+.langgate__opt.is-on small { color: var(--flame); }
+
+.langgate__opt:hover,
+.langgate__opt:focus-visible {
+  transform: translateY(-3px);
+  border-color: var(--flame);
+  background: var(--surface-2);
 }
 
-.form-field input,
-.form-field textarea,
-.form-field select {
-  background: var(--color-bg-alt);
-  border: 1px solid var(--color-line);
-  border-radius: 10px;
-  padding: 0.85rem 1rem;
-  color: var(--color-text);
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  transition: border-color var(--transition-fast);
+@media (max-width: 30rem) {
+  .langgate__opts { grid-template-columns: 1fr; }
+  .langgate__opt  { padding: 0.95rem 0.6rem; }
 }
 
-.form-field input:focus,
-.form-field textarea:focus,
-.form-field select:focus {
-  border-color: var(--color-primary);
+/* ---------- the header switcher ---------- */
+
+.langpick {
+  display: flex;
+  align-items: center;
+}
+.langpick__opts {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(247, 243, 236, 0.04);
+}
+.langpick button {
+  min-width: 34px;
+  min-height: 30px;
+  padding: 0 0.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.langpick button:hover { color: var(--cream); }
+.langpick button.is-on {
+  background: var(--flame);
+  color: #fff;
 }
 
-.form-field textarea {
-  resize: vertical;
-  min-height: 130px;
-}
-
-.form-note {
-  font-size: 0.8rem;
-  margin-top: var(--space-1);
-}
-
-.form-status {
-  margin-top: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  border-radius: 10px;
-  font-size: 0.9rem;
+/* The single-button form, used where three pills will not fit. */
+.langpick__now {
   display: none;
+  min-width: 44px;
+  min-height: 38px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(247, 243, 236, 0.04);
+  color: var(--cream);
 }
 
-.form-status.visible {
-  display: block;
+/* At 320px the logo and the menu button already use nearly the whole bar,
+   so three pills push the header off-screen. Below this width the switcher
+   becomes one button that reopens the full-screen chooser. */
+@media (max-width: 560px) {
+  .langpick__opts { display: none; }
+  .langpick__now  { display: block; }
 }
 
-.form-status.success {
-  background: rgba(90, 200, 120, 0.12);
-  border: 1px solid rgba(90, 200, 120, 0.4);
-  color: #a8e6bd;
-}
-
-.form-status.error {
-  background: rgba(255, 90, 31, 0.12);
-  border: 1px solid rgba(255, 90, 31, 0.4);
-  color: #ffb08f;
-}
-
-/* ---------- 10. FOOTER ---------- */
-.site-footer {
-  background: #0c0b0a;
-  padding-block: var(--space-5) var(--space-3);
-  border-top: 1px solid var(--color-line);
-}
-
-.footer-grid {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr 1fr 1fr;
-  gap: var(--space-4);
-  margin-bottom: var(--space-4);
-}
-
-.footer-brand p {
-  max-width: 34ch;
-}
-
-.footer-col h4 {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-2);
-}
-
-.footer-col ul li {
-  margin-bottom: 0.6rem;
-}
-
-.footer-col a:hover {
-  color: var(--color-primary);
-}
-
-.footer-social {
-  display: flex;
-  gap: 0.7rem;
-  margin-top: var(--space-2);
-}
-
-.footer-social a {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1px solid var(--color-line);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--transition-fast), border-color var(--transition-fast);
-}
-
-.footer-social a:hover {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-}
-
-.footer-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--color-line);
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
-}
-
-/* ---------- 11. ANIMATIONS ---------- */
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-[data-reveal].is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ---------- 12. RESPONSIVE ---------- */
-@media (max-width: 1024px) {
-  .grid-4 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .menu-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .insta-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .footer-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (max-width: 860px) {
-  .hero-inner,
-  .grid-2,
-  .about-hero,
-  .location-grid {
-    grid-template-columns: 1fr;
-  }
-  .hero-media {
-    order: -1;
-  }
-  .grid-3,
-  .values-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .nav-links,
-  .nav-cta .btn-secondary {
-    display: none;
-  }
-  .nav-toggle {
-    display: flex;
-  }
-  .nav.is-open .nav-links {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-2);
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: var(--color-bg);
-    padding: var(--space-3);
-    border-bottom: 1px solid var(--color-line);
-  }
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 600px) {
-  .grid-3,
-  .values-grid,
-  .menu-grid,
-  .insta-grid {
-    grid-template-columns: 1fr;
-  }
-  .footer-grid {
-    grid-template-columns: 1fr;
-  }
-  .hero-stats {
-    flex-wrap: wrap;
-    row-gap: var(--space-2);
-  }
-  .section {
-    padding-block: var(--space-5);
-  }
+@media (prefers-reduced-motion: reduce) {
+  .langgate,
+  .langgate__opt,
+  .langpick button { transition: none; }
 }
