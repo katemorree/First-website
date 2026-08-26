@@ -21,6 +21,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Noto+Sans+Georgian:wght@400;600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" as="image" type="image/webp"
+      imagesrcset="images/cheeseburger-480.webp 480w, images/cheeseburger-640.webp 640w, images/cheeseburger-800.webp 800w, images/cheeseburger-1200.webp 1200w"
+      imagesizes="(max-width: 900px) 74vw, 520px">
 <link rel="stylesheet" href="css/style.css">
 
 <script type="application/ld+json">
@@ -86,44 +89,52 @@
 
 <main id="main">
 
-  <!-- ============ HERO ============ -->
-  <section class="hero">
-    <div class="hero__glow" aria-hidden="true"></div>
-    <div class="wrap hero__grid">
-      <div data-reveal>
-        <p class="eyebrow">Vashlovani St · Tbilisi</p>
-        <h1 class="hero__title">Smashed hard.<span>Served fast.</span></h1>
-        <p class="hero__sub">
-          Smash burgers, sliders, fries and shakes — pressed to order on the flat-top
-          and built for people who take a burger seriously.
-        </p>
-        <div class="btn-row">
-          <a class="btn btn--primary" href="menu.html">View Menu</a>
-          <a class="btn btn--ghost" href="contact.html#order">Order Now</a>
-        </div>
+  <!-- ============ HERO SCROLL STAGE ============
+       Pinned section. js/script.js writes --p (0 to 1) onto .stage as you
+       scroll through the track; every movement is calc()'d from it in
+       css/style.css. Falls back to the resting state with no JS. -->
+  <section class="stage">
+    <div class="stage__track" data-track>
+      <div class="stage__pin">
+        <div class="stage__glow" aria-hidden="true"></div>
+        <span class="stage__wordmark" aria-hidden="true">SAMEO</span>
 
-        <div class="hero__facts">
-          <div class="hero__fact">
-            <b>Burgers from ₾20</b>
-            <span>Smashed to order</span>
+        <div class="wrap stage__grid">
+          <div class="stage__copy">
+            <p class="eyebrow stage__fade">Vashlovani St &middot; Tbilisi</p>
+            <h1 class="stage__title">
+              <span class="stage__line stage__line--a">Smashed hard.</span>
+              <span class="stage__line stage__line--b">Served fast.</span>
+            </h1>
+            <div class="stage__fade">
+              <p class="hero__sub">
+                Smash burgers, sliders, fries and shakes &mdash; pressed to order on the
+                flat-top and built for people who take a burger seriously.
+              </p>
+              <div class="btn-row">
+                <a class="btn btn--primary" href="menu.html">View Menu</a>
+                <a class="btn btn--ghost" href="contact.html#order">Order Now</a>
+              </div>
+              <div class="hero__facts">
+                <div class="hero__fact"><b>Burgers from &#8382;20</b><span>Smashed to order</span></div>
+                <div class="hero__fact"><b>12:00 &ndash; 02:00</b><span>Open every day</span></div>
+                <div class="hero__fact"><b>Vashlovani St</b><span>Tbilisi 0108</span></div>
+              </div>
+            </div>
           </div>
-          <div class="hero__fact">
-            <b>12:00 – 02:00</b>
-            <span>Open every day</span>
-          </div>
-          <div class="hero__fact">
-            <b>Vashlovani St</b>
-            <span>Tbilisi 0108</span>
-          </div>
-        </div>
-      </div>
 
-      <div class="hero__media" data-reveal>
-        <div class="disc shot--hero">
-          <p class="disc__label">
-            Sameo<br>Smash
-            <small lang="ka">სამეო სმეშ</small>
-          </p>
+          <div class="stage__art">
+            <picture>
+              <source type="image/webp"
+                      srcset="images/cheeseburger-480.webp 480w,
+                              images/cheeseburger-640.webp 640w,
+                              images/cheeseburger-800.webp 800w,
+                              images/cheeseburger-1200.webp 1200w"
+                      sizes="(max-width: 900px) 74vw, 520px">
+              <img src="images/cheeseburger.png" alt="Sameo cheeseburger"
+                   width="1448" height="1031" loading="eager" fetchpriority="high" decoding="async">
+            </picture>
+          </div>
         </div>
       </div>
     </div>
@@ -140,6 +151,51 @@
       <li>Fries</li><li>Sauces</li><li>Desserts</li><li>Coffee</li><li>Shakes</li><li>Drinks</li>
     </ul>
   </div>
+
+  <!-- ============ ANATOMY (pinned storytelling) ============
+       Burger pins centre-screen while three captions step past it.
+       js/script.js writes --q and toggles .is-on on the steps. -->
+  <section class="anatomy">
+    <div class="anatomy__track" data-track>
+      <div class="anatomy__pin">
+        <div class="wrap anatomy__grid">
+          <div class="anatomy__art">
+            <picture aria-hidden="true">
+              <source type="image/webp"
+                      srcset="images/cheeseburger-480.webp 480w,
+                              images/cheeseburger-640.webp 640w,
+                              images/cheeseburger-800.webp 800w,
+                              images/cheeseburger-1200.webp 1200w"
+                      sizes="(max-width: 900px) 74vw, 520px">
+              <img src="images/cheeseburger.png" alt=""
+                   width="1448" height="1031" loading="lazy" decoding="async">
+            </picture>
+          </div>
+          <div>
+            <h2 class="eyebrow">Anatomy of the smash</h2>
+            <div class="anatomy__steps">
+              <article class="anatomy__step is-on">
+                <h3>The Press</h3>
+                <p>Loose beef meets a hot flat-top and gets one hard press. No moulding,
+                   no shaping &mdash; that press is where everything starts.</p>
+              </article>
+              <article class="anatomy__step">
+                <h3>The Crust</h3>
+                <p>Seconds of full contact turn the edges lacy, brown and crisp.
+                   That caramelised crust is the whole reason to smash a burger.</p>
+              </article>
+              <article class="anatomy__step">
+                <h3>The Build</h3>
+                <p>Cheese goes on while it is still moving, then it is stacked and
+                   wrapped to travel &mdash; so a takeaway arrives the way it left.</p>
+              </article>
+            </div>
+            <div class="anatomy__count" aria-hidden="true"><i class="is-on"></i><i></i><i></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- ============ WHAT WE SMASH ============ -->
   <section class="section">
@@ -186,7 +242,19 @@
         </article>
 
         <article class="card feature">
-          <div class="feature__face shot--truffle"><span>Truffle</span></div>
+          <div class="feature__face feature__face--product">
+            <picture>
+              <source type="image/webp"
+                      srcset="images/truffle-burger-480.webp 480w,
+                              images/truffle-burger-640.webp 640w,
+                              images/truffle-burger-800.webp 800w,
+                              images/truffle-burger-1200.webp 1200w"
+                      sizes="(max-width: 620px) 92vw, (max-width: 900px) 46vw, 540px">
+              <img class="product-shot" src="images/truffle-burger.png"
+                   alt="Sameo truffle burger" width="1412" height="1051"
+                   loading="lazy" decoding="async">
+            </picture>
+          </div>
           <div class="feature__body">
             <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
               <h3>Truffle Burger</h3>

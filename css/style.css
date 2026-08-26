@@ -1267,6 +1267,296 @@ textarea:focus-visible {
 }
 
 /* =========================================================
+   SCROLL STAGE + ANATOMY  (scroll-driven sections)
+   ---------------------------------------------------------
+   How this works, so it stays maintainable:
+
+   * A tall .*__track wraps a .*__pin that is position:sticky.
+     The browser does the pinning natively — JavaScript never
+     positions anything.
+   * js/script.js writes ONE custom property per section
+     (--p for the stage, --q for the anatomy) holding scroll
+     progress from 0 to 1. Every transform below is derived
+     from it with calc(), so all the tuning numbers live here
+     in the CSS, not buried in the JavaScript.
+   * Only transform and opacity are animated. Both are
+     GPU-composited, so scrolling never triggers layout or
+     repaint.
+   * Amplitudes are variables (--amp-*) so phones can use
+     gentler movement without duplicating the transforms.
+   * Everything falls back to var(--p, 0) — the resting,
+     fully readable state — if JavaScript never runs.
+   ========================================================= */
+
+.stage,
+.anatomy { position: relative; }
+
+/* Without JS the tall tracks would be dead scroll space, so the
+   sticky behaviour is opt-in via the .js class set in <head>. */
+.stage__track,
+.anatomy__track { height: auto; }
+.stage__pin,
+.anatomy__pin { position: static; }
+
+.js .stage__track   { height: 230vh; }
+.js .anatomy__track { height: 300vh; }
+
+.js .stage__pin,
+.js .anatomy__pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  min-height: 34rem;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ---- Hero stage ---- */
+.stage {
+  --amp-x: 12vw;    /* how far the burger travels right */
+  --amp-y: -6vh;    /* and up */
+  --amp-scale: 0.38;/* how much it shrinks */
+  --amp-split: 9vw; /* how far the two headline lines separate */
+}
+
+.stage__pin { padding-block: var(--sp-5); }
+
+.stage__glow {
+  position: absolute;
+  z-index: -1;
+  inset: -25% -15% auto -15%;
+  height: 820px;
+  pointer-events: none;
+  background:
+    radial-gradient(46% 46% at 22% 24%, rgba(255, 90, 31, 0.42), transparent 68%),
+    radial-gradient(42% 42% at 78% 12%, rgba(255, 194, 74, 0.22), transparent 66%);
+  transform: scale(calc(1 - var(--p, 0) * 0.25));
+  opacity: calc(1 - var(--p, 0) * 0.5);
+}
+
+/* Oversized outlined wordmark forming the back plane */
+.stage__wordmark {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: 50%;
+  white-space: nowrap;
+  pointer-events: none;
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 19vw, 17rem);
+  letter-spacing: -0.045em;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(247, 243, 236, 0.11);
+  opacity: calc(0.5 + var(--p, 0) * 0.5);
+  transform:
+    translate3d(-50%, calc(-50% + var(--p, 0) * -4vh), 0)
+    scale(calc(1 + var(--p, 0) * 0.2));
+  will-change: transform;
+}
+
+.stage__grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+  gap: clamp(1.5rem, 5vw, 4.5rem);
+  align-items: center;
+  width: 100%;
+}
+
+/* The stage is pinned to exactly one viewport, so its content must fit in
+   one viewport at every size — otherwise overflow:hidden silently eats the
+   buttons. Every size below is capped by viewport HEIGHT as well as width. */
+.stage__title {
+  font-size: clamp(2.1rem, min(6.4vw, 8.4vh), 4.8rem);
+  margin-bottom: clamp(0.5rem, 1.6vh, 1.4rem);
+}
+.stage__copy .hero__sub {
+  font-size: clamp(0.94rem, min(1.5vw, 2vh), 1.18rem);
+  margin-bottom: clamp(0.8rem, 2vh, 1.7rem);
+}
+.stage .hero__facts {
+  margin-top: clamp(0.9rem, 2.4vh, 2.2rem);
+  padding-top: clamp(0.7rem, 1.8vh, 1.5rem);
+  gap: clamp(0.4rem, 1.4vh, 1rem) var(--sp-4);
+}
+.stage .hero__fact b { font-size: clamp(0.95rem, min(1.5vw, 2vh), 1.35rem); }
+.stage__line { display: block; }
+.stage__line--a {
+  transform: translate3d(calc(var(--p, 0) * var(--amp-split) * -1), 0, 0);
+  opacity: calc(1 - var(--p, 0) * 0.85);
+}
+.stage__line--b {
+  color: var(--flame);
+  transform: translate3d(calc(var(--p, 0) * var(--amp-split)), 0, 0);
+  opacity: calc(1 - var(--p, 0) * 0.85);
+}
+
+/* Sub-copy, buttons and facts clear out early so the burger owns the frame */
+.stage__fade {
+  opacity: calc(1 - var(--p, 0) * 2.2);
+  transform: translate3d(0, calc(var(--p, 0) * -3vh), 0);
+}
+
+.stage__art {
+  position: relative;
+  z-index: 2;
+  transform-origin: 60% 50%;
+  transform:
+    translate3d(calc(var(--p, 0) * var(--amp-x)), calc(var(--p, 0) * var(--amp-y)), 0)
+    scale(calc(1 - var(--p, 0) * var(--amp-scale)))
+    rotate(calc(-4deg + var(--p, 0) * 6deg));
+  will-change: transform;
+}
+/* width:auto + max-width + max-height keeps the aspect ratio intact while
+   fitting BOTH constraints. Setting width:100% with a max-height would
+   squash the burger instead. */
+.stage__art img,
+.anatomy__art img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 52vh;
+  margin-inline: auto;
+  filter: drop-shadow(0 30px 45px rgba(0, 0, 0, 0.65));
+}
+
+/* ---- Anatomy of the smash ---- */
+.anatomy {
+  --amp-rise: -4vh;
+  background: var(--ink-2);
+}
+
+.anatomy__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 5vw, 4rem);
+  align-items: center;
+  width: 100%;
+}
+
+.anatomy__art {
+  transform:
+    translate3d(0, calc(var(--q, 0) * var(--amp-rise)), 0)
+    scale(calc(0.88 + var(--q, 0) * 0.18))
+    rotate(calc(-2deg + var(--q, 0) * 5deg));
+  will-change: transform;
+}
+
+.anatomy__steps {
+  position: relative;
+  min-height: 15rem;
+}
+/* The steps are stacked in the same box, so the outgoing caption must clear
+   before the incoming one arrives — otherwise two blocks of text sit on top
+   of each other mid-transition and neither is readable. The outgoing fade is
+   short; the incoming one is delayed just past it. */
+.anatomy__step {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translate3d(0, 1.6rem, 0);
+  transition: opacity 0.22s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.anatomy__step.is-on {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  transition: opacity 0.42s ease 0.18s, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.18s;
+}
+.anatomy__step h3 { font-size: var(--step-2); margin-bottom: var(--sp-2); }
+.anatomy__step p  { font-size: var(--step-1); max-width: 34ch; }
+
+.anatomy__count {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: var(--sp-4);
+}
+.anatomy__count i {
+  width: 34px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--line-strong);
+  transition: background 0.4s ease;
+}
+.anatomy__count i.is-on { background: var(--flame); }
+
+/* ---- Gentler on tablets and phones ---- */
+@media (max-width: 900px) {
+  .stage {
+    --amp-x: 5vw;
+    --amp-y: -3vh;
+    --amp-scale: 0.26;
+    --amp-split: 4vw;
+  }
+  .js .stage__track   { height: 185vh; }
+  .js .anatomy__track { height: 260vh; }
+
+  .stage__grid,
+  .anatomy__grid { grid-template-columns: minmax(0, 1fr); }
+  .stage__art { order: -1; max-width: 74%; margin-inline: auto; }
+  .stage__art img { max-height: 30vh; }
+  .anatomy__art { max-width: 72%; margin-inline: auto; }
+  .anatomy__art img { max-height: 34vh; }
+  .anatomy__steps { min-height: 13rem; }
+  .stage__wordmark { font-size: clamp(4rem, 26vw, 9rem); }
+}
+
+@media (max-width: 620px) {
+  .stage__art img { max-height: 26vh; }
+  .js .stage__track   { height: 165vh; }
+  .js .anatomy__track { height: 240vh; }
+  .anatomy__steps { min-height: 15rem; }
+}
+
+/* Very short viewports (small phones, landscape): the stage still has to fit
+   one screen, so drop the facts strip — the same information is repeated in
+   the location section and the footer — and shrink the burger further. */
+@media (max-height: 640px) {
+  .stage .hero__facts { display: none; }
+  .stage__art img { max-height: 21vh; }
+  .stage__title { font-size: clamp(1.9rem, min(6vw, 7.6vh), 3.4rem); }
+  .js .stage__pin { min-height: 0; }
+}
+
+/* ---- Reduced motion: no pinning, no tall tracks, resting state ---- */
+@media (prefers-reduced-motion: reduce) {
+  .js .stage__track,
+  .js .anatomy__track { height: auto; }
+  .js .stage__pin,
+  .js .anatomy__pin {
+    position: static;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    padding-block: var(--sp-6);
+  }
+  .stage__glow,
+  .stage__wordmark,
+  .stage__line--a,
+  .stage__line--b,
+  .stage__fade,
+  .stage__art,
+  .anatomy__art {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .stage__wordmark { opacity: 0.5 !important; }
+  .anatomy__steps { min-height: 0; }
+  .anatomy__step {
+    position: static;
+    opacity: 1 !important;
+    transform: none !important;
+    margin-bottom: var(--sp-4);
+  }
+  .anatomy__count { display: none; }
+}
+
+/* =========================================================
    PHOTO SLOTS
    ---------------------------------------------------------
    The only place you touch to add real photography.
@@ -1287,11 +1577,11 @@ textarea:focus-visible {
    Prompts for generating each image: images/PROMPTS.md
    ========================================================= */
 
-/* .shot--hero     { --shot: url("../images/hero-burger.jpg");     --label: 0; } */
-/* Cheeseburger has no slot here: it uses a real transparent PNG placed
-   directly in the HTML of index.html and menu.html. See README section 3. */
+/* No hero, cheeseburger or truffle slot here. The homepage hero is now a scroll
+   stage built around the real transparent cheeseburger cut-out; the
+   cheeseburger and truffle burger both use real cut-outs placed directly
+   in the HTML of index.html and menu.html. See README section 3. */
 /* .shot--chili    { --shot: url("../images/burger-chili.jpg");    --label: 0; } */
-/* .shot--truffle  { --shot: url("../images/burger-truffle.jpg");  --label: 0; } */
 /* .shot--veggie   { --shot: url("../images/burger-veggie.jpg");   --label: 0; } */
 /* .shot--fries    { --shot: url("../images/fries.jpg");           --label: 0; } */
 /* .shot--shake    { --shot: url("../images/shake.jpg");           --label: 0; } */

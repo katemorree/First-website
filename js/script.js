@@ -92,7 +92,107 @@
       revealEls.forEach(function (el) { el.classList.add("is-in"); });
     }
 
-    /* ---------- 4. Contact form ---------- */
+    /* ---------- 4. Scroll-driven sections ----------
+       Drives the pinned hero stage and the "anatomy" section.
+
+       Design notes:
+       - ONE requestAnimationFrame loop serves every section. Scroll events
+         only set a flag; all reading and writing happens once per frame.
+       - Each section gets a single custom property (--p / --q) holding its
+         progress from 0 to 1. All the actual movement is expressed as
+         calc() in the stylesheet, so the tuning lives with the design.
+       - IntersectionObserver switches sections off while they are out of
+         view, so scrolling the rest of the page costs nothing.
+       - Rects are read for every active section first, then styles are
+         written — never interleaved, so there is no layout thrashing.
+       - If the visitor prefers reduced motion we never start the loop at
+         all; the stylesheet already renders the resting state.
+    */
+    var reduceMotion = window.matchMedia
+      && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    var sections = [];
+
+    function addSection(rootSel, varName, onProgress) {
+      var root = document.querySelector(rootSel);
+      if (!root) return;
+      var track = root.querySelector("[data-track]");
+      if (!track) return;
+      sections.push({ root: root, track: track, name: varName,
+                      onProgress: onProgress, active: false, last: -1 });
+    }
+
+    addSection(".stage", "--p", null);
+
+    // Anatomy also swaps which caption is showing
+    var steps = [].slice.call(document.querySelectorAll(".anatomy__step"));
+    var dots  = [].slice.call(document.querySelectorAll(".anatomy__count i"));
+    addSection(".anatomy", "--q", function (q) {
+      if (!steps.length) return;
+      var i = Math.floor(q * steps.length);
+      if (i > steps.length - 1) i = steps.length - 1;
+      if (i < 0) i = 0;
+      if (i === this.step) return;          // only touch the DOM on change
+      this.step = i;
+      steps.forEach(function (el, n) { el.classList.toggle("is-on", n === i); });
+      dots.forEach(function (el, n) { el.classList.toggle("is-on", n <= i); });
+    });
+
+    if (sections.length && !reduceMotion) {
+      var queued = false;
+
+      function render() {
+        queued = false;
+        var live = sections.filter(function (s) { return s.active; });
+        if (!live.length) return;
+
+        // Read every rect first...
+        var values = live.map(function (s) {
+          var r = s.track.getBoundingClientRect();
+          var span = r.height - window.innerHeight;
+          if (span <= 0) return 0;
+          var p = -r.top / span;
+          return p < 0 ? 0 : p > 1 ? 1 : p;
+        });
+
+        // ...then write, so reads and writes are never interleaved.
+        live.forEach(function (s, i) {
+          var p = values[i];
+          if (Math.abs(p - s.last) < 0.0005) return;  // skip imperceptible changes
+          s.last = p;
+          s.root.style.setProperty(s.name, p.toFixed(4));
+          if (s.onProgress) s.onProgress(p);
+        });
+      }
+
+      function schedule() {
+        if (!queued) { queued = true; requestAnimationFrame(render); }
+      }
+
+      if ("IntersectionObserver" in window) {
+        var gate = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            sections.forEach(function (s) {
+              if (s.track === e.target) s.active = e.isIntersecting;
+            });
+          });
+          schedule();
+        }, { rootMargin: "120px 0px" });
+        sections.forEach(function (s) { gate.observe(s.track); });
+      } else {
+        sections.forEach(function (s) { s.active = true; });
+      }
+
+      window.addEventListener("scroll", schedule, { passive: true });
+      window.addEventListener("resize", function () {
+        sections.forEach(function (s) { s.last = -1; });  // force a recompute
+        schedule();
+      }, { passive: true });
+
+      schedule();
+    }
+
+    /* ---------- 5. Contact form ---------- */
     var form = document.getElementById("contact-form");
     var status = document.getElementById("form-status");
 

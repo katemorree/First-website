@@ -71,35 +71,61 @@ The eight remaining slots: hero, chili cheeseburger, truffle burger, veggie
 burger, fries, shakes, coffee, interior. (The cheeseburger has no slot — it
 already uses a real photo; see below.)
 
-### The cheeseburger photo (real product image)
+### Real product photos
 
-The cheeseburger is the one product using a **real photograph** supplied by
-the business — a transparent-background PNG of the actual burger. It is not
-AI-generated and must not be swapped for a generated image.
+Two products use **real photographs** supplied by the business —
+transparent-background PNGs of the actual burgers. Neither is AI-generated,
+and neither should be swapped for a generated image.
 
-Files, all in `images/`:
+**Cheeseburger** — files in `images/`:
 
 | File | Size | Purpose |
 |---|---|---|
 | `cheeseburger-480.webp` | 73 KB | small phones at 1x |
-| `cheeseburger-640.webp` | 122 KB | small phones at 2x |
-| `cheeseburger-800.webp` | 186 KB | phones/tablets at 2x, desktop 1x |
+| `cheeseburger-640.webp` | 122 KB | small phones at 2x, desktop 1x |
+| `cheeseburger-800.webp` | 186 KB | phones and tablets at 2x |
 | `cheeseburger-1200.webp` | 379 KB | desktop at 2x (retina) |
 | `cheeseburger.png` | 523 KB | fallback for browsers without WebP |
+
+**Truffle burger** — files in `images/`:
+
+| File | Size | Purpose |
+|---|---|---|
+| `truffle-burger-480.webp` | 82 KB | small phones at 1x |
+| `truffle-burger-640.webp` | 140 KB | small phones at 2x, desktop 1x |
+| `truffle-burger-800.webp` | 217 KB | phones and tablets at 2x |
+| `truffle-burger-1200.webp` | 433 KB | desktop at 2x (retina) |
+| `truffle-burger.png` | 579 KB | fallback for browsers without WebP |
 
 The browser downloads **only one** of these — whichever matches the screen.
 A typical phone loads 186 KB, not the whole set.
 
-It is placed directly in the HTML of `index.html` and `menu.html` (the
-Cheeseburger card only) as a `<picture>` element, with
-`alt="Sameo cheeseburger"`. It uses `object-fit: contain`, so the burger is
-scaled to fit and is never cropped or stretched. The transparent background
-lets the brand gradient show through behind it.
+Where each one appears:
 
-**To update the photo later:** re-export the same five files at the same
-sizes and filenames, replacing what is in `images/`. No code changes needed.
-Keep the transparent background, and keep the same proportions or the
-`width`/`height` attributes in the HTML will need updating too.
+| Photo | Used on |
+|---|---|
+| Cheeseburger | Home page hero (the scroll stage) and the anatomy section; the Cheeseburger card on the home page and on the menu page |
+| Truffle burger | The Truffle Burger card on the home page and on the menu page |
+
+Each photo is used **only for its own product**. The Chili Cheeseburger and
+Veggie Burger still show brand graphics, and must not be given either of
+these photos.
+
+Both are placed directly in the HTML as `<picture>` elements with accurate
+alt text, and use `object-fit: contain`, so a burger is scaled to fit and is
+never cropped or stretched. The transparent background lets the brand
+gradient show through behind it.
+
+**To update a photo later:** re-export the same five files at the same sizes
+and filenames, replacing what is in `images/`. No code changes needed. Keep
+the transparent background, and keep the same proportions — otherwise the
+`width`/`height` attributes in the HTML need updating too.
+
+**To add a photo for the chili or veggie burger:** follow the same pattern —
+five files named `chili-burger-*` or `veggie-burger-*`, then copy one of the
+existing `<picture>` blocks and swap the filenames, the `alt` text and the
+`width`/`height`. Then delete that product's line from the PHOTO SLOTS block
+in `css/style.css`.
 
 ### If you use AI-generated images
 
@@ -258,3 +284,47 @@ on the home page). If a burger price changes, update **both** files.
 - **Motion**: all animation is disabled automatically for visitors who have
   "reduce motion" switched on.
 - Verified for horizontal overflow from 320px to 1920px wide.
+
+---
+
+## 8. Scroll animations
+
+The home page has two scroll-driven sections. Everything else on the site uses
+only the gentle fade-up reveals.
+
+| Section | What happens |
+|---|---|
+| **Hero stage** | Pins for about two screens. The burger shrinks and drifts right, the two headline lines separate left and right, an oversized outlined wordmark scales behind them, and the sub-copy and buttons clear out. |
+| **Anatomy of the smash** | Pins for about three screens. The burger stays centred while three captions — The Press, The Crust, The Build — step past it. |
+
+### How it is built
+
+- `position: sticky` does the pinning. JavaScript never positions anything.
+- `js/script.js` writes **one number** per section onto the section element:
+  `--p` for the hero, `--q` for the anatomy, each running 0 to 1 as you scroll
+  through it. Every movement is calculated from that number with `calc()` in
+  `css/style.css`.
+- **All the tuning lives in the CSS**, in the block headed
+  `SCROLL STAGE + ANATOMY`. To make the burger travel further, change
+  `--amp-x`. To make it shrink more, change `--amp-scale`. You do not need to
+  touch the JavaScript.
+
+### Why it stays fast
+
+- One `requestAnimationFrame` loop drives every section, not one per element.
+- Only `transform` and `opacity` are animated — both are handled by the GPU,
+  so scrolling never triggers a re-layout.
+- `IntersectionObserver` switches a section off while it is off-screen.
+- Measured with the CPU throttled 4x to imitate a mid-range phone: **zero long
+  tasks** while scrolling the whole page.
+
+### Accessibility and fallbacks
+
+- **Reduced motion:** if the visitor has "reduce motion" switched on, the loop
+  never starts, the tall tracks collapse to normal height, nothing pins, and
+  all three anatomy captions are shown stacked and readable.
+- **No JavaScript:** identical result — the tracks collapse and the hero shows
+  its resting state with the buttons visible.
+- The pinned sections are sized so their content always fits one screen, down
+  to a 320x568 phone. On very short screens the hero's facts strip is hidden,
+  since the same information is repeated in the location section and footer.

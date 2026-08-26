@@ -31,18 +31,12 @@ shots, and square 1:1 for the hero and interior. Export JPG, quality around
 
 ---
 
-## 1. Hero — `hero-burger.jpg`  (square 1:1, shown inside a circle)
+## 1. Hero — not needed
 
-> Extreme close-up of a double smash burger, two thin beef patties with
-> crispy lacy caramelised edges, melted American cheese draping over the
-> sides, soft toasted bun, glossy house sauce, stacked tall and slightly
-> off-centre. Shot from a low three-quarter angle. Dark moody food
-> photography, near-black charcoal background, warm orange and amber rim
-> lighting, shallow depth of field, high detail, appetising, premium
-> independent burger brand, editorial food styling, no text, no logos, no
-> watermark, no people's faces.
+The homepage hero is a scroll-driven stage built around the real
+transparent cheeseburger cut-out, so it needs no generated hero image.
 
-*Keep the burger centred — the circular frame crops the corners.*
+---
 
 ## 2. Cheeseburger — SUPPLIED, no prompt needed
 
@@ -63,15 +57,11 @@ replace it with a generated image. Files: `cheeseburger.png` and the
 > independent burger brand, editorial food styling, no text, no logos, no
 > watermark, no people's faces.
 
-## 4. Truffle burger — `burger-truffle.jpg`  (16:10)
+## 4. Truffle burger — SUPPLIED, no prompt needed
 
-> A premium truffle smash burger, beef patty with crisp edges, pale melted
-> white cheese, glossy dark truffle sauce, thin onion, soft bun. Richer and
-> more luxurious than the standard cheeseburger — deeper shadows, golden
-> highlights. Dark moody food photography, near-black charcoal background,
-> warm orange and amber rim lighting, shallow depth of field, high detail,
-> appetising, premium independent burger brand, editorial food styling, no
-> text, no logos, no watermark, no people's faces.
+The truffle burger uses a **real transparent PNG of the actual product**,
+supplied by the business. Do not generate one. Files: `truffle-burger.png`
+and the `truffle-burger-*.webp` set.
 
 ## 5. Veggie burger — `burger-veggie.jpg`  (16:10)
 
@@ -145,10 +135,10 @@ roughly 30% smaller at the same quality and work in every current browser.
 
 | Slot | Filename | Shape |
 |---|---|---|
-| Hero | `hero-burger.jpg` | 1:1 |
+| Hero | *uses the real cheeseburger cut-out* | — |
 | Cheeseburger | *real photo already in place* | — |
 | Chili cheeseburger | `burger-chili.jpg` | 16:10 |
-| Truffle burger | `burger-truffle.jpg` | 16:10 |
+| Truffle burger | *real photo already in place* | — |
 | Veggie burger | `burger-veggie.jpg` | 16:10 |
 | Fries | `fries.jpg` | 16:10 |
 | Shakes | `shake.jpg` | 16:10 |
