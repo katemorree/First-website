@@ -425,7 +425,48 @@ booking a photographer anyway; it is a single extra setup on the day.
 
 ---
 
-## 9. Languages (English / Русский / ქართული)
+## 9. The Order Now button
+
+Every **Order Now** on the site — in the header, in the hero, in the band at
+the foot of each page, and in the bar that sits at the bottom of a phone
+screen — opens the same small window with three ways to order:
+
+| Option | Where it goes |
+|---|---|
+| Order on Wolt | the restaurant's Wolt page, in a new tab |
+| Order on Glovo | the restaurant's Glovo page, in a new tab |
+| Call to Order | the phone dialler, on +995 511 10 08 35 |
+
+**Nothing dials straight away.** A button that starts a phone call the
+instant you touch it is an unpleasant surprise, and two of the three ways to
+order here are not the phone at all. The visitor picks.
+
+### Editing it
+
+The window is built by `js/script.js` — look for **5. Order chooser** near
+the bottom. There is one copy of the markup there rather than one per page,
+so changing the wording or adding a fourth option is a single edit. Its text
+is written in English like the rest of the site and is translated the same
+way, through `js/i18n-data.js`.
+
+**To turn an existing button into one that opens it,** add `data-order`:
+
+```html
+<a data-i18n data-order class="btn btn--primary" href="contact.html#order">Order Now</a>
+```
+
+Keep the `href`. It is what happens if JavaScript does not run — the button
+still goes to the order section on the Contact page — and it is what a
+visitor gets if they open the link in a new tab on purpose.
+
+**If the Wolt or Glovo address ever changes,** it appears in three places:
+`js/script.js` (the window), `contact.html` (the order cards), and
+`index.html` (both the order cards and the `sameAs` list in the search-engine
+block at the top of the file).
+
+---
+
+## 10. Languages (English / Русский / ქართული)
 
 The site is in three languages. English is the original: it is what is written
 in the HTML files. Russian and Georgian are swapped in by the browser.

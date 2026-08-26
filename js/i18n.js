@@ -90,17 +90,20 @@
 
   var units = [];
 
-  function collect() {
-    units = [];
+  /* `root` is a document by default, but anything added to the page later can
+     be passed in instead — see window.SameoLang.adopt at the foot of this
+     file. Whatever is passed, its English is read once and remembered, so it
+     can always be put back. */
+  function collect(root) {
     var i, j, el, list;
 
-    list = document.querySelectorAll("[data-i18n]");
+    list = root.querySelectorAll("[data-i18n]");
     for (i = 0; i < list.length; i++) {
       el = list[i];
       units.push({ el: el, attr: null, en: el.innerHTML, key: squash(el.innerHTML) });
     }
 
-    list = document.querySelectorAll("[data-i18n-attr]");
+    list = root.querySelectorAll("[data-i18n-attr]");
     for (i = 0; i < list.length; i++) {
       el = list[i];
       var names = el.getAttribute("data-i18n-attr").split(",");
@@ -241,8 +244,21 @@
 
   /* ---------- start ---------- */
 
+  /* Anything built by another script after this one has run — the order
+     chooser in js/script.js, for instance — is written in English like the
+     rest of the site and hands itself over here to be translated. */
+  window.SameoLang = {
+    adopt: function (root) {
+      if (!root) return;
+      collect(root);
+      apply(current);
+    },
+    current: function () { return current; }
+  };
+
   function start() {
-    collect();
+    units = [];
+    collect(document);
     buildPicker();
 
     var stored = read();

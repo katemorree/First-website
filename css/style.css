@@ -1982,6 +1982,151 @@ textarea:focus-visible {
 }
 
 /* =========================================================
+   ORDER CHOOSER
+   ---------------------------------------------------------
+   Opened by every "Order Now" on the site. Built by
+   js/script.js, so there is one copy of it rather than one
+   per page. It borrows the language chooser's shape — same
+   backdrop, same panel, same rhythm — because a visitor who
+   has already met that one should recognise this.
+   ========================================================= */
+
+.orderbox {
+  position: fixed;
+  inset: 0;
+  z-index: 990;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-4) var(--sp-3);
+  background: rgba(8, 7, 6, 0.72);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.32s ease, visibility 0s linear 0.32s;
+}
+.orderbox.is-open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.32s ease, visibility 0s;
+}
+
+.orderbox__panel {
+  position: relative;
+  width: min(30rem, 100%);
+  padding: clamp(1.6rem, 1.2rem + 2vw, 2.6rem);
+  text-align: center;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 90, 31, 0.16), transparent 68%),
+    var(--surface);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+  /* The panel arrives a beat after the backdrop and settles rather than
+     snapping, which is the whole difference between a dialog appearing and
+     a dialog being thrown at you. */
+  transform: translate3d(0, 14px, 0) scale(0.97);
+  opacity: 0;
+  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.28s ease;
+}
+.orderbox.is-open .orderbox__panel {
+  transform: none;
+  opacity: 1;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.06s,
+              opacity 0.34s ease 0.06s;
+}
+
+.orderbox__eyebrow { justify-content: center; margin-bottom: var(--sp-2); }
+.orderbox__title { font-size: var(--step-2); margin-bottom: var(--sp-2); }
+.orderbox__sub {
+  font-size: var(--step--1);
+  max-width: 34ch;
+  margin-inline: auto;
+  margin-bottom: var(--sp-4);
+}
+
+.orderbox__close {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.orderbox__close:hover { color: var(--cream); background: rgba(247, 243, 236, 0.07); }
+
+.orderbox__opts { display: grid; gap: 0.7rem; }
+
+.orderbox__opt {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.85rem 1rem;
+  min-height: 62px;
+  align-content: center;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  color: var(--cream);
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.22s ease, background 0.22s ease;
+}
+.orderbox__opt b {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.orderbox__opt small { font-size: 0.74rem; color: var(--muted); }
+
+/* Each option arrives just behind the one above it, so the three read as a
+   list being dealt out rather than three things flashing at once. */
+.orderbox__opt { opacity: 0; transform: translate3d(0, 10px, 0); }
+.orderbox.is-open .orderbox__opt {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.3s ease, transform 0.44s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.22s ease, background 0.22s ease;
+}
+.orderbox.is-open .orderbox__opt:nth-child(1) { transition-delay: 0.14s; }
+.orderbox.is-open .orderbox__opt:nth-child(2) { transition-delay: 0.20s; }
+.orderbox.is-open .orderbox__opt:nth-child(3) { transition-delay: 0.26s; }
+
+/* The delivery services keep their own colours, which is what makes them
+   recognisable at a glance. */
+.orderbox__opt--wolt  { border-color: rgba(41, 211, 244, 0.42); }
+.orderbox__opt--glovo { border-color: rgba(255, 211, 111, 0.42); }
+.orderbox__opt--call  { border-color: rgba(255, 90, 31, 0.45); }
+
+@media (hover: hover) {
+  .orderbox__opt:hover { transform: translateY(-2px); background: #2a241f; }
+  .orderbox__opt--wolt:hover  { border-color: #29d3f4; }
+  .orderbox__opt--glovo:hover { border-color: #ffd36f; }
+  .orderbox__opt--call:hover  { border-color: var(--flame); }
+}
+.orderbox__opt:active { transform: scale(0.985); }
+
+.order-open { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .orderbox,
+  .orderbox__panel,
+  .orderbox__opt { transition: none; }
+  .orderbox__panel { transform: none; }
+  .orderbox.is-open .orderbox__opt { transition-delay: 0s; }
+}
+
+/* =========================================================
    16. LANGUAGE  (English / Русский / ქართული)
    ---------------------------------------------------------
    Three parts: the fonts each language needs, the full-screen

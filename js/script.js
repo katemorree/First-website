@@ -4,7 +4,9 @@
    1. Mobile navigation
    2. Sticky header state
    3. Scroll reveal (staggered)
-   4. Contact form
+   4. Scroll-driven sections
+   5. Order chooser
+   6. Contact form
    ========================================================= */
 
 (function () {
@@ -264,7 +266,111 @@
       schedule();
     }
 
-    /* ---------- 5. Contact form ---------- */
+    /* ---------- 5. Order chooser ----------
+       Every "Order Now" on the site opens this instead of doing anything
+       immediately: three ways to order, and the visitor picks. Tapping a
+       button that dials a phone without warning is a horrible surprise, and
+       two of the three ways to order here are not the phone at all.
+
+       There is one copy of the markup, built here, so it is the same chooser
+       on all five pages. Every trigger keeps a real href pointing at the
+       order section on the contact page, so with JavaScript off the buttons
+       still go somewhere sensible — this only ever intercepts a click it can
+       actually handle.
+
+       The text is written in English and handed to the language system to
+       translate, the same as the rest of the site. */
+    var ORDER_HTML =
+      '<div class="orderbox" role="dialog" aria-modal="true" aria-labelledby="orderbox-title">' +
+        '<div class="orderbox__panel">' +
+          '<button class="orderbox__close" type="button" ' +
+                  'data-i18n-attr="aria-label" aria-label="Close">&times;</button>' +
+          '<p data-i18n class="eyebrow orderbox__eyebrow">Sameo Smash</p>' +
+          '<h2 data-i18n class="orderbox__title" id="orderbox-title">Order Now</h2>' +
+          '<p data-i18n class="orderbox__sub">Delivery through Wolt and Glovo, or call the kitchen direct.</p>' +
+          '<div class="orderbox__opts">' +
+            '<a class="orderbox__opt orderbox__opt--wolt" ' +
+               'href="https://wolt.com/en/geo/tbilisi/restaurant/sameo" ' +
+               'target="_blank" rel="noopener">' +
+              '<b data-i18n>Order on Wolt</b><small data-i18n>Delivery</small></a>' +
+            '<a class="orderbox__opt orderbox__opt--glovo" ' +
+               'href="https://glovoapp.com/en/ge/tbilisi/stores/sameo-tbi" ' +
+               'target="_blank" rel="noopener">' +
+              '<b data-i18n>Order on Glovo</b><small data-i18n>Delivery</small></a>' +
+            '<a class="orderbox__opt orderbox__opt--call" href="tel:+995511100835">' +
+              '<b data-i18n>Call to Order</b><small>+995 511 10 08 35</small></a>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    var orderBox = null;
+    var orderOpener = null;
+
+    function buildOrder() {
+      if (orderBox) return orderBox;
+      var holder = document.createElement("div");
+      holder.innerHTML = ORDER_HTML;
+      orderBox = holder.firstChild;
+      document.body.appendChild(orderBox);
+
+      // Hand the new markup to the language system so it speaks whatever the
+      // rest of the page is speaking.
+      if (window.SameoLang) window.SameoLang.adopt(orderBox);
+
+      orderBox.addEventListener("click", function (e) {
+        // A tap on the backdrop, or on the close button, dismisses it. A tap
+        // on one of the three options lets the link do its job and closes up
+        // behind it, so coming back from Wolt does not land on a dead modal.
+        if (e.target === orderBox || e.target.closest(".orderbox__close")) {
+          e.preventDefault();
+          closeOrder();
+        } else if (e.target.closest(".orderbox__opt")) {
+          closeOrder();
+        }
+      });
+
+      orderBox.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") { closeOrder(); return; }
+        if (e.key !== "Tab") return;
+        var focusable = orderBox.querySelectorAll("a[href], button");
+        var edge = e.shiftKey ? focusable[0] : focusable[focusable.length - 1];
+        if (document.activeElement === edge) {
+          e.preventDefault();
+          (e.shiftKey ? focusable[focusable.length - 1] : focusable[0]).focus();
+        }
+      });
+
+      return orderBox;
+    }
+
+    function openOrder(opener) {
+      var box = buildOrder();
+      orderOpener = opener || null;
+      document.documentElement.classList.add("order-open");
+      box.classList.add("is-open");
+      var first = box.querySelector(".orderbox__opt");
+      if (first) first.focus();
+    }
+
+    function closeOrder() {
+      if (!orderBox) return;
+      document.documentElement.classList.remove("order-open");
+      orderBox.classList.remove("is-open");
+      if (orderOpener) { orderOpener.focus(); orderOpener = null; }
+    }
+
+    // One listener for the whole document rather than one per button: the
+    // triggers sit in the header, the hero, the footer band and the mobile
+    // bar, and this way a new one only needs the data-order attribute.
+    document.addEventListener("click", function (e) {
+      var trigger = e.target.closest("[data-order]");
+      if (!trigger) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0) return;  // let
+      e.preventDefault();                                               // open-in-new-tab through
+      openOrder(trigger);
+    });
+
+    /* ---------- 6. Contact form ---------- */
     var form = document.getElementById("contact-form");
     var status = document.getElementById("form-status");
 

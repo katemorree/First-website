@@ -16,13 +16,16 @@
    ⚠️ These translations were produced by Claude, not by a
    native speaker. Georgian especially must be reviewed by
    someone local before this is shown to customers — it is
-   the restaurant's home market. See README §9.
+   the restaurant's home market. See README section 10.
    ========================================================= */
 
 window.SAMEO_I18N = {
 
   /* ------------------------------------------------------ */
   ru: {
+    "Delivery through Wolt and Glovo, or call the kitchen direct.":
+      "Доставка через Wolt и Glovo, или позвоните прямо на кухню.",
+    "Close": "Закрыть",
     "Sides &amp; Sauces": "Гарниры и соусы",
 
     /* --- page titles (browser tab) --- */
@@ -293,6 +296,9 @@ window.SAMEO_I18N = {
 
   /* ------------------------------------------------------ */
   ka: {
+    "Delivery through Wolt and Glovo, or call the kitchen direct.":
+      "მიტანა Wolt-ითა და Glovo-თი, ან დარეკეთ პირდაპირ სამზარეულოში.",
+    "Close": "დახურვა",
     "Sides &amp; Sauces": "გარნირები და სოუსები",
 
     /* --- page titles (browser tab) --- */
