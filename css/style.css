@@ -903,6 +903,41 @@ textarea:focus-visible {
 }
 .panel:target { border-color: var(--flame); }
 
+/* Product image inside a menu panel (used by Sliders).
+   The slider shot is a two-up composition, so it is far wider (2.37) than
+   the single-burger cut-outs (1.2 to 1.5). Giving the frame the image's own
+   ratio lets it fill edge to edge with no dead band above and below, and it
+   spans the full panel width so its presence matches the burger cards.
+   Everything else — object-fit:contain, centring, the drop shadow and the
+   hover scale — is inherited from .product-shot, shared with the burgers. */
+.panel__media {
+  position: relative;
+  margin: calc(var(--sp-4) * -1) calc(var(--sp-4) * -1) var(--sp-3);
+  aspect-ratio: 2.37 / 1;
+  overflow: hidden;
+  border-radius: var(--r-md) var(--r-md) 0 0;
+  border-bottom: 1px solid var(--line);
+  background-color: var(--ink-2);
+  background-image:
+    radial-gradient(90% 120% at 30% 0%, rgba(255, 90, 31, 0.5), transparent 62%),
+    linear-gradient(155deg, #2a231d, #141110);
+}
+.panel__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(13, 12, 11, 0.7), rgba(13, 12, 11, 0.1) 60%);
+  opacity: 0.4;
+}
+.panel__media picture {
+  position: absolute;
+  inset: 0;
+  display: block;
+  z-index: 2;
+}
+.panel:hover .product-shot { transform: scale(1.05); }
+
 .panel__title {
   display: flex;
   align-items: baseline;
