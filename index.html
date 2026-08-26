@@ -231,7 +231,19 @@
         </article>
 
         <article class="card feature">
-          <div class="feature__face shot--chili"><span>Chili</span></div>
+          <div class="feature__face feature__face--product">
+            <picture>
+              <source type="image/webp"
+                      srcset="images/chili-burger-480.webp 480w,
+                              images/chili-burger-640.webp 640w,
+                              images/chili-burger-800.webp 800w,
+                              images/chili-burger-1200.webp 1200w"
+                      sizes="(max-width: 620px) 92vw, (max-width: 900px) 46vw, 540px">
+              <img class="product-shot" src="images/chili-burger.png"
+                   alt="Sameo chili cheeseburger" width="1253" height="1214"
+                   loading="lazy" decoding="async">
+            </picture>
+          </div>
           <div class="feature__body">
             <div class="panel__title" style="border:0;padding:0;margin-bottom:0.5rem">
               <h3>Chili Cheeseburger</h3>

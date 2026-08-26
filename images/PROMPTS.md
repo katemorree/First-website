@@ -47,15 +47,11 @@ replace it with a generated image. Files: `cheeseburger.png` and the
 
 ---
 
-## 3. Chili cheeseburger — `burger-chili.jpg`  (16:10)
+## 3. Chili cheeseburger — SUPPLIED, no prompt needed
 
-> A smash cheeseburger with sliced green jalapeños and a glossy amber
-> mango-chili sauce running down the side, melted cheese, lettuce, onion,
-> soft bun. Slight steam. Warm reddish highlights suggesting heat. Dark moody
-> food photography, near-black charcoal background, warm orange and amber rim
-> lighting, shallow depth of field, high detail, appetising, premium
-> independent burger brand, editorial food styling, no text, no logos, no
-> watermark, no people's faces.
+The chili cheeseburger uses a **real transparent PNG of the actual
+product**, supplied by the business. Do not generate one. Files:
+`chili-burger.png` and the `chili-burger-*.webp` set.
 
 ## 4. Truffle burger — SUPPLIED, no prompt needed
 
@@ -137,7 +133,7 @@ roughly 30% smaller at the same quality and work in every current browser.
 |---|---|---|
 | Hero | *uses the real cheeseburger cut-out* | — |
 | Cheeseburger | *real photo already in place* | — |
-| Chili cheeseburger | `burger-chili.jpg` | 16:10 |
+| Chili cheeseburger | *real photo already in place* | — |
 | Truffle burger | *real photo already in place* | — |
 | Veggie burger | `burger-veggie.jpg` | 16:10 |
 | Fries | `fries.jpg` | 16:10 |

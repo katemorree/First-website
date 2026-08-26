@@ -73,9 +73,9 @@ already uses a real photo; see below.)
 
 ### Real product photos
 
-Two products use **real photographs** supplied by the business —
-transparent-background PNGs of the actual burgers. Neither is AI-generated,
-and neither should be swapped for a generated image.
+Three products use **real photographs** supplied by the business —
+transparent-background PNGs of the actual burgers. None is AI-generated, and
+none should be swapped for a generated image.
 
 **Cheeseburger** — files in `images/`:
 
@@ -86,6 +86,16 @@ and neither should be swapped for a generated image.
 | `cheeseburger-800.webp` | 186 KB | phones and tablets at 2x |
 | `cheeseburger-1200.webp` | 379 KB | desktop at 2x (retina) |
 | `cheeseburger.png` | 523 KB | fallback for browsers without WebP |
+
+**Chili cheeseburger** — files in `images/`:
+
+| File | Size | Purpose |
+|---|---|---|
+| `chili-burger-480.webp` | 87 KB | small phones at 1x |
+| `chili-burger-640.webp` | 151 KB | small phones at 2x, desktop 1x |
+| `chili-burger-800.webp` | 240 KB | phones and tablets at 2x |
+| `chili-burger-1200.webp` | 469 KB | desktop at 2x (retina) |
+| `chili-burger.png` | 638 KB | fallback for browsers without WebP |
 
 **Truffle burger** — files in `images/`:
 
@@ -105,11 +115,17 @@ Where each one appears:
 | Photo | Used on |
 |---|---|
 | Cheeseburger | Home page hero (the scroll stage) and the anatomy section; the Cheeseburger card on the home page and on the menu page |
+| Chili cheeseburger | The Chili Cheeseburger card on the home page and on the menu page |
 | Truffle burger | The Truffle Burger card on the home page and on the menu page |
 
-Each photo is used **only for its own product**. The Chili Cheeseburger and
-Veggie Burger still show brand graphics, and must not be given either of
-these photos.
+Each photo is used **only for its own product**.
+
+> **The Veggie Burger has no photo, deliberately.** An image supplied for it
+> showed beef patties and jalapeños, which matches the Chili Cheeseburger,
+> not the falafel-based Veggie Burger. It was used for the chili burger
+> instead. Do not put a meat photo on the Veggie Burger: someone ordering a
+> vegetarian item from that picture would be actively misled. The Veggie
+> Burger keeps its brand graphic until a real falafel photo exists.
 
 Both are placed directly in the HTML as `<picture>` elements with accurate
 alt text, and use `object-fit: contain`, so a burger is scaled to fit and is
@@ -121,8 +137,8 @@ and filenames, replacing what is in `images/`. No code changes needed. Keep
 the transparent background, and keep the same proportions — otherwise the
 `width`/`height` attributes in the HTML need updating too.
 
-**To add a photo for the chili or veggie burger:** follow the same pattern —
-five files named `chili-burger-*` or `veggie-burger-*`, then copy one of the
+**To add the veggie burger photo:** follow the same pattern — five files
+named `veggie-burger-*`, then copy one of the
 existing `<picture>` blocks and swap the filenames, the `alt` text and the
 `width`/`height`. Then delete that product's line from the PHOTO SLOTS block
 in `css/style.css`.
