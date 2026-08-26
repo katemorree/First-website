@@ -67,7 +67,7 @@ replace it with a generated image. Files: `cheeseburger.png` and the
 
 > A premium truffle smash burger, beef patty with crisp edges, pale melted
 > white cheese, glossy dark truffle sauce, thin onion, soft bun. Richer and
-> more luxurious than a classic burger — deeper shadows, subtle golden
+> more luxurious than the standard cheeseburger — deeper shadows, golden
 > highlights. Dark moody food photography, near-black charcoal background,
 > warm orange and amber rim lighting, shallow depth of field, high detail,
 > appetising, premium independent burger brand, editorial food styling, no
