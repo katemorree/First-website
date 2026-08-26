@@ -113,8 +113,8 @@ address in:
 
 Everything published uses confirmed information only: name (English and
 Georgian), address, phone, opening hours (daily 12:00–02:00), the full menu
-with prices, and that delivery runs through Wolt and Glovo. Nothing has been
-invented.
+with prices, and the Wolt and Glovo store links (both confirmed by the
+owner). Nothing has been invented.
 
 **Deliberately not stated**, because it is unverified:
 
@@ -123,18 +123,17 @@ invented.
 - Any Glovo or Wolt promotional pricing. The site lists standard menu
   prices, which do not change with temporary platform discounts.
 
-**Needs checking before showing this to the business:**
+### Delivery links
 
-- ⚠️ **The two delivery links.** The Wolt and Glovo store URLs were found by
-  search and could not be opened to confirm, because both domains are
-  blocked from the build environment. Both listings are named "Sameo" rather
-  than "Sameo Smash". Open each link and confirm it is the right restaurant:
-  - `https://wolt.com/en/geo/tbilisi/restaurant/sameo`
-  - `https://glovoapp.com/en/ge/tbilisi/stores/sameo-tbi`
+Both store URLs are confirmed correct:
 
-  They appear four times in two files — `index.html` (the order band) and
-  `contact.html` (the order cards). Search for `wolt.com` and `glovoapp.com`
-  to find them all.
+- Wolt — `https://wolt.com/en/geo/tbilisi/restaurant/sameo`
+- Glovo — `https://glovoapp.com/en/ge/tbilisi/stores/sameo-tbi`
+
+They appear four times across two files — `index.html` (the order band) and
+`contact.html` (the order cards) — plus once each in the `sameAs` list in the
+structured data in `index.html`. If a platform ever changes a store address,
+search for `wolt.com` and `glovoapp.com` to find every instance.
 
 **Still to be supplied:**
 
