@@ -44,15 +44,14 @@ shots, and square 1:1 for the hero and interior. Export JPG, quality around
 
 *Keep the burger centred — the circular frame crops the corners.*
 
-## 2. Cheeseburger — `burger-cheese.jpg`  (16:10)
+## 2. Cheeseburger — SUPPLIED, no prompt needed
 
-> A single classic smash cheeseburger on a dark slate surface, thin beef
-> patty with crisp browned edges, one slice of melted cheese, shredded
-> lettuce, pickles, thin onion, house sauce, plain soft bun. Straight-on
-> hero angle. Dark moody food photography, near-black charcoal background,
-> warm orange and amber rim lighting, shallow depth of field, high detail,
-> appetising, premium independent burger brand, editorial food styling, no
-> text, no logos, no watermark, no people's faces.
+The cheeseburger already uses a **real transparent PNG of the actual
+product**, supplied by the business. Do not generate one, and do not
+replace it with a generated image. Files: `cheeseburger.png` and the
+`cheeseburger-*.webp` set.
+
+---
 
 ## 3. Chili cheeseburger — `burger-chili.jpg`  (16:10)
 
@@ -147,7 +146,7 @@ roughly 30% smaller at the same quality and work in every current browser.
 | Slot | Filename | Shape |
 |---|---|---|
 | Hero | `hero-burger.jpg` | 1:1 |
-| Cheeseburger | `burger-cheese.jpg` | 16:10 |
+| Cheeseburger | *real photo already in place* | — |
 | Chili cheeseburger | `burger-chili.jpg` | 16:10 |
 | Truffle burger | `burger-truffle.jpg` | 16:10 |
 | Veggie burger | `burger-veggie.jpg` | 16:10 |

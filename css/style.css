@@ -659,6 +659,39 @@ textarea:focus-visible {
 .feature__face { transition: background-size var(--t-med); }
 .feature__body { padding: 0 var(--sp-4) var(--sp-4); }
 
+/* --- Transparent product cut-outs ---
+   A real <img> (not a CSS background) so the photo carries alt text.
+   object-fit:contain, never cover: the burger is scaled to fit inside the
+   frame, so it is never cropped and never stretched out of proportion. The
+   brand gradient shows through the PNG's transparency. */
+.feature__face--product { --label: 0; }        /* hides the ring and word */
+.feature__face--product::after { opacity: 0.4; } /* lighter scrim; gradient stays visible */
+
+/* The grid item here is the <picture>, not the <img>. A <picture> is an
+   inline box that sizes to its content, so an <img> set to height:100%
+   resolves against that content height, not the 16:10 face — the image ends
+   up taller than the face and gets clipped top and bottom by overflow:hidden.
+   Taking the <picture> out of flow and pinning it to the face fixes the
+   reference box, so object-fit:contain can letterbox the burger correctly. */
+.feature__face--product picture {
+  position: absolute;
+  inset: 0;
+  display: block;
+  z-index: 2;
+}
+
+.product-shot {
+  width: 100%;
+  height: 100%;
+  padding: 4% 5%;
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.55));
+  transition: transform var(--t-med);
+}
+.feature:hover .product-shot,
+.shot-tile:hover .product-shot { transform: scale(1.05); }
+
 /* Standalone image tiles (menu page strip) — a face with no card body */
 .shot-tile .feature__face {
   border: 1px solid var(--line);
@@ -1255,7 +1288,8 @@ textarea:focus-visible {
    ========================================================= */
 
 /* .shot--hero     { --shot: url("../images/hero-burger.jpg");     --label: 0; } */
-/* .shot--cheese   { --shot: url("../images/burger-cheese.jpg");   --label: 0; } */
+/* Cheeseburger has no slot here: it uses a real transparent PNG placed
+   directly in the HTML of index.html and menu.html. See README section 3. */
 /* .shot--chili    { --shot: url("../images/burger-chili.jpg");    --label: 0; } */
 /* .shot--truffle  { --shot: url("../images/burger-truffle.jpg");  --label: 0; } */
 /* .shot--veggie   { --shot: url("../images/burger-veggie.jpg");   --label: 0; } */

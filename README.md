@@ -54,7 +54,7 @@ while you wait for pictures.
 
 ### Adding a photo — one line, one file
 
-There are nine photo slots. To switch one on:
+There are eight photo slots awaiting images. To switch one on:
 
 1. Put your image in the `images/` folder, named exactly as listed in
    `images/PROMPTS.md`.
@@ -67,8 +67,39 @@ The photo appears, and the placeholder ring and word fade out automatically,
 with a dark scrim added underneath so headings stay readable. Put the markers
 back to return to the graphic. You never need to edit the HTML.
 
-The nine slots: hero, cheeseburger, chili cheeseburger, truffle burger,
-veggie burger, fries, shakes, coffee, interior.
+The eight remaining slots: hero, chili cheeseburger, truffle burger, veggie
+burger, fries, shakes, coffee, interior. (The cheeseburger has no slot — it
+already uses a real photo; see below.)
+
+### The cheeseburger photo (real product image)
+
+The cheeseburger is the one product using a **real photograph** supplied by
+the business — a transparent-background PNG of the actual burger. It is not
+AI-generated and must not be swapped for a generated image.
+
+Files, all in `images/`:
+
+| File | Size | Purpose |
+|---|---|---|
+| `cheeseburger-480.webp` | 73 KB | small phones at 1x |
+| `cheeseburger-640.webp` | 122 KB | small phones at 2x |
+| `cheeseburger-800.webp` | 186 KB | phones/tablets at 2x, desktop 1x |
+| `cheeseburger-1200.webp` | 379 KB | desktop at 2x (retina) |
+| `cheeseburger.png` | 523 KB | fallback for browsers without WebP |
+
+The browser downloads **only one** of these — whichever matches the screen.
+A typical phone loads 186 KB, not the whole set.
+
+It is placed directly in the HTML of `index.html` and `menu.html` (the
+Cheeseburger card only) as a `<picture>` element, with
+`alt="Sameo cheeseburger"`. It uses `object-fit: contain`, so the burger is
+scaled to fit and is never cropped or stretched. The transparent background
+lets the brand gradient show through behind it.
+
+**To update the photo later:** re-export the same five files at the same
+sizes and filenames, replacing what is in `images/`. No code changes needed.
+Keep the transparent background, and keep the same proportions or the
+`width`/`height` attributes in the HTML will need updating too.
 
 ### If you use AI-generated images
 
