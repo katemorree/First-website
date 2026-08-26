@@ -287,31 +287,67 @@ information in front of customers:
 To add any of these later, supply the real details and they can be dropped
 in. Do not fill them with sample content in the meantime.
 
-### The testimonials section (demonstration content)
+### Reviews — there is no section on the site yet
 
-The home page has a testimonials section holding **fictional sample quotes**,
-added to show the layout. It is labelled as sample content in three ways:
+The home page used to carry three quotes under a "What People Say" heading.
+They were **fictional**, written to show the layout, and labelled "Sample" on
+the page. They have been removed. A made-up review is worth nothing to a
+customer, and a section that has to explain it is not real is worse than no
+section at all.
 
-1. A dashed "Sample content" notice above the cards explaining the quotes are
-   fictional and not from Google or any delivery platform.
-2. A "Sample" badge on every individual card, so the label survives if one
-   card is screenshotted on its own.
-3. A "Demonstration text, not a real review" line under each name.
+Nothing has replaced them, because **no genuine review for Sameo Smash could
+be found on a public page.** What was searched:
 
-Fictional first names only are used (Nino, Luka, Mariam). There are
-deliberately **no star ratings and no "verified customer" style claims**,
-because a rating nobody actually gave would be a fabricated claim.
+| Source | Result |
+|---|---|
+| Wolt | Blocked to this machine. A search summary reported a 9.4 score, but that is an average, not a review with a name and words, and the page could not be read directly to confirm it. |
+| Glovo | Blocked to this machine. A search summary mentioned "recommended by 96%" — again an average, unverified. |
+| Google Maps | Blocked to this machine. |
+| Web search | Turned up review text, but all of it belongs to **a different restaurant** — a place called Smash on Ilo Mosashvili Street. Using those words here would mean putting one business's reviews on another's website. |
 
-**To swap in genuine reviews**, edit the three `<figure class="quote-card">`
-blocks in `index.html`: replace the quote text and the name, then delete the
-`<span class="badge-sample">Sample</span>` line and the
-`<span>Demonstration text, not a real review</span>` in each card, and remove
-the whole `<p class="demo-note">` block above them.
+**The trap to avoid.** There is at least one other burger restaurant in
+Tbilisi with a similar name and a similar menu. Before using any review you
+find, check that it names *this* address — 1 Vashlovani St.
 
-⚠️ **Do not add `Review` or `AggregateRating` structured data while the quotes
-are still samples.** That markup feeds ratings to Google, and publishing
-invented ratings is both dishonest and against Google's review snippet
-guidelines. Add it only once the reviews are real.
+### Adding real reviews when you have them
+
+An empty section is ready and waiting in `index.html`. Search for
+`REVIEWS` — it is a commented-out block sitting between the About teaser and
+the Location section. Delete the `<!--` at the top and the `-->` at the
+bottom, then fill in one card per review. Three to six looks best; the cards
+sit three across.
+
+Each card takes a name, the review itself, the source, and stars:
+
+```html
+<figure class="quote-card">
+  <p class="quote-card__stars" aria-label="5 out of 5">&#9733;&#9733;&#9733;&#9733;&#9733;</p>
+  <blockquote>
+    <p>The review, exactly as it was written.</p>
+  </blockquote>
+  <figcaption>Nino <span>Google Maps</span></figcaption>
+</figure>
+```
+
+Rules worth keeping to:
+
+- **Copy the words exactly.** Do not tidy the grammar, do not shorten a
+  review to fit the card, and do not translate it — a review written in
+  Georgian stays in Georgian, and that is fine on all three language
+  settings. Only the heading above the cards is translated.
+- **First name or public display name only.** That is what the person chose
+  to show; a full name they did not publish is not yours to add.
+- **Stars only if the source shows stars.** Wolt and Glovo score out of ten,
+  not five, so either drop the stars line for those or write the score the
+  way the platform writes it.
+- **Name the source** in the `<span>` — Google Maps, Wolt, Glovo. It is what
+  lets a reader go and check.
+
+⚠️ **Do not add `Review` or `AggregateRating` structured data**, even once
+the reviews are real. That markup hands Google a score for the business as a
+whole; Google expects it to match a rating it can verify, and gets stern
+about sites that publish one it cannot. Quoting reviews on the page is fine.
+Claiming an overall score in the page's data is a different thing.
 
 ### Updating a price
 

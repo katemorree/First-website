@@ -785,36 +785,14 @@ textarea:focus-visible {
   display: block;
 }
 
-/* --- Testimonials ---
-   NOTE: the cards below currently hold demonstration copy, not real reviews.
-   Every card carries a visible "Sample" badge so the label survives even if
-   one card is screenshotted on its own. Do NOT add schema.org Review or
-   AggregateRating markup until the quotes are genuine — that would publish
-   fabricated ratings to search engines. See README.md §7. */
-.demo-note {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-2);
-  max-width: 70ch;
-  margin: 0 auto var(--sp-5);
-  padding: var(--sp-2) var(--sp-3);
-  border: 1px dashed rgba(255, 194, 74, 0.45);
-  border-radius: var(--r-md);
-  background: rgba(255, 194, 74, 0.06);
-  color: var(--muted);
-  font-size: var(--step--1);
-  text-align: left;
-}
-.demo-note strong {
-  color: var(--amber);
-  font-family: var(--font-display);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-size: 0.72rem;
-  white-space: nowrap;
-  padding-top: 0.15rem;
-}
-
+/* --- Review cards ---
+   No page uses these at the moment. The three quotes that did were written to
+   show the layout rather than left by customers, and they have been removed;
+   an empty section is waiting, commented out, in index.html for real ones.
+   The styling stays here so filling that in is only a matter of typing the
+   reviews. Do NOT add schema.org Review or AggregateRating markup even once
+   they are real — that publishes an overall score to search engines, which
+   is a different claim from quoting what someone wrote. See README section 6. */
 .quote-card {
   position: relative;
   display: flex;
@@ -847,18 +825,16 @@ textarea:focus-visible {
   pointer-events: none;
 }
 
-.badge-sample {
-  align-self: flex-start;
-  margin-bottom: var(--sp-3);
-  padding: 0.25rem 0.7rem;
-  border: 1px solid rgba(255, 194, 74, 0.5);
-  border-radius: 999px;
-  background: rgba(255, 194, 74, 0.1);
+/* Star line on a review card. Sits above the quote and is only present when
+   the source it came from actually shows stars — see the template in
+   index.html. The aria-label carries the score in words, because a screen
+   reader announcing five identical star characters says nothing useful. */
+.quote-card__stars {
+  margin: 0 0 var(--sp-2);
   color: var(--amber);
-  font-family: var(--font-display);
-  font-size: 0.66rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 0.95rem;
+  letter-spacing: 0.18em;
+  line-height: 1;
 }
 
 .quote-card blockquote {
@@ -1350,9 +1326,6 @@ textarea:focus-visible {
   .stage .btn-row { flex-direction: row; flex-wrap: wrap; }
   .stage .btn-row .btn { width: auto; }
   .actionbar .btn { width: auto; }
-  /* Stack the sample-content label above its text so the copy gets full width */
-  .demo-note { flex-direction: column; gap: 0.55rem; }
-  .demo-note strong { padding-top: 0; }
   /* A squarer map is easier to read on a phone */
   .map { aspect-ratio: 1 / 1; }
 }

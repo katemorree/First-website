@@ -23,6 +23,8 @@ window.SAMEO_I18N = {
 
   /* ------------------------------------------------------ */
   ru: {
+    "Reviews": "Отзывы",
+    "What People Say": "Что говорят гости",
     "Delivery through Wolt and Glovo, or call the kitchen direct.":
       "Доставка через Wolt и Glovo, или позвоните прямо на кухню.",
     "Close": "Закрыть",
@@ -46,7 +48,6 @@ window.SAMEO_I18N = {
     "About": "О нас",
     "Location": "Адрес",
     "Order Now": "Заказать",
-    "Call": "Позвонить",
     "Directions": "Маршрут",
     "Explore": "Разделы",
     "Location &amp; Contact": "Адрес и контакты",
@@ -158,13 +159,6 @@ window.SAMEO_I18N = {
     "Packed to travel without falling apart.": "Упаковано так, чтобы доехать целым.",
     "Right Here<br>in Tbilisi": "Прямо здесь,<br>в Тбилиси",
     "Find us at 1 Vashlovani St, 0108.": "Найдите нас: ул. Вашловани 1, 0108.",
-
-    /* --- home: testimonials --- */
-    "Testimonials": "Отзывы",
-    "What People Say": "Что говорят гости",
-    "Sample content": "Демонстрационный текст",
-    "Sample": "Пример",
-    "Demonstration text, not a real review": "Демонстрационный текст, не настоящий отзыв",
 
     /* --- home: location --- */
     "Find us": "Как нас найти",
@@ -296,6 +290,8 @@ window.SAMEO_I18N = {
 
   /* ------------------------------------------------------ */
   ka: {
+    "Reviews": "შეფასებები",
+    "What People Say": "რას ამბობენ სტუმრები",
     "Delivery through Wolt and Glovo, or call the kitchen direct.":
       "მიტანა Wolt-ითა და Glovo-თი, ან დარეკეთ პირდაპირ სამზარეულოში.",
     "Close": "დახურვა",
@@ -319,7 +315,6 @@ window.SAMEO_I18N = {
     "About": "ჩვენ შესახებ",
     "Location": "მდებარეობა",
     "Order Now": "შეუკვეთე",
-    "Call": "დარეკვა",
     "Directions": "მარშრუტი",
     "Explore": "განყოფილებები",
     "Location &amp; Contact": "მდებარეობა და კონტაქტი",
@@ -431,13 +426,6 @@ window.SAMEO_I18N = {
     "Packed to travel without falling apart.": "შეფუთულია ისე, რომ გზაში არ დაიშალოს.",
     "Right Here<br>in Tbilisi": "სწორედ აქ,<br>თბილისში",
     "Find us at 1 Vashlovani St, 0108.": "გვიპოვეთ: ვაშლოვანის ქუჩა 1, 0108.",
-
-    /* --- home: testimonials --- */
-    "Testimonials": "შეფასებები",
-    "What People Say": "რას ამბობენ სტუმრები",
-    "Sample content": "სადემონსტრაციო ტექსტი",
-    "Sample": "ნიმუში",
-    "Demonstration text, not a real review": "სადემონსტრაციო ტექსტი, არა ნამდვილი შეფასება",
 
     /* --- home: location --- */
     "Find us": "როგორ გვიპოვოთ",
