@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://katemorree.github.io/First-website/sitemap.xml
