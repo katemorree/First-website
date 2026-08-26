@@ -700,12 +700,20 @@ textarea:focus-visible {
    the burger cards. */
 .feature__face--wide { aspect-ratio: 2.5 / 1; }
 
+/* Tall face for the shake cards. The cups are portrait (0.435), so a square
+   face lets each drink fill the frame height and sit centred with even space
+   either side. All three shake images share one 610x1401 canvas with the cups
+   centred and bottom-aligned, so they render at identical size by
+   construction rather than by tuning. */
+.feature__face--tall { aspect-ratio: 1 / 1; }
+
 /* Slider cards sit three across, so they are narrower than the two-across
    burger cards. Archivo Black is a wide face and "Truffle Slider" wraps to a
    second line at the burger title size, leaving the three titles uneven.
    A step down keeps all three on one line and stays proportionate to the
    smaller card. */
-#sliders .feature__body h3 { font-size: var(--step-0); }
+#sliders .feature__body h3,
+#shakes .feature__body h3 { font-size: var(--step-0); }
 
 /* Standalone image tiles (menu page strip) — a face with no card body */
 .shot-tile .feature__face {
