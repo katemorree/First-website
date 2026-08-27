@@ -121,8 +121,20 @@ export default function Reviews() {
                 <p>{review.quote}</p>
               </blockquote>
               <figcaption>
-                {review.name}
-                {review.source && <span>{review.source}</span>}
+                {/* The initial, taken from the name itself. It is there to
+                    give the row something to sit against — the source line
+                    that would normally do that job is missing, because none
+                    of these came with one. It invents nothing: no avatar
+                    photograph, no platform badge, no "verified" mark.
+                    aria-hidden because a screen reader reading "N" and then
+                    "Nino" is just the name stuttered. */}
+                <span className="quote-card__mark" aria-hidden="true">
+                  {[...review.name][0]}
+                </span>
+                <span className="quote-card__who">
+                  <b>{review.name}</b>
+                  {review.source && <small>{review.source}</small>}
+                </span>
               </figcaption>
             </figure>
           ))}

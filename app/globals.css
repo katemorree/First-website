@@ -819,81 +819,113 @@ textarea:focus-visible {
   display: flex;
   flex-direction: column;
   margin: 0;
-  padding: var(--sp-4);
-  background: var(--surface);
+  padding: clamp(1.5rem, 1.2rem + 1vw, 2.25rem);
+  /* A gradient rather than a flat fill: the card catches a little more light
+     at the top, which is the same direction the hero is lit from and stops
+     four identical rectangles reading as a table. */
+  background:
+    linear-gradient(168deg, rgba(255, 150, 70, 0.05), transparent 42%),
+    var(--surface);
   border: 1px solid var(--line);
-  border-radius: var(--r-md);
-  overflow: hidden;
-  transition: transform var(--t-med), border-color var(--t-med), background var(--t-med);
+  border-radius: var(--r-lg);
+  transition:
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.34s ease,
+    background 0.34s ease,
+    box-shadow 0.34s ease;
 }
 .quote-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(255, 90, 31, 0.45);
-  background: var(--surface-2);
+  transform: translateY(-5px);
+  border-color: rgba(255, 90, 31, 0.42);
+  background:
+    linear-gradient(168deg, rgba(255, 150, 70, 0.09), transparent 46%),
+    var(--surface-2);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.42);
+}
+/* A finger has nothing to hover with, and on touch the state sticks to
+   whatever was tapped last. */
+@media (hover: none) {
+  .quote-card:hover {
+    transform: none;
+    border-color: var(--line);
+    box-shadow: none;
+  }
 }
 
-/* Oversized decorative quote mark */
-.quote-card::before {
-  content: "\201C";
-  position: absolute;
-  top: 0.4rem;
-  right: 1.1rem;
-  font-family: var(--font-display);
-  font-size: 7rem;
-  line-height: 0.78; /* pulls the glyph's ink up into view; the card clips overflow */
-  color: var(--flame);
-  opacity: 0.14;
-  pointer-events: none;
-}
-
-/* Star line on a review card. Sits above the quote and is only present when
-   the source it came from actually shows stars. The aria-label carries the
-   score in words, because a screen reader announcing five identical star
-   characters says nothing useful. */
+/* The score. Five stars every time, the unearned ones hollow — see the note
+   in components/Reviews.jsx. The aria-label carries it in words, because a
+   screen reader announcing five identical star characters says nothing. */
 .quote-card__stars {
-  margin: 0 0 var(--sp-2);
+  margin: 0 0 var(--sp-3);
   color: var(--amber);
-  font-size: 0.95rem;
-  letter-spacing: 0.18em;
+  font-size: 1.05rem;
+  letter-spacing: 0.22em;
   line-height: 1;
 }
-/* The stars that were not given. Same glyph position, much quieter, so the
-   score reads as four OUT OF FIVE at a glance rather than as a short row. */
 .quote-card__stars i {
   font-style: normal;
-  opacity: 0.3;
+  opacity: 0.26;
 }
 
 .quote-card blockquote {
-  margin: 0 0 var(--sp-3);
+  margin: 0 0 var(--sp-4);
   padding: 0;
 }
 .quote-card blockquote p {
   margin: 0;
   color: var(--cream);
   font-size: var(--step-1);
-  line-height: 1.45;
+  line-height: 1.55;
   text-wrap: pretty;
 }
 
 .quote-card figcaption {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
   margin-top: auto;
   padding-top: var(--sp-3);
   border-top: 1px solid var(--line);
+}
+
+/* The initial. Sized in em so it tracks the type around it, and given a
+   fixed square so four cards line up whatever letter they start with. */
+.quote-card__mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  background: rgba(255, 90, 31, 0.13);
+  border: 1px solid rgba(255, 90, 31, 0.3);
+  color: var(--flame);
   font-family: var(--font-display);
-  font-size: 0.9rem;
-  letter-spacing: 0.02em;
+  font-size: 1.05rem;
+  line-height: 1;
+  text-transform: uppercase;
+  transition: background 0.34s ease, border-color 0.34s ease;
+}
+.quote-card:hover .quote-card__mark {
+  background: rgba(255, 90, 31, 0.2);
+  border-color: rgba(255, 90, 31, 0.5);
+}
+
+.quote-card__who {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+.quote-card__who b {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--cream);
 }
-.quote-card figcaption span {
-  display: block;
-  margin-top: 0.25rem;
-  font-family: var(--font-body);
+.quote-card__who small {
   font-size: var(--step--1);
-  font-weight: 400;
-  letter-spacing: 0;
-  text-transform: none;
   color: var(--muted);
 }
 
