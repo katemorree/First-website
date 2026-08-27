@@ -46,6 +46,21 @@ const siteUrl = process.env.SITE_URL
   ?? vercelUrl
   ?? 'https://katemorree.github.io/First-website';
 
+/* If neither was set, the address above is a guess — and it is the old
+   GitHub Pages one, which is being retired. Shipping that would tell search
+   engines that the real version of every page lives at an address that no
+   longer answers, which is worse than saying nothing. It cannot be detected
+   at run time, so say it loudly at build time instead. */
+if (!process.env.SITE_URL && !vercelUrl) {
+  console.warn(
+    `\n  ⚠  SITE_URL is not set, so the build is falling back to\n`
+    + `     ${siteUrl}\n`
+    + `     Canonical tags, sitemap.xml, robots.txt and the restaurant's\n`
+    + `     structured data will all point there. Set SITE_URL to the real\n`
+    + `     address before publishing.\n`,
+  );
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',

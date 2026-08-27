@@ -278,9 +278,12 @@ the site sits at the root of the domain, and it works out its own address
 for the canonical tags, `sitemap.xml`, `robots.txt` and the restaurant's
 structured data.
 
-**Set `SITE_URL`** in the Vercel project settings once there is a real
-domain. Until then the address it works out is the `.vercel.app` one, which
-is right for a preview but not what you want a search engine to record.
+**Set `SITE_URL`** in the Vercel project settings. Vercel does supply its own
+domain to the build, so this usually sorts itself out — but the fallback if
+it does not is the old GitHub Pages address, which is being retired, and
+publishing canonical tags that point at a dead address is worse than
+publishing none. Setting it removes the doubt. The build prints a warning if
+it ever has to guess.
 
 ### GitHub Pages is switched off
 
