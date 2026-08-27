@@ -834,15 +834,21 @@ textarea:focus-visible {
 }
 
 /* Star line on a review card. Sits above the quote and is only present when
-   the source it came from actually shows stars — see the template in
-   index.html. The aria-label carries the score in words, because a screen
-   reader announcing five identical star characters says nothing useful. */
+   the source it came from actually shows stars. The aria-label carries the
+   score in words, because a screen reader announcing five identical star
+   characters says nothing useful. */
 .quote-card__stars {
   margin: 0 0 var(--sp-2);
   color: var(--amber);
   font-size: 0.95rem;
   letter-spacing: 0.18em;
   line-height: 1;
+}
+/* The stars that were not given. Same glyph position, much quieter, so the
+   score reads as four OUT OF FIVE at a glance rather than as a short row. */
+.quote-card__stars i {
+  font-style: normal;
+  opacity: 0.3;
 }
 
 .quote-card blockquote {
@@ -1628,25 +1634,34 @@ textarea:focus-visible {
 }
 
 /* Where each piece goes, and when it sets off.
-   dy is the effect; dx and rot are deliberately tiny. The brief was one
-   burger opening up, not parts drifting off on their own, so everything stays
-   on the centre line and only leans.
 
-   The top bun leaves first and the bottom bun barely moves — it anchors the
-   composition while the rest climbs away from it. The starts are staggered
-   down the stack so the burger peels open from the top.
+   --dy is the effect and every one of these numbers is the owner's own
+   stacking spec, converted from their units into a percentage of the
+   canvas by scripts/build-burger-layers.py. Do not hand-edit them: change
+   the LAYERS table in that script and run `python3
+   scripts/build-burger-layers.py css` to print this block again.
+
+   dx and rot are deliberately tiny. The brief was one burger opening up,
+   not parts drifting off on their own, so everything stays on the centre
+   line and only leans.
+
+   The top bun leaves first and the bottom bun travels furthest down, so the
+   burger opens from both ends around the patties. The starts are staggered
+   down the stack, which is what makes it peel apart a piece at a time
+   instead of everything moving at once.
 
    sc grows the pieces nearest the eye a little more than the ones behind,
    which is the parallax: they separate at different rates AND at different
    sizes, so it reads as depth rather than as a list sliding apart. */
-.burger__layer--topbun    { --dy: -37.5%; --dx:  1.0%; --rot: -2.2deg; --sc: 0.04; --t0: 0.00; --k: 1.72; }
-.burger__layer--sauce     { --dy: -25.0%; --dx: -1.4%; --rot:  1.6deg; --sc: 0.00; --t0: 0.05; --k: 1.72; }
-.burger__layer--lettuce   { --dy: -17.0%; --dx:  1.6%; --rot: -1.4deg; --sc: 0.01; --t0: 0.10; --k: 1.72; }
-.burger__layer--pickles   { --dy:  -9.0%; --dx: -1.8%; --rot:  2.4deg; --sc: 0.00; --t0: 0.15; --k: 1.72; }
-.burger__layer--cheesetop { --dy:  -4.0%; --dx:  1.2%; --rot: -1.0deg; --sc: 0.00; --t0: 0.20; --k: 1.72; }
-.burger__layer--patties   { --dy:   1.0%; --dx: -0.8%; --rot:  0.8deg; --sc: 0.02; --t0: 0.25; --k: 1.72; }
-.burger__layer--cheesebot { --dy:  12.0%; --dx:  1.4%; --rot: -1.6deg; --sc: 0.00; --t0: 0.30; --k: 1.72; }
-.burger__layer--bottombun { --dy:  18.5%; --dx:  0.0%; --rot:  0.6deg; --sc: 0.03; --t0: 0.35; --k: 1.72; }
+.burger__layer--topbun    { --dy: -31.7%; --dx:  1.0%; --rot: -2.2deg; --sc: 0.04; --t0: 0.000; --k: 1.72; }
+.burger__layer--pickles   { --dy: -23.3%; --dx: -1.8%; --rot:  2.4deg; --sc: 0.00; --t0: 0.045; --k: 1.72; }
+.burger__layer--lettuce   { --dy: -15.9%; --dx:  1.6%; --rot: -1.4deg; --sc: 0.01; --t0: 0.090; --k: 1.72; }
+.burger__layer--sauce     { --dy:  -8.4%; --dx: -1.4%; --rot:  1.6deg; --sc: 0.00; --t0: 0.135; --k: 1.72; }
+.burger__layer--cheesetop { --dy:  -1.9%; --dx:  1.2%; --rot: -1.0deg; --sc: 0.00; --t0: 0.180; --k: 1.72; }
+.burger__layer--pattytop  { --dy:   5.6%; --dx: -0.8%; --rot:  0.8deg; --sc: 0.02; --t0: 0.225; --k: 1.72; }
+.burger__layer--cheesebot { --dy:  13.1%; --dx:  1.4%; --rot: -1.6deg; --sc: 0.00; --t0: 0.270; --k: 1.72; }
+.burger__layer--pattybot  { --dy:  21.5%; --dx: -0.6%; --rot:  1.0deg; --sc: 0.02; --t0: 0.315; --k: 1.72; }
+.burger__layer--bottombun { --dy:  32.7%; --dx:  0.0%; --rot:  0.6deg; --sc: 0.03; --t0: 0.360; --k: 1.72; }
 
 /* The halo behind the burger. It widens and lifts as the burger opens, so the
    light grows with the thing it is lighting instead of sitting still behind a
@@ -2299,15 +2314,21 @@ textarea:focus-visible {
 
 /* ---------- the first-visit chooser ---------- */
 
+.langgate:focus { outline: none; }   /* it is focused only to trap the tab order */
 .langgate {
   position: fixed;
   inset: 0;
-  z-index: 200;
+  /* Above the header, which is 900. It used to be 200, so the sticky header
+     was painted over the top of the full-screen chooser — including its
+     language pills, one of which was lit. A visitor being asked to choose a
+     language was looking at an orange EN in the corner while they did. */
+  z-index: 1000;
   display: grid;
   place-items: center;
-  padding: var(--sp-4) var(--sp-3);
+  padding: var(--sp-5) var(--sp-4);
   background:
-    radial-gradient(80% 60% at 50% 0%, rgba(255, 90, 31, 0.16), transparent 70%),
+    radial-gradient(70% 50% at 50% 0%, rgba(255, 90, 31, 0.18), transparent 72%),
+    radial-gradient(50% 40% at 50% 100%, rgba(255, 194, 74, 0.06), transparent 70%),
     var(--ink);
   opacity: 1;
   transition: opacity 0.55s ease;
@@ -2315,7 +2336,7 @@ textarea:focus-visible {
 .langgate.is-out { opacity: 0; pointer-events: none; }
 
 .langgate__inner {
-  width: min(46rem, 100%);
+  width: min(52rem, 100%);
   text-align: center;
 }
 
@@ -2323,77 +2344,191 @@ textarea:focus-visible {
   font-family: var(--font-display);
   text-transform: uppercase;
   letter-spacing: -0.02em;
-  font-size: clamp(1.5rem, 1.1rem + 2vw, 2.4rem);
+  font-size: clamp(1.7rem, 1.2rem + 2.4vw, 2.9rem);
+  line-height: 1;
   color: var(--cream);
-  margin: 0 0 var(--sp-4);
+  margin: 0 0 clamp(1.6rem, 4vh, 2.6rem);
 }
 .langgate__brand em {
   display: block;
   font-family: var(--font-ka);
   font-style: normal;
-  font-size: 0.42em;
+  font-size: 0.4em;
   letter-spacing: 0.16em;
   color: var(--flame);
-  margin-top: 0.5rem;
+  margin-top: 0.6rem;
 }
 
+/* The three prompts, one per language. A hairline above and below turns
+   them from a stack of loose lines into a deliberate piece of the page —
+   this is the question being asked, so it should look asked. */
 .langgate__title {
   display: grid;
-  gap: 0.35rem;
-  margin: 0 0 var(--sp-4);
+  gap: 0.5rem;
+  margin: 0 0 clamp(1.7rem, 4.5vh, 3rem);
+  padding-block: clamp(1rem, 2.6vh, 1.6rem);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
   font-size: var(--step--1);
-  letter-spacing: 0.22em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--muted);
+}
+/* The visitor's own language should look like their language, not like
+   English set in a Cyrillic font. */
+.langgate__title span[lang="ru"] { font-family: var(--font-montserrat), var(--font-body); }
+.langgate__title span[lang="ka"] {
+  font-family: var(--font-ka);
+  text-transform: none;
+  letter-spacing: 0.1em;
 }
 
 .langgate__opts {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.9rem;
+  gap: clamp(0.7rem, 1.6vw, 1.1rem);
 }
 
+/* One card per language, and at rest all three are identical — same border,
+   same background, same weight. Nothing is selected until the visitor
+   selects it; see the note in components/LanguageGate.jsx.
+
+   isolation + the ::before below give each card its own glow that can sit
+   under the text without a second element in the markup. */
 .langgate__opt {
+  position: relative;
+  isolation: isolate;
   display: grid;
-  gap: 0.4rem;
-  padding: clamp(1.1rem, 0.8rem + 1.4vw, 1.9rem) 0.6rem;
+  align-content: center;
+  gap: clamp(0.5rem, 1.4vh, 0.85rem);
+  min-height: clamp(7.5rem, 20vh, 10.5rem);
+  padding: clamp(1.2rem, 2.4vh, 2rem) 0.75rem;
   border: 1px solid var(--line-strong);
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
   background: var(--surface);
   color: var(--cream);
   cursor: pointer;
-  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  overflow: hidden;
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.32s ease,
+    background 0.32s ease,
+    box-shadow 0.32s ease;
 }
-.langgate__opt b {
+
+/* The glow. Kept at opacity 0 rather than removed, so it fades rather than
+   appearing, and it is behind the text (z-index -1 inside the card's own
+   stacking context, which is what isolation is for). */
+.langgate__opt::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(70% 90% at 50% 100%, rgba(255, 90, 31, 0.22), transparent 72%);
+  opacity: 0;
+  transition: opacity 0.32s ease;
+}
+
+/* EN / RU / GE — the label the visitor is asked to keep. Small, wide-tracked
+   and quiet at rest; it is the accent that moves, not the size. */
+.langgate__code {
   font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(0.95rem, 0.8rem + 0.8vw, 1.35rem);
-  letter-spacing: -0.01em;
-}
-.langgate__opt[lang="ru"] b { font-family: var(--font-montserrat), var(--font-body); font-weight: 800; }
-.langgate__opt[lang="ka"] b { font-family: var(--font-ka); font-weight: 700; text-transform: none; }
-.langgate__opt small {
-  font-size: 0.7rem;
-  letter-spacing: 0.26em;
+  font-size: clamp(1.15rem, 0.9rem + 1.1vw, 1.7rem);
+  letter-spacing: 0.14em;
+  line-height: 1;
   color: var(--muted);
+  transition: color 0.32s ease;
 }
-/* The language already in force, when the chooser is reopened later. */
-.langgate__opt.is-on {
-  border-color: var(--flame);
-  background: var(--surface-2);
+
+.langgate__opt b {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(0.85rem, 0.75rem + 0.4vw, 1.02rem);
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  transition: color 0.32s ease;
 }
-.langgate__opt.is-on small { color: var(--flame); }
+.langgate__opt[lang="ru"] b { font-family: var(--font-montserrat), var(--font-body); font-weight: 600; }
+.langgate__opt[lang="ka"] b { font-family: var(--font-ka); font-weight: 600; }
+
+/* A visible ring for the keyboard, on top of the hover treatment, so a
+   focused card never reads as a chosen one. */
+.langgate__opt:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 3px;
+}
 
 .langgate__opt:hover,
 .langgate__opt:focus-visible {
-  transform: translateY(-3px);
-  border-color: var(--flame);
+  transform: translateY(-4px);
+  border-color: rgba(255, 90, 31, 0.55);
   background: var(--surface-2);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+}
+.langgate__opt:hover::before,
+.langgate__opt:focus-visible::before { opacity: 0.6; }
+.langgate__opt:hover .langgate__code,
+.langgate__opt:focus-visible .langgate__code,
+.langgate__opt:hover b,
+.langgate__opt:focus-visible b { color: var(--cream); }
+
+/* Pressing it. Shorter and snappier than the hover, so a tap feels like a
+   button going down rather than the card wobbling. */
+.langgate__opt:active {
+  transform: translateY(-1px) scale(0.985);
+  transition-duration: 0.09s;
 }
 
-@media (max-width: 30rem) {
-  .langgate__opts { grid-template-columns: 1fr; }
-  .langgate__opt  { padding: 0.95rem 0.6rem; }
+/* Chosen. The ONLY place the accent appears — after a choice, never before,
+   and it stays lit while the screen fades away behind it. */
+.langgate__opt.is-on {
+  border-color: var(--flame);
+  background: var(--surface-2);
+  box-shadow: 0 0 0 1px var(--flame) inset, 0 20px 44px rgba(255, 90, 31, 0.16);
+}
+.langgate__opt.is-on::before { opacity: 1; }
+.langgate__opt.is-on .langgate__code { color: var(--flame); }
+.langgate__opt.is-on b { color: var(--cream); }
+
+/* Tablet and phone. The three stay side by side as long as they can — the
+   balance is the point — and only stack when a third of the width can no
+   longer hold "Русский" on one line. */
+@media (max-width: 34rem) {
+  .langgate__opt {
+    min-height: 0;
+    grid-template-columns: auto 1fr;
+    justify-items: start;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1.05rem 1.25rem;
+    text-align: left;
+  }
+  .langgate__code { min-width: 2.6rem; }
+}
+@media (max-width: 26rem) {
+  .langgate__opts { grid-template-columns: 1fr; gap: 0.6rem; }
+}
+
+/* No hover lift for a finger — it has nothing to hover with, and on touch
+   the hover state sticks after a tap. Pressing still responds. */
+@media (hover: none) {
+  .langgate__opt:hover {
+    transform: none;
+    border-color: var(--line-strong);
+    background: var(--surface);
+    box-shadow: none;
+  }
+  .langgate__opt:hover::before { opacity: 0; }
+  .langgate__opt:hover .langgate__code,
+  .langgate__opt:hover b { color: var(--muted); }
+  /* ...but a chosen card still reads as chosen. */
+  .langgate__opt.is-on:hover {
+    border-color: var(--flame);
+    background: var(--surface-2);
+  }
+  .langgate__opt.is-on:hover::before { opacity: 1; }
+  .langgate__opt.is-on:hover .langgate__code { color: var(--flame); }
+  .langgate__opt.is-on:hover b { color: var(--cream); }
 }
 
 /* ---------- the header switcher ---------- */

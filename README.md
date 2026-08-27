@@ -364,16 +364,26 @@ information in front of customers:
 To add any of these later, supply the real details and they can be dropped
 in. Do not fill them with sample content in the meantime.
 
-### Reviews — there is no section on the site yet
+### Reviews — four are on the page, and they are your responsibility
 
-The home page used to carry three quotes under a "What People Say" heading.
-They were **fictional**, written to show the layout, and labelled "Sample" on
-the page. They have been removed. A made-up review is worth nothing to a
-customer, and a section that has to explain it is not real is worse than no
-section at all.
+The home page carries four quotes under "What People Say": Nino, Giorgi,
+Mariam and Luka. **You supplied those words.** They were not written here and
+they were not checked against anything, because no source came with them —
+see below.
 
-Nothing has replaced them, because **no genuine review for Sameo Smash could
-be found on a public page.** What was searched:
+> ⚠️ **If any of those four is not something a real customer really said,
+> take it down.** Invented reviews mislead exactly the people they are aimed
+> at, and publishing them is against consumer protection law in Georgia, the
+> EU, the UK and the US alike. The penalty lands on the restaurant, not on
+> the website. This is the one part of the site nobody else can verify for
+> you.
+
+**They have no source yet, and they should.** Naming where a review came from
+— "Google Maps", "Wolt 9.4" — is what lets a reader go and check, and it is
+most of what makes the section worth believing. Add `source` to each entry in
+`components/Reviews.jsx` as soon as you know it.
+
+**What was searched before, and found nothing usable:**
 
 | Source | Result |
 |---|---|
@@ -480,12 +490,18 @@ of the markup; only the presentation changes.
 
 ### The burger that comes apart
 
-The hero burger is **eight separate pictures**, not one photograph: top bun,
-sauce, lettuce, pickles, two cheese slices, the patties, and the bottom bun.
+The hero burger is **nine separate layers**, not one photograph: top bun,
+pickles, lettuce, sauce, cheese, patty, cheese, patty, bottom bun.
+
+They come from seven pictures. The cheese arrived as one image of two
+separate slices, which came apart by itself. The two patties arrived
+touching, as a single shape, and were parted along the shadow line between
+them — traced column by column, then smoothed — so both halves keep a
+believable meat edge instead of the flat sawn line a straight cut leaves.
 
 They all sit on **one shared canvas**, 1200 by 980, each already scaled and
 placed where it belongs in the assembled burger. That is the whole trick.
-Because the eight files share a canvas, the browser stacks them with
+Because the nine files share a canvas, the browser stacks them with
 `inset: 0` and they line up as a finished burger with no positioning at all —
 and taking it apart is then just a `translate` per layer. There is no way for
 the pieces to drift out of register at some screen size nobody tested.
@@ -494,7 +510,7 @@ the pieces to drift out of register at some screen size nobody tested.
 
 | Knob | What it does |
 |---|---|
-| `--dy` | How far that layer travels, as a percentage of the burger's height. The whole effect, really. |
+| `--dy` | How far that layer travels, as a percentage of the burger's height. The whole effect, really. **Do not hand-edit these** — they are generated; see below. |
 | `--dx`, `--rot` | A small sideways drift and lean. Deliberately tiny — one burger opening up, not parts floating off. |
 | `--sc` | How much the layer grows. The pieces nearest the eye grow a little more, which is what reads as depth. |
 | `--t0`, `--k` | When that layer sets off, and how long it takes. Staggered down the stack, so the burger peels open from the top instead of everything moving at once. |
@@ -504,10 +520,21 @@ Each layer eases itself in and out with `x * x * (3 - 2x)` — smoothstep — so
 nothing starts or stops with a jerk. That is plain arithmetic in `calc()`,
 which is why this needs no JavaScript beyond the single scroll number.
 
-**To regenerate the images** run `scripts/build-burger-layers.py`. It takes
-the original ingredient cutouts, splits the cheese into its two slices, scales
-and places each one, and writes the WebP and PNG files. The layout table at
-the top of that file is where the assembled burger is composed.
+**Where the stack comes from.** The `LAYERS` table at the top of
+`scripts/build-burger-layers.py` holds, for every layer, where it sits when
+the burger is together and where it travels to when it is open — in the
+owner's own units, measured from the middle of the burger. One constant `K`
+turns those into canvas pixels. To move a piece, change that table, then:
+
+```
+python3 scripts/build-burger-layers.py steps    # look at it first
+python3 scripts/build-burger-layers.py export   # write the images
+python3 scripts/build-burger-layers.py css      # print the --dy block
+```
+
+and paste the `--dy` block over the one in `app/globals.css`. The script also
+splits the cheese and the patties, so it is the single place the burger is
+composed.
 
 > **This replaced a 360° spin** of a single flat photograph. That version had
 > to fight the fact that a flat picture turned side-on has no width at all and

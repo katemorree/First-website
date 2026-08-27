@@ -73,11 +73,13 @@ function HomeContent() {
       <Reviews />
 
       {/* ---- Location ----
-          Plain, not section--alt. The About teaser above is the alternating
-          band, and with no reviews section between them two bands would sit
-          back to back — their soft edges fading to the page colour against
-          each other and leaving a dark seam down the middle. */}
-      <section className="section" id="location">
+          section--alt again now that the reviews sit between this and the
+          About teaser above, which is the other band. While there were no
+          reviews the two bands were back to back — their soft edges fading
+          to the page colour against each other, leaving a dark seam down
+          the middle — so this one was plain. If the reviews are ever taken
+          down, take this back to a plain section too. */}
+      <section className="section section--alt" id="location">
         <div className="wrap split">
           <div data-reveal>
             <p className="eyebrow"><T>Find us</T></p>

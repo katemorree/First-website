@@ -3,7 +3,7 @@
 /* =========================================================
    The hero burger that comes apart as you scroll.
    ---------------------------------------------------------
-   Eight transparent images stacked in one box. They line up
+   Nine transparent images stacked in one box. They line up
    as a finished burger because they were composed onto a
    shared canvas ahead of time — see lib/burger-layers.js.
 
@@ -14,7 +14,7 @@
    same markup whether the burger is together or apart, and
    with no JavaScript at all it simply sits assembled.
 
-   About the alt text. Eight images of bun and lettuce read
+   About the alt text. Nine images of bun and lettuce read
    out one after another is noise, not a description. The
    pieces are marked decorative and the box carries a single
    role="img" with one sentence describing the burger, which
@@ -49,7 +49,7 @@ export default function ExplodedBurger() {
               .join(', ')}
           />
           {/* Every layer is eager and high priority, which is unusual and is
-              the right call here: the burger is not finished until all eight
+              the right call here: the burger is not finished until all nine
               have arrived, so holding any of them back would just show a
               burger with a piece missing. Together they are lighter than the
               single photograph they replaced. */}

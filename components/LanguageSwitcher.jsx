@@ -2,12 +2,18 @@
 
 /* Two shapes of the same control. On a phone there is no room beside the
    logo for three pills, so a single button showing the current language
-   reopens the full-screen chooser instead. CSS decides which is on. */
+   reopens the full-screen chooser instead. CSS decides which is on.
+
+   `chosen`, not `lang`, decides which pill is lit — see the note in
+   lib/language.jsx. Before a visitor has picked anything the language in
+   force reads "en", and marking it would light EN up in the header while
+   the chooser is still asking them. */
 
 import { LANGS, LANG_LABELS, useLanguage } from '../lib/language';
 
 export default function LanguageSwitcher() {
-  const { lang, setLang, openGate } = useLanguage();
+  const { lang, chosen, setLang, openGate } = useLanguage();
+  const active = chosen ? lang : null;
 
   return (
     <div className="langpick" role="group" aria-label="Language">
@@ -25,8 +31,8 @@ export default function LanguageSwitcher() {
           <button
             key={code}
             type="button"
-            className={code === lang ? 'is-on' : undefined}
-            aria-pressed={code === lang ? 'true' : 'false'}
+            className={code === active ? 'is-on' : undefined}
+            aria-pressed={code === active ? 'true' : 'false'}
             onClick={() => setLang(code)}
           >
             {LANG_LABELS[code]}

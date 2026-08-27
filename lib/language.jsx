@@ -82,6 +82,14 @@ const LanguageContext = createContext({
   lang: 'en',
   setLang: () => {},
   ready: false,
+  /* Whether the visitor has actually picked a language, which is NOT the
+     same question as which language is in force. `lang` starts as English
+     because the pages are generated in English and the first render has to
+     match — so on a first visit it reads "en" while the visitor has chosen
+     nothing at all. Anything that shows a language as selected has to ask
+     this instead, or English arrives pre-selected on a screen whose whole
+     purpose is to ask. */
+  chosen: false,
   gateOpen: false,
   openGate: () => {},
   closeGate: () => {},
@@ -108,11 +116,12 @@ export function LanguageProvider({ children }) {
      while the page is still held back. */
   const [lang, setLangState] = useState('en');
   const [ready, setReady] = useState(false);
+  const [chosen, setChosen] = useState(false);
   const [gateOpen, setGateOpen] = useState(false);
 
   useEffect(() => {
     const stored = readStored();
-    if (stored) setLangState(stored);
+    if (stored) { setLangState(stored); setChosen(true); }
     else setGateOpen(true);
     setReady(true);
   }, []);
@@ -135,16 +144,18 @@ export function LanguageProvider({ children }) {
     if (!LANGS.includes(next)) return;
     writeStored(next);
     setLangState(next);
+    setChosen(true);
   }, []);
 
   const value = useMemo(() => ({
     lang,
     setLang,
     ready,
+    chosen,
     gateOpen,
     openGate: () => setGateOpen(true),
     closeGate: () => setGateOpen(false),
-  }), [lang, setLang, ready, gateOpen]);
+  }), [lang, setLang, ready, chosen, gateOpen]);
 
   return (
     <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>

@@ -4,19 +4,29 @@ Run it from anywhere:  python3 scripts/build-burger-layers.py export
 Preview the result:    python3 scripts/build-burger-layers.py steps
 Needs Pillow and numpy (pip install pillow numpy).
 
-The seven PNGs the owner supplied are each a cutout centred on its own
-1254px square, at whatever size filled the frame — so a pickle slice and a
-bun arrive the same width. They are not registered to each other and cannot
-just be stacked.
+The cutouts were each supplied centred on their own 1254px square at whatever
+size filled the frame, so a pickle slice and a bun arrived the same width.
+They are not stackable as they are.
 
 This puts them all on ONE shared canvas, each scaled and placed where it sits
 in the assembled burger. Every layer then ships as a full-canvas transparent
-image, so in the browser all eight are simply pinned to the same box with
+image, so in the browser all nine are simply pinned to the same box with
 inset:0, and the animation is nothing but a translate per layer. No per-layer
 sizing or positioning in CSS, and no chance of them drifting out of register.
 
-The cheese arrived as one image holding two separate slices. They are two
-disconnected shapes, so they come apart cleanly and become two layers.
+TWO OF THE NINE LAYERS ARE CUT OUT OF ONE PICTURE EACH.
+
+The cheese arrived as one image holding two slices. They are two completely
+disconnected shapes, so they come apart by simply labelling the blobs.
+
+The patties arrived as one image of two patties that touch, so no such luck.
+They are parted along the shadow line between them — traced column by column
+as the darkest row in the band where the seam runs, then smoothed. That line
+is the top patty's own lumpy underside, so both halves come away with a
+believable meat edge instead of the flat sawn line a straight cut would
+leave. The lower patty ends up the thinner of the two because part of it was
+hidden behind the upper one in the original photograph; there is nothing to
+be done about that, and with cheese between them it does not read as wrong.
 """
 import json
 import os
@@ -39,23 +49,40 @@ NAMES = ['topbun', 'sauce', 'lettuce', 'pickles', 'cheese', 'patties', 'bottombu
 
 W, H = 1200, 980
 
-# w      width as a fraction of the canvas
-# cy     centre of the layer, as a fraction of canvas height
-# squash vertical scale. The sauce and the pickles were shot from further
-#        above than the buns, so seen straight on they read as a blob and a
-#        pile rather than as layers. Compressing them settles them into the
-#        stack at the same eye level as everything else.
+# ---------------------------------------------------------------------------
+# THE STACK
+#
+# y     where the layer sits in the assembled burger, and where it travels to
+# yex   when the burger is open. Both are in the owner's own units, measured
+#       from the middle of the burger with down being positive, and both are
+#       exactly as specified.
+# w     width as a fraction of the canvas
+# squash  vertical scale. The sauce and the pickles were shot from further
+#       above than the buns, so seen straight on they read as a blob and a
+#       pile rather than as layers. Compressing them settles them into the
+#       stack at the same eye level as everything else.
+#
+# The order is the order they are stacked, top of the burger first. It is
+# also reversed for painting, so each ingredient overlaps the one beneath it.
+# ---------------------------------------------------------------------------
 LAYERS = [
-    # name         w      cy      squash
-    ('topbun',     0.80,  0.255,  1.00),
-    ('sauce',      0.42,  0.420,  0.62),
-    ('lettuce',    0.90,  0.470,  0.66),
-    ('pickles',    0.55,  0.512,  0.55),
-    ('cheesetop',  0.84,  0.548,  1.00),
-    ('patties',    0.86,  0.620,  0.86),
-    ('cheesebot',  0.79,  0.716,  1.00),
-    ('bottombun',  0.80,  0.790,  1.00),
+    # name          y     yex     w     squash
+    ('topbun',    -150,  -320,  0.80,  1.00),
+    ('pickles',   -105,  -230,  0.55,  0.55),
+    ('lettuce',    -75,  -160,  0.90,  0.66),
+    ('sauce',      -45,   -90,  0.42,  0.62),
+    ('cheesetop',  -15,   -25,  0.84,  1.00),
+    ('pattytop',    20,    50,  0.86,  1.00),
+    ('cheesebot',   55,   125,  0.79,  1.00),
+    ('pattybot',    90,   205,  0.86,  1.00),
+    ('bottombun',  145,   320,  0.80,  1.00),
 ]
+
+# One number turns the owner's units into canvas pixels. It is chosen so the
+# assembled burger fills the canvas almost exactly: the span from the middle
+# of the top bun to the middle of the bottom one is 295 of those units, and
+# the two buns add about 400px of their own height on top of that.
+K = 1.83
 
 
 def trimmed(img):
@@ -85,79 +112,104 @@ def components(mask):
     return lab, cur
 
 
+def split_cheese(im):
+    """Two disconnected slices -> two images. Topmost first."""
+    lab, n = components(np.array(im.split()[3]) > 20)
+    blobs = []
+    for cid in range(1, n + 1):
+        ys, xs = np.where(lab == cid)
+        if len(ys) < 2000:
+            continue
+        layer = np.array(im)
+        layer[..., 3] = np.where(lab == cid, layer[..., 3], 0)
+        blobs.append((ys.mean(), trimmed(Image.fromarray(layer, 'RGBA'))))
+    blobs.sort(key=lambda b: b[0])
+    return blobs[0][1], blobs[1][1]
+
+
+def split_patties(im, band=(560, 700), smooth=121, feather=7.0):
+    """Two touching patties -> two images, parted along the shadow between.
+
+    For every column, the darkest opaque row inside `band` is where the seam
+    runs. Smoothing that trace over `smooth` columns keeps the cut a gentle
+    curve rather than a jagged line chasing individual crumbs of crust, and
+    `feather` softens the crossing so neither half gets a hard edge.
+    """
+    a = np.array(im).astype(np.int16)
+    lum = a[..., :3].astype(float).mean(axis=2)
+    alpha = a[..., 3]
+    h, w = lum.shape
+
+    seam = np.full(w, np.nan)
+    for x in range(w):
+        opaque = alpha[band[0]:band[1], x] > 40
+        if opaque.sum() < 10:
+            continue
+        col = np.where(opaque, lum[band[0]:band[1], x], 1e6)
+        seam[x] = band[0] + int(np.argmin(col))
+
+    idx = np.arange(w)
+    ok = ~np.isnan(seam)
+    seam = np.interp(idx, idx[ok], seam[ok])
+    pad = np.pad(seam, (smooth // 2, smooth // 2), mode='edge')
+    seam = np.convolve(pad, np.ones(smooth) / smooth, mode='valid')
+
+    below = np.arange(h)[:, None] - seam[None, :]
+    keep_top = np.clip(0.5 - below / feather, 0, 1)
+
+    out = []
+    for keep in (keep_top, 1.0 - keep_top):
+        b = a.copy()
+        b[..., 3] = (b[..., 3] * keep).astype(np.int16)
+        out.append(trimmed(Image.fromarray(b.astype(np.uint8), 'RGBA')))
+    return out[0], out[1]
+
+
 def sources():
-    """The eight cutouts, trimmed, keyed by layer name."""
+    """The nine cutouts, trimmed, keyed by layer name."""
     out = {}
     for name in NAMES:
         im = Image.open(os.path.join(SRC, name + '.webp')).convert('RGBA')
-        if name != 'cheese':
+        if name == 'cheese':
+            out['cheesetop'], out['cheesebot'] = split_cheese(im)
+        elif name == 'patties':
+            out['pattytop'], out['pattybot'] = split_patties(im)
+        else:
             out[name] = trimmed(im)
-            continue
-        a = np.array(im.split()[3])
-        lab, n = components(a > 20)
-        blobs = []
-        for cid in range(1, n + 1):
-            ys, xs = np.where(lab == cid)
-            if len(ys) < 2000:
-                continue
-            layer = np.array(im)
-            layer[..., 3] = np.where(lab == cid, layer[..., 3], 0)
-            blobs.append((ys.mean(), trimmed(Image.fromarray(layer, 'RGBA'))))
-        blobs.sort(key=lambda b: b[0])          # topmost slice first
-        out['cheesetop'], out['cheesebot'] = blobs[0][1], blobs[1][1]
     return out
 
 
 def compose(src):
     """Each layer on its own full-size canvas, in its assembled position."""
     placed = {}
-    for name, wf, cyf, squash in LAYERS:
+    for name, y, _yex, wf, squash in LAYERS:
         im = src[name]
         tw = round(W * wf)
         th = max(1, round(tw * im.height / im.width * squash))
         im = im.resize((tw, th), Image.LANCZOS)
         canvas = Image.new('RGBA', (W, H), (0, 0, 0, 0))
-        canvas.alpha_composite(im, ((W - tw) // 2, round(H * cyf) - th // 2))
+        cy = H / 2 + y * K
+        canvas.alpha_composite(im, ((W - tw) // 2, round(cy - th / 2)))
         placed[name] = canvas
     return placed
 
 
-# How each layer moves when the burger comes apart, as a fraction of the
-# canvas. dy is the whole effect; dx and rot are small on purpose — the brief
-# is one burger opening up, not parts drifting off on their own.
-#
-# The bottom bun barely moves. It anchors the composition, and everything
-# else climbs away from it, which reads as the burger being lifted apart
-# rather than scattered.
-#            name          dy      dx     rot   scale
-EXPLODE = {
-    'topbun':    (-0.375,  0.010, -2.2,  1.04),
-    'sauce':     (-0.250, -0.014,  1.6,  1.00),
-    'lettuce':   (-0.170,  0.016, -1.4,  1.01),
-    'pickles':   (-0.090, -0.018,  2.4,  1.00),
-    'cheesetop': (-0.040,  0.012, -1.0,  1.00),
-    'patties':   ( 0.010, -0.008,  0.8,  1.02),
-    'cheesebot': ( 0.120,  0.014, -1.6,  1.00),
-    'bottombun': ( 0.185,  0.000,  0.6,  1.03),
-}
+def travel():
+    """How far each layer moves, as a percentage of the canvas height —
+    which is exactly what the CSS needs, because a percentage in translate
+    is a percentage of the element's own box and the box IS the canvas."""
+    return {name: (yex - y) * K / H * 100 for name, y, yex, _w, _s in LAYERS}
 
 
 def preview(placed, path, t=0.0, pad=0.0):
-    """The stack at t=0 (assembled) through t=1 (fully apart)."""
     ph = round(H * (1 + pad * 2))
     off = round(H * pad)
     flat = Image.new('RGBA', (W, ph), (16, 16, 18, 255))
+    move = travel()
     for name, *_ in LAYERS[::-1]:            # bottom of the burger painted first
-        dy, dx, rot, sc = EXPLODE[name]
         im = placed[name]
-        if t:
-            s = 1 + (sc - 1) * t
-            im = im.resize((round(W * s), round(H * s)), Image.LANCZOS)
-            if rot:
-                im = im.rotate(-rot * t, resample=Image.BICUBIC, expand=False)
-        x = round((W - im.width) / 2 + dx * W * t)
-        y = round((H - im.height) / 2 + dy * H * t) + off
-        flat.alpha_composite(im, (x, y))
+        dy = move[name] / 100 * H * t
+        flat.alpha_composite(im, (0, round(dy) + off))
     flat.convert('RGB').save(path)
 
 
@@ -165,12 +217,6 @@ WIDTHS = (440, 720, 1080)
 
 
 def export(placed):
-    """Every layer at three widths as WebP, plus one PNG each as a fallback.
-
-    Each file is the full canvas with one ingredient on it, so the rest is
-    transparent — which costs almost nothing to store and buys exact
-    registration between the eight layers at every size.
-    """
     report = []
     for name, *_ in LAYERS:
         im = placed[name]
@@ -189,15 +235,19 @@ def export(placed):
 
 
 if __name__ == '__main__':
+    cmd = sys.argv[1] if len(sys.argv) > 1 else 'preview'
     placed = compose(sources())
-    if len(sys.argv) > 1 and sys.argv[1] == 'export':
+    if cmd == 'export':
         rep = export(placed)
         for n, b in rep:
             print(f'  {n:10s} {b/1024:7.1f} KB (3 webp + png)')
         print(f'  {"TOTAL":10s} {sum(b for _, b in rep)/1024:7.1f} KB')
-    elif len(sys.argv) > 1 and sys.argv[1] == 'steps':
+    elif cmd == 'steps':
         for t in (0.0, 0.35, 0.7, 1.0):
             preview(placed, f'ex-{int(t*100):03d}.png', t, pad=0.45)
+    elif cmd == 'css':
+        for name, pct in travel().items():
+            print(f'.burger__layer--{name:9s} {{ --dy: {pct:6.1f}%; }}')
     else:
-        preview(placed, sys.argv[1] if len(sys.argv) > 1 else 'preview.png')
-    print(json.dumps({'canvas': [W, H]}))
+        preview(placed, cmd)
+    print(json.dumps({'canvas': [W, H], 'K': K}))
