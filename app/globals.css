@@ -319,6 +319,11 @@ textarea:focus-visible {
 .brand {
   display: inline-flex;
   flex-direction: column;
+  justify-content: center;
+  /* The logo is two short lines of text, which came to 33px tall — under
+     the 44px a finger needs. The header is 76px, so the padding grows the
+     target without moving the logo or the header a pixel. */
+  min-height: 44px;
   line-height: 1;
   font-family: var(--font-display);
   font-size: 1.22rem;
@@ -881,6 +886,9 @@ textarea:focus-visible {
   margin-bottom: var(--sp-5);
 }
 .menu-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;          /* was 41 on a phone — just under the mark */
   border: 1px solid var(--line-strong);
   border-radius: 999px;
   padding: 0.6rem 1.25rem;
@@ -1066,6 +1074,17 @@ textarea:focus-visible {
 /* NB: never pair aspect-ratio with a min-height here — together they force a
    minimum *width* that overflows narrow phones. Adjust the ratio instead. */
 .map iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+/* On a wide screen the map sits beside a tall column of address, phone,
+   hours and delivery, and at 4:3 it came out barely half its neighbour's
+   height — a small picture adrift in a lot of dark. A taller ratio fills
+   the space it was given. Only above the breakpoint where the two sit side
+   by side; stacked on a phone, 4:3 is right and a taller map would just be
+   more scrolling. The ratio is the safe dial to turn here — see the note
+   above about min-height. */
+@media (min-width: 901px) {
+  .map { aspect-ratio: 1 / 1.05; }
+}
 
 /* Big closing call-to-action band */
 .cta-band {
@@ -1290,6 +1309,23 @@ textarea:focus-visible {
   .footer { padding-bottom: var(--sp-2); }
 
   /* Give text links a ~44px tap area on touch screens */
+  .footer a,
+  .info a {
+    display: inline-block;
+    padding-block: 0.8rem;
+  }
+  .footer li + li { margin-top: 0; }
+}
+
+/* The same padding, asked for by the right question.
+   The rule above is keyed to a narrow window, which is a decent guess at
+   "phone" and wrong about a tablet: an iPad is 820px across and is worked
+   entirely with a finger, so the phone number in the address list was left
+   at 24px tall — under the 44px a fingertip needs. Width was never what
+   mattered. This asks about the pointer instead, and covers every touch
+   screen whatever its size. Both rules stay: a mouse in a narrow window
+   gets the roomier version too, which does no harm. */
+@media (pointer: coarse) {
   .footer a,
   .info a {
     display: inline-block;
@@ -2050,7 +2086,7 @@ textarea:focus-visible {
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
-  transition: color 0.2s ease, background 0.2s ease;
+  transition: color var(--t-fast), background var(--t-fast);
 }
 .orderbox__close:hover { color: var(--cream); background: rgba(247, 243, 236, 0.07); }
 
@@ -2291,7 +2327,7 @@ textarea:focus-visible {
   font-weight: 600;
   letter-spacing: 0.1em;
   cursor: pointer;
-  transition: color 0.2s ease, background 0.2s ease;
+  transition: color var(--t-fast), background var(--t-fast);
 }
 .langpick button:hover { color: var(--cream); }
 .langpick button.is-on {
@@ -2300,10 +2336,16 @@ textarea:focus-visible {
 }
 
 /* The single-button form, used where three pills will not fit. */
-.langpick__now {
+/* .langpick .langpick__now, not .langpick__now: the rule above it is
+   .langpick button, which is a class and an element to this rule's single
+   class, so it wins and the sizes below were being ignored. */
+.langpick .langpick__now {
   display: none;
+  /* 44px square. This is the only language control a phone gets — the three
+     pills do not fit beside the logo — so it is the last place to be
+     stingy with the target. It measured 34x30 before. */
   min-width: 44px;
-  min-height: 38px;
+  min-height: 44px;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
   background: rgba(247, 243, 236, 0.04);
@@ -2315,7 +2357,33 @@ textarea:focus-visible {
    becomes one button that reopens the full-screen chooser. */
 @media (max-width: 560px) {
   .langpick__opts { display: none; }
-  .langpick__now  { display: block; }
+  .langpick .langpick__now { display: block; }
+}
+
+/* On a touch screen wide enough to still show all three pills — a tablet —
+   each one is 34x30 painted, which is a small thing to hit with a thumb.
+
+   The reachable area is grown to 44px tall without moving anything: an
+   invisible block centred on the button, taking the taps for it. The pill
+   looks exactly as it did.
+
+   Height only, deliberately. The pills sit 2px apart, so widening their
+   reach by the 5px a side that 44px would need makes each one overlap its
+   neighbours by 8px — and a tap landing in that overlap picks whichever
+   button happens to be drawn last, not the one under the finger. Choosing
+   the wrong language is a worse outcome than a target that is 34px across,
+   which is comfortably past the 24px WCAG asks for. */
+@media (pointer: coarse) {
+  .langpick__opts button { position: relative; }
+  .langpick__opts button::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 44px;
+    transform: translateY(-50%);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

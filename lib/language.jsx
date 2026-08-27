@@ -38,6 +38,20 @@ import { TRANSLATIONS } from './i18n-data';
 
 export const LANGS = ['en', 'ru', 'ka'];
 export const LANG_NAMES = { en: 'English', ru: 'Русский', ka: 'ქართული' };
+
+/* The short label shown on the buttons — and the one place where what a
+   visitor reads differs from what the code calls it.
+
+   Georgian is `ka` everywhere that matters: it is the correct language code,
+   it is what goes in the lang attribute, what is saved in the browser, and
+   what keys the translation table. But GE is what people in Georgia
+   recognise, being the country code they see on everything else. So the
+   label says GE and the code stays ka.
+
+   Never derive these from the language code itself. Two of the three happen
+   to match, which is exactly what would make a .toUpperCase() look correct
+   right up until someone notices the third. */
+export const LANG_LABELS = { en: 'EN', ru: 'RU', ka: 'GE' };
 const STORAGE = 'sameo-lang';
 
 /* Text written across several lines in JSX arrives with newlines and

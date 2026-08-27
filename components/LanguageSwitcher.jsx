@@ -4,7 +4,7 @@
    logo for three pills, so a single button showing the current language
    reopens the full-screen chooser instead. CSS decides which is on. */
 
-import { LANGS, useLanguage } from '../lib/language';
+import { LANGS, LANG_LABELS, useLanguage } from '../lib/language';
 
 export default function LanguageSwitcher() {
   const { lang, setLang, openGate } = useLanguage();
@@ -18,7 +18,7 @@ export default function LanguageSwitcher() {
         aria-label="Change language"
         onClick={() => openGate()}
       >
-        {lang.toUpperCase()}
+        {LANG_LABELS[lang]}
       </button>
       <span className="langpick__opts">
         {LANGS.map((code) => (
@@ -29,7 +29,7 @@ export default function LanguageSwitcher() {
             aria-pressed={code === lang ? 'true' : 'false'}
             onClick={() => setLang(code)}
           >
-            {code.toUpperCase()}
+            {LANG_LABELS[code]}
           </button>
         ))}
       </span>

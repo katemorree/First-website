@@ -15,7 +15,7 @@
 
 import { useEffect, useRef } from 'react';
 import { SITE } from '../lib/site';
-import { LANG_NAMES, useLanguage } from '../lib/language';
+import { LANG_LABELS, LANG_NAMES, useLanguage } from '../lib/language';
 
 const OPTIONS = [
   { code: 'en', prompt: 'Choose your language' },
@@ -84,7 +84,7 @@ export default function LanguageGate() {
               onClick={() => { setLang(o.code); closeGate(); }}
             >
               <b>{LANG_NAMES[o.code]}</b>
-              <small>{o.code.toUpperCase()}</small>
+              <small>{LANG_LABELS[o.code]}</small>
             </button>
           ))}
         </div>
