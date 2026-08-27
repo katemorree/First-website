@@ -1410,7 +1410,7 @@ textarea:focus-visible {
 .stage__pin,
 .anatomy__pin { position: static; }
 
-.js .stage__track   { height: 290vh; }   /* a full 360deg turn wants room */
+.js .stage__track   { height: 290vh; }   /* room for the burger to come apart */
 .js .anatomy__track { height: 300vh; }
 
 .js .stage__pin,
@@ -1427,8 +1427,8 @@ textarea:focus-visible {
 
 /* ---- Hero stage ---- */
 .stage {
-  --amp-x: 12vw;    /* how far the burger travels right */
-  --amp-y: -6vh;    /* and up */
+  --amp-x: 8vw;     /* how far the burger travels right */
+  --amp-y: -2vh;    /* and up */
   --amp-scale: 0.30;/* how much it shrinks (--amp-z shrinks it further) */
   --amp-split: 9vw; /* how far the two headline lines separate */
   --amp-z: -160px;  /* how far it recedes into the scene */
@@ -1529,22 +1529,31 @@ textarea:focus-visible {
   transform: translate3d(0, calc(var(--p, 0) * -1.4vh), 0);
 }
 
-/* The burger is built in three layers so each does one job and each stays a
-   pure transform. Nesting them costs nothing — the compositor multiplies the
-   matrices — but it keeps the travel, the turn and the shadow independent,
-   and it means the spin never has to fight the drift for the same property.
+/* The burger is built in layers so each does one job and each stays a pure
+   transform. Nesting them costs nothing — the compositor multiplies the
+   matrices — but it keeps the travel, the coming-apart and the light
+   independent, so none of them has to fight another for the same property.
 
      .stage__art     travels across the frame and scales
-     .stage__spin    turns the burger through a full 360deg in 3D
+     .burger         the stack, and its gentle turn
+     .burger__layer  one ingredient, moving to its own timing
      .stage__halo    the light behind it
 
-   js/script.js writes three numbers for this section: --p, the plain 0-to-1
-   progress every scroll section gets, plus --spin and --face. Those last two
-   are trigonometry, which CSS cannot yet do in a way every browser this site
-   supports would understand. */
+   lib/useScrollSections.js writes ONE number for this section: --p, the plain
+   0-to-1 scroll progress. Everything below is worked out from it in CSS. */
 .stage__art {
   position: relative;
   z-index: 2;
+  /* Do not remove. Everything inside is either absolutely positioned or
+     sized as a percentage of this box, so this box has nothing to get a
+     width from and shrink-to-fit resolves it to zero. It used to hold a
+     photograph, whose own width propped it open; the layered burger has no
+     such width of its own.
+
+     On a wide screen the grid stretches it and this changes nothing. Below
+     900px it is centred with auto margins, which turns off that stretch —
+     and that is where the burger silently vanished. */
+  width: 100%;
   transform-origin: 60% 50%;
   transform:
     translate3d(calc(var(--p, 0) * var(--amp-x)), calc(var(--p, 0) * var(--amp-y)), 0)
@@ -1556,37 +1565,97 @@ textarea:focus-visible {
   will-change: transform;
 }
 
-/* The turn. --spin runs 0 to 360deg across the pin, eased so the burger
-   lingers where it looks its best — face on — and moves quickly through the
-   quarters where it is turning away. Past 180deg the browser draws the
-   picture mirrored, which for a burger shot from the side reads as its other
-   cheek rather than as a mistake.
+/* ---- the burger coming apart ----
 
-   There is deliberately NO perspective() in this rule. The depth belongs to
-   .stage__art above, which flattens whatever happens in here — and that is
-   the point. A perspective applied to the rotation itself blows the near edge
-   up as the burger swings side-on, and instead of a burger turning you get a
-   tall vertical smear. Flattened, the turn is an honest horizontal
-   compression: the height never changes and there is nothing to smear.
+   Eight ingredient images, each on the same 1200x980 canvas, pinned on top of
+   each other. Together they are a finished burger; move them and it opens up.
 
-   --fix widens the picture before the turn compresses it, so the two cancel
-   and the burger holds a readable width instead of thinning to a hairline. */
-.stage__spin {
-  transform:
-    rotateY(var(--spin, 0deg))
-    scaleX(var(--fix, 1));
+   The box is sized by WIDTH and gets its height from the canvas ratio, so the
+   layers can never fall out of register. The 64vh in the min() is not a height
+   — it is the width at which the height would reach about 52vh, which is what
+   keeps the burger inside the pinned viewport on a short screen.
+
+   The travel above (--amp-x, --amp-y) is gentler than it was for the old
+   spinning photograph. That was one compact picture with room to move; this
+   is a stack that grows to half as tall again as it opens, and the same
+   travel carried it into the right-hand edge and left the frame lopsided. */
+.burger {
+  position: relative;
+  width: min(100%, 34rem, 64vh);
+  aspect-ratio: var(--canvas-w, 1200) / var(--canvas-h, 980);
+  margin-inline: auto;
+  /* A gentle turn of the whole stack as it opens. It is small on purpose:
+     enough to read as depth, nowhere near the grazing angles where a flat
+     picture in perspective stretches into a smear. */
+  transform: perspective(1400px) rotateY(calc(var(--p, 0) * 9deg));
   will-change: transform;
 }
 
-/* The halo behind the burger. --face is |cos(spin)|: 1 when the burger faces
-   us, 0 when it is turning away, so the halo narrows and dims exactly as the
-   burger does — which is what sells the turn as something happening in space
-   rather than a picture being squashed.
+/* Every layer fills the box exactly, so "assembled" needs no positioning at
+   all — it is what the images already are.
+
+   --l  this layer's own 0-to-1 progress. Each one moves during its own slice
+        of the scroll, which is what makes the burger open a piece at a time
+        instead of all at once. --t0 is when it starts and --k is 1 divided by
+        how long it takes. Stored that way because it makes the sum below a
+        multiplication: dividing by a var() inside calc() is the one piece of
+        this arithmetic that older browsers refuse.
+   --s  the same thing eased. x * x * (3 - 2x) is smoothstep, which leaves and
+        arrives at a standstill, so nothing starts or stops with a jerk.
+
+   Percentages in translate are of the element's own box, and the element's
+   own box is the canvas — so --dy is simply a fraction of the burger's height
+   and stays true at every screen size.
+
+   --ex scales the whole effect down on small screens, where there is less
+   room above and below for the pieces to travel into. */
+.burger__layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  --l: clamp(0, calc((var(--p, 0) - var(--t0, 0)) * var(--k, 1)), 1);
+  --s: calc(var(--l) * var(--l) * (3 - 2 * var(--l)));
+  transform:
+    translate3d(
+      calc(var(--dx, 0%) * var(--s) * var(--ex, 1)),
+      calc(var(--dy, 0%) * var(--s) * var(--ex, 1)),
+      0
+    )
+    rotate(calc(var(--rot, 0deg) * var(--s)))
+    scale(calc(1 + var(--sc, 0) * var(--s)));
+  will-change: transform;
+}
+
+/* Where each piece goes, and when it sets off.
+   dy is the effect; dx and rot are deliberately tiny. The brief was one
+   burger opening up, not parts drifting off on their own, so everything stays
+   on the centre line and only leans.
+
+   The top bun leaves first and the bottom bun barely moves — it anchors the
+   composition while the rest climbs away from it. The starts are staggered
+   down the stack so the burger peels open from the top.
+
+   sc grows the pieces nearest the eye a little more than the ones behind,
+   which is the parallax: they separate at different rates AND at different
+   sizes, so it reads as depth rather than as a list sliding apart. */
+.burger__layer--topbun    { --dy: -37.5%; --dx:  1.0%; --rot: -2.2deg; --sc: 0.04; --t0: 0.00; --k: 1.72; }
+.burger__layer--sauce     { --dy: -25.0%; --dx: -1.4%; --rot:  1.6deg; --sc: 0.00; --t0: 0.05; --k: 1.72; }
+.burger__layer--lettuce   { --dy: -17.0%; --dx:  1.6%; --rot: -1.4deg; --sc: 0.01; --t0: 0.10; --k: 1.72; }
+.burger__layer--pickles   { --dy:  -9.0%; --dx: -1.8%; --rot:  2.4deg; --sc: 0.00; --t0: 0.15; --k: 1.72; }
+.burger__layer--cheesetop { --dy:  -4.0%; --dx:  1.2%; --rot: -1.0deg; --sc: 0.00; --t0: 0.20; --k: 1.72; }
+.burger__layer--patties   { --dy:   1.0%; --dx: -0.8%; --rot:  0.8deg; --sc: 0.02; --t0: 0.25; --k: 1.72; }
+.burger__layer--cheesebot { --dy:  12.0%; --dx:  1.4%; --rot: -1.6deg; --sc: 0.00; --t0: 0.30; --k: 1.72; }
+.burger__layer--bottombun { --dy:  18.5%; --dx:  0.0%; --rot:  0.6deg; --sc: 0.03; --t0: 0.35; --k: 1.72; }
+
+/* The halo behind the burger. It widens and lifts as the burger opens, so the
+   light grows with the thing it is lighting instead of sitting still behind a
+   stack that is now twice as tall.
 
    Warm light rather than a cast shadow: the page is very nearly black, and a
    dark shadow on a dark ground is invisible. It is also a plain gradient
-   moved by transform, not a drop-shadow filter on the photo, which would have
-   to be re-rendered on every frame of the turn. */
+   moved by transform, not a drop-shadow filter on the photos, which would
+   have to be re-rendered on every frame. */
 .stage__halo {
   position: absolute;
   z-index: -1;
@@ -1599,13 +1668,12 @@ textarea:focus-visible {
   background: radial-gradient(50% 50% at 50% 50%, rgba(255, 132, 56, 0.26), transparent 70%);
   transform:
     translate3d(-50%, -50%, 0)
-    scale3d(calc(0.34 + var(--face, 1) * 0.66), 1, 1);
-  opacity: calc((0.35 + var(--face, 1) * 0.65) * (1 - var(--p, 0) * 0.35));
+    scale3d(calc(1 + var(--p, 0) * 0.16), calc(1 + var(--p, 0) * 0.34), 1);
+  opacity: calc(1 - var(--p, 0) * 0.3);
 }
 /* width:auto + max-width + max-height keeps the aspect ratio intact while
    fitting BOTH constraints. Setting width:100% with a max-height would
    squash the burger instead. */
-.stage__art img,
 .anatomy__art img {
   width: auto;
   height: auto;
@@ -1844,7 +1912,13 @@ textarea:focus-visible {
 @media (max-width: 900px) {
   .stage {
     --amp-x: 5vw;
-    --amp-y: -3vh;
+    /* Downward, where the wide layout goes up. Below 900px the burger moves
+       above the copy and sits right under the header, so as it opens the top
+       bun climbs straight behind that opaque bar and gets its dome sliced
+       off. Sinking the whole composition by the same amount it grows keeps
+       the bun in the clear. It costs nothing when the burger is together —
+       this is multiplied by scroll progress, which is zero up there. */
+    --amp-y: 3vh;
     --amp-scale: 0.20;
     --amp-split: 4vw;
     --amp-z: -90px;
@@ -1853,10 +1927,27 @@ textarea:focus-visible {
   .js .stage__track   { height: 225vh; }
   .js .anatomy__track { height: 260vh; }
 
+  /* The pinned hero is exactly one viewport tall, but the top of that
+     viewport is under the header, which is in the flow at rest and sticks
+     once you scroll — so everything inside slides up by the height of the
+     bar the moment the page moves. On a wide screen that goes unnoticed;
+     here the burger is the topmost thing, and it slid up far enough to have
+     its dome cut off against the bar. Reserving the strip centres the
+     content in the part of the viewport that is actually visible. */
+  .js .stage__pin { padding-top: calc(var(--sp-5) + 3.5rem); }
+
+  /* And a size that suits the column. At 74% of a single-column tablet
+     layout the burger came out around 520px across, which is most of the
+     screen and left it nothing to open into. */
+  .burger { width: min(100%, 26rem, 42vh); }
+
   .stage__grid,
   .anatomy__grid { grid-template-columns: minmax(0, 1fr); }
   .stage__art { order: -1; max-width: 74%; margin-inline: auto; }
-  .stage__art img { max-height: 30vh; }
+  /* Less room above and below for the pieces to travel into, so the whole
+     coming-apart is scaled down rather than letting the top bun leave the
+     screen. The burger itself is unchanged — only how far it opens. */
+  .burger { --ex: 0.82; }
   .anatomy__art { max-width: 72%; margin-inline: auto; }
   .anatomy__art img { max-height: 34vh; }
   .anatomy__steps { min-height: 13rem; }
@@ -1864,8 +1955,8 @@ textarea:focus-visible {
 }
 
 @media (max-width: 620px) {
-  .stage__art img { max-height: 26vh; }
-  .stage { --amp-z: -70px; }
+  .burger { --ex: 0.72; }
+  .stage { --amp-z: -70px; --amp-y: 4vh; }
   .js .stage__track   { height: 205vh; }
   .js .anatomy__track { height: 240vh; }
   .anatomy__steps { min-height: 15rem; }
@@ -1876,9 +1967,13 @@ textarea:focus-visible {
    the location section and the footer — and shrink the burger further. */
 @media (max-height: 640px) {
   .stage .hero__facts { display: none; }
-  .stage__art img { max-height: 21vh; }
+  .burger { width: min(100%, 34rem, 46vh); --ex: 0.62; }
   .stage__title { font-size: clamp(1.9rem, min(6vw, 7.6vh), 3.4rem); }
-  .js .stage__pin { min-height: 0; padding-block: var(--sp-3); }
+  .js .stage__pin {
+    min-height: 0;
+    padding-block: var(--sp-3);
+    padding-top: calc(var(--sp-3) + 3rem);   /* the header strip, as above */
+  }
   .stage__grid { gap: clamp(0.6rem, 2vh, 1.6rem); }
 }
 
@@ -1915,7 +2010,8 @@ textarea:focus-visible {
   .stage__fade,
   .stage__hold,
   .stage__art,
-  .stage__spin,
+  .burger,
+  .burger__layer,
   .anatomy__art {
     transform: none !important;
     opacity: 1 !important;

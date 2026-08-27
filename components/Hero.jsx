@@ -4,16 +4,17 @@
    The pinned hero.
    ---------------------------------------------------------
    lib/useScrollSections.js writes --p (0 to 1) onto .stage as
-   you scroll through the track, plus --spin, --face and --fix
-   for the burger's turn. Every movement is worked out from
-   those with calc() in app/globals.css. With no JavaScript it
-   falls back to the resting state, everything visible.
+   you scroll through the track. Every movement — the copy
+   clearing, the wordmark drifting, and the burger coming
+   apart layer by layer — is worked out from that one number
+   with calc() in app/globals.css. With no JavaScript it falls
+   back to the resting state: everything visible, the burger
+   assembled.
    ========================================================= */
 
 import Link from 'next/link';
-import { BURGERS } from '../lib/products';
 import { T } from '../lib/language';
-import { ProductPicture } from './ProductCard';
+import ExplodedBurger from './ExplodedBurger';
 import { useOrder } from './OrderProvider';
 
 const FACTS = [
@@ -24,7 +25,6 @@ const FACTS = [
 
 export default function Hero() {
   const { openOrder } = useOrder();
-  const cheeseburger = BURGERS[0];
 
   return (
     <section className="stage">
@@ -73,18 +73,12 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* Three layers: .stage__art travels and scales, .stage__spin
-                turns the burger in 3D, and .stage__halo is the light behind
-                it, narrowing and dimming as the burger turns away. */}
+            {/* .stage__art travels and scales, .stage__halo is the light
+                behind it, and ExplodedBurger is the stack of ingredients
+                that comes apart as you scroll. */}
             <div className="stage__art">
               <div className="stage__halo" aria-hidden="true" />
-              <div className="stage__spin">
-                <ProductPicture
-                  product={{ ...cheeseburger, sizes: '(max-width: 900px) 74vw, 520px' }}
-                  className=""
-                  priority
-                />
-              </div>
+              <ExplodedBurger />
             </div>
           </div>
         </div>

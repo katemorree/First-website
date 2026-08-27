@@ -169,7 +169,8 @@ Where each one appears:
 
 | Photo | File stem | Used on |
 |---|---|---|
-| Cheeseburger | `cheeseburger` | Home page hero (the scroll stage) and the anatomy section; the Cheeseburger card on the home page and on the menu page |
+| Cheeseburger | `cheeseburger` | The anatomy section on the home page; the Cheeseburger card on the home page and on the menu page |
+| Burger layers | `burger-*` | The home page hero — eight separate ingredients that come apart as you scroll. See section 8. |
 | Chili cheeseburger | `chili-burger` | The Chili Cheeseburger card on the home page and on the menu page |
 | Truffle burger | `truffle-burger` | The Truffle Burger card on the home page and on the menu page |
 | Veggie burger | `veggie-burger` | The Veggie Burger card on the home page and on the menu page |
@@ -456,7 +457,7 @@ uses only the gentle fade-up reveals.
 
 | Section | What happens |
 |---|---|
-| **Hero stage** | Pins for about three screens. The burger turns a full circle while it shrinks and drifts right and back into the scene; the two headline lines separate left and right; the outlined wordmark drifts the other way behind them. The intro paragraph clears early, but **the two buttons hold at full strength until about two-thirds of the way through** — they are the point of the page. |
+| **Hero stage** | Pins for about three screens. The burger **comes apart layer by layer** — top bun away first, then sauce, lettuce, pickles, cheese, patties, and the bottom bun holding the base — while the whole stack shrinks and drifts back into the scene; the two headline lines separate left and right; the outlined wordmark drifts the other way behind them. Scroll back up and it packs itself together again. The intro paragraph clears early, but **the two buttons hold at full strength until about two-thirds of the way through** — they are the point of the page. |
 | **Anatomy of the smash** | Pins for about three screens. The burger stays centred while three captions — The Press, The Crust, The Build — step past it. |
 | **What we smash** | Pins for about three and a half screens. The four burgers hand over one to the next: the outgoing one clears, the incoming one arrives from the right and settles, and its name, price and description follow a beat behind. A glow behind the burger drifts about a third as far, so the two planes separate as you scroll. A rail underneath shows where you are in the four. |
 
@@ -470,38 +471,48 @@ of the markup; only the presentation changes.
 - `position: sticky` does the pinning. JavaScript never positions anything.
 - `lib/useScrollSections.js` writes **one number** per section onto the section element:
   `--p` for the hero, `--q` for the anatomy, `--r` for the showcase, each
-  running 0 to 1 as you scroll through it. The hero gets three more —
-  `--spin`, `--face` and `--fix` — because the turn needs trigonometry and
-  CSS cannot yet do that in every browser this site supports. Every movement is calculated from that number with `calc()` in
-  `app/globals.css`.
+  running 0 to 1 as you scroll through it. Every movement is calculated from
+  that number with `calc()` in `app/globals.css`.
 - **All the tuning lives in the CSS**, in the block headed
   `SCROLL STAGE + ANATOMY`. To make the burger travel further, change
   `--amp-x`. To make it shrink more, change `--amp-scale`. You do not need to
   touch the JavaScript.
 
-### About that 360° turn
+### The burger that comes apart
 
-The burger is **one flat photograph**, not a turntable sequence, and that
-sets a hard limit on what a spin can be. A flat thing turned exactly side-on
-has no width at all, so left alone it thins to a hairline and vanishes.
-Because the turn is driven by scrolling, a visitor can stop on any angle they
-like, so "it goes past too fast to notice" is not an answer.
+The hero burger is **eight separate pictures**, not one photograph: top bun,
+sauce, lettuce, pickles, two cheese slices, the patties, and the bottom bun.
 
-Three things handle it, all at the top of `lib/useScrollSections.js`:
+They all sit on **one shared canvas**, 1200 by 980, each already scaled and
+placed where it belongs in the assembled burger. That is the whole trick.
+Because the eight files share a canvas, the browser stacks them with
+`inset: 0` and they line up as a finished burger with no positioning at all —
+and taking it apart is then just a `translate` per layer. There is no way for
+the pieces to drift out of register at some screen size nobody tested.
+
+**All the art direction is in the CSS**, in the `.burger__layer--*` rules:
 
 | Knob | What it does |
 |---|---|
-| `DWELL` | How much the turn lingers face-on and hurries through the turning-away quarters. 0 is a constant speed, 1 is almost a stop. |
-| `FLOOR` | The narrowest the burger is allowed to get, as a fraction of itself. 0.42 today. |
-| `EDGE` | The turn runs to 86°, steps across the few degrees either side of side-on, and carries on from 94°. Same width on both sides of the step, so it reads as the burger flipping through. |
+| `--dy` | How far that layer travels, as a percentage of the burger's height. The whole effect, really. |
+| `--dx`, `--rot` | A small sideways drift and lean. Deliberately tiny — one burger opening up, not parts floating off. |
+| `--sc` | How much the layer grows. The pieces nearest the eye grow a little more, which is what reads as depth. |
+| `--t0`, `--k` | When that layer sets off, and how long it takes. Staggered down the stack, so the burger peels open from the top instead of everything moving at once. |
+| `--ex` | Scales the whole effect down on small screens, where there is less room to open into. Set per breakpoint, not per layer. |
 
-Past 180° the browser draws the picture mirrored, and for a burger shot from
-the side that reads as its other cheek rather than as a mistake.
+Each layer eases itself in and out with `x * x * (3 - 2x)` — smoothstep — so
+nothing starts or stops with a jerk. That is plain arithmetic in `calc()`,
+which is why this needs no JavaScript beyond the single scroll number.
 
-**If you ever get a proper turntable sequence** — the same burger
-photographed every 15° or so on a rotating plate — a real 360° becomes
-possible, and it would look better than this does. Ask for it if you are
-booking a photographer anyway; it is a single extra setup on the day.
+**To regenerate the images** run `scripts/build-burger-layers.py`. It takes
+the original ingredient cutouts, splits the cheese into its two slices, scales
+and places each one, and writes the WebP and PNG files. The layout table at
+the top of that file is where the assembled burger is composed.
+
+> **This replaced a 360° spin** of a single flat photograph. That version had
+> to fight the fact that a flat picture turned side-on has no width at all and
+> thins to a hairline. The layered burger has no such problem, and it also
+> deleted the trigonometry that used to live in `lib/useScrollSections.js`.
 
 ### Why it stays fast
 
