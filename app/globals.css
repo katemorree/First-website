@@ -85,6 +85,12 @@ html {
 
 body {
   margin: 0;
+  /* Deliberately flat. A warm wash was tried here and taken out again: a
+     fixed background is anchored to the VIEWPORT, so on a page this tall it
+     painted the same glow across the top of every single screenful on the
+     way down. The warmth belongs to the sections that want it — the hero,
+     the alternating bands, the anatomy — where it lands once and reads as
+     lighting rather than as a stripe that follows you. */
   background: var(--ink);
   color: var(--cream);
   font-family: var(--font-body);
@@ -171,7 +177,14 @@ textarea:focus-visible {
    A short gradient at each edge lets one section become the next instead. */
 .section--alt {
   position: relative;
-  background: var(--ink-2);
+  /* The same ember as the hero, at a fraction of the strength. The flat
+     colour underneath is still --ink-2, so the soft edges above and below
+     (::before / ::after) still fade to the page colour correctly — the wash
+     is only a tint on top of it, not a replacement. */
+  background:
+    radial-gradient(80% 60% at 18% 0%, rgba(255, 122, 40, 0.055), transparent 68%),
+    radial-gradient(60% 50% at 88% 100%, rgba(255, 194, 74, 0.04), transparent 70%),
+    var(--ink-2);
 }
 .section--alt::before,
 .section--alt::after {
@@ -1441,7 +1454,35 @@ textarea:focus-visible {
   --amp-tilt: -7deg;/* how far it tips away from the viewer */
 }
 
-.stage__pin { padding-block: var(--sp-5); }
+.stage__pin {
+  padding-block: var(--sp-5);
+  /* The room the burger stands in.
+
+     All of this is painted ONCE and never animated — it lives on the pinned
+     element, which is exactly one viewport and stays put while the track
+     scrolls past it, so the gradients never stretch and never repaint. That
+     matters: the two things already costing the most per frame here are the
+     wordmark and the glow, both of which are large surfaces being blended,
+     and the last thing this hero needs is a third.
+
+     Bottom to top:
+       1. a plain vertical wash, warm charcoal down to ink
+       2. the key light, top right — over the BURGER, not over the copy.
+          It was on the left to begin with and had to move: the eyebrow sits
+          up there in flame orange, and lighting the ground behind it took
+          its contrast down to 4.50 against a 4.5 requirement, which is not
+          a margin, it is a coin toss. Lighting the product instead of the
+          text is also just the better photograph.
+       3. a floor on the same side, so the light has somewhere to fall
+       4. a vignette, which is what actually does the work — it darkens the
+          corners so the brightest things on screen are the burger and the
+          headline, not the background. */
+  background:
+    radial-gradient(118% 78% at 50% 44%, transparent 38%, rgba(0, 0, 0, 0.58) 100%),
+    radial-gradient(64% 52% at 80% 88%, rgba(255, 122, 40, 0.12), transparent 72%),
+    radial-gradient(84% 64% at 80% 0%, rgba(255, 160, 66, 0.15), transparent 70%),
+    linear-gradient(180deg, #171210 0%, #120e0c 46%, var(--ink) 100%);
+}
 
 .stage__glow {
   position: absolute;
@@ -1450,8 +1491,9 @@ textarea:focus-visible {
   height: 820px;
   pointer-events: none;
   background:
-    radial-gradient(46% 46% at 22% 24%, rgba(255, 90, 31, 0.42), transparent 68%),
-    radial-gradient(42% 42% at 78% 12%, rgba(255, 194, 74, 0.22), transparent 66%);
+    radial-gradient(46% 46% at 20% 22%, rgba(255, 90, 31, 0.46), transparent 66%),
+    radial-gradient(38% 40% at 46% 4%, rgba(255, 122, 40, 0.20), transparent 70%),
+    radial-gradient(42% 42% at 80% 10%, rgba(255, 194, 74, 0.24), transparent 66%);
   transform:
     translate3d(calc(var(--p, 0) * -4vw), calc(var(--p, 0) * 5vh), 0)
     scale(calc(1 - var(--p, 0) * 0.25));
@@ -1698,11 +1740,21 @@ textarea:focus-visible {
   aspect-ratio: 1;
   pointer-events: none;
   border-radius: 50%;
-  background: radial-gradient(50% 50% at 50% 50%, rgba(255, 132, 56, 0.26), transparent 70%);
+  /* closest-side with the falloff carried all the way to 100%: stopping a
+     radial short of its own box leaves a visible rim where the gradient ends
+     against the vignette, which read as a dark disc parked behind the
+     patties rather than as light. */
+  background:
+    radial-gradient(closest-side,
+      rgba(255, 156, 74, 0.30), rgba(255, 110, 45, 0.13) 48%, transparent 100%);
+  /* Stretches upward and downward with the stack rather than staying a disc
+     behind a compact burger — by the time the burger is open it is two and a
+     half times taller, and a round pool of light under a tall column reads
+     as a mistake. */
   transform:
     translate3d(-50%, -50%, 0)
-    scale3d(calc(1 + var(--p, 0) * 0.16), calc(1 + var(--p, 0) * 0.34), 1);
-  opacity: calc(1 - var(--p, 0) * 0.3);
+    scale3d(calc(1 + var(--p, 0) * 0.24), calc(1 + var(--p, 0) * 1.15), 1);
+  opacity: calc(1 - var(--p, 0) * 0.18);
 }
 /* width:auto + max-width + max-height keeps the aspect ratio intact while
    fitting BOTH constraints. Setting width:100% with a max-height would
@@ -1722,7 +1774,10 @@ textarea:focus-visible {
 /* ---- Anatomy of the smash ---- */
 .anatomy {
   --amp-rise: -4vh;
-  background: var(--ink-2);
+  background:
+    radial-gradient(70% 55% at 82% 6%, rgba(255, 122, 40, 0.06), transparent 70%),
+    radial-gradient(60% 45% at 12% 96%, rgba(255, 194, 74, 0.035), transparent 72%),
+    var(--ink-2);
 }
 
 .anatomy__grid {
