@@ -66,17 +66,32 @@ W, H = 1200, 980
 # also reversed for painting, so each ingredient overlaps the one beneath it.
 # ---------------------------------------------------------------------------
 LAYERS = [
-    # name          y     yex     w     squash
-    ('topbun',    -150,  -320,  0.80,  1.00),
-    ('pickles',   -105,  -230,  0.55,  0.55),
-    ('lettuce',    -75,  -160,  0.90,  0.66),
-    ('sauce',      -45,   -90,  0.42,  0.62),
-    ('cheesetop',  -15,   -25,  0.84,  1.00),
-    ('pattytop',    20,    50,  0.86,  1.00),
-    ('cheesebot',   55,   125,  0.79,  1.00),
-    ('pattybot',    90,   205,  0.86,  1.00),
-    ('bottombun',  145,   320,  0.80,  1.00),
+    # name          y     yex     w     squash   sc
+    ('topbun',    -147,  -542,  0.80,  1.00,  0.035),
+    ('cheesetop',  -70,  -362,  0.88,  1.00,  0.010),
+    ('pattytop',   -40,  -217,  0.86,  1.00,  0.022),
+    ('cheesebot',   10,   -72,  0.84,  1.00,  0.010),
+    ('pattybot',    40,    48,  0.86,  1.00,  0.022),
+    ('pickles',     76,   168,  0.55,  0.55,  0.000),
+    ('lettuce',     96,   278,  0.90,  0.66,  0.006),
+    ('sauce',      118,   393,  0.42,  0.62,  0.000),
+    ('bottombun',  166,   558,  0.80,  1.00,  0.035),
 ]
+
+# When each layer sets off, as a fraction of the scroll. The last one starts
+# at STAGGER; the rest are spread evenly before it.
+#
+# EVERY LAYER FINISHES AT THE END, not after a fixed run. That is not a
+# stylistic choice, it is what keeps the burger on screen. The open stack is
+# about two and a half times the height of the closed one, and the only
+# reason it fits the pinned viewport is that the whole thing shrinks as it
+# opens. Give the layers a fixed short run and they arrive at full spread
+# around 60% of the way down, while the shrink is only 78% applied — so the
+# stack bulges through the middle of the scroll and the top bun loses its
+# dome behind the header. Landing every layer exactly when the burger is at
+# its smallest keeps the two in step, and the stagger still reads because
+# they START at different times.
+STAGGER = 0.36
 
 # One number turns the owner's units into canvas pixels. It is chosen so the
 # assembled burger fills the canvas almost exactly: the span from the middle
@@ -182,7 +197,7 @@ def sources():
 def compose(src):
     """Each layer on its own full-size canvas, in its assembled position."""
     placed = {}
-    for name, y, _yex, wf, squash in LAYERS:
+    for name, y, _yex, wf, squash, _sc in LAYERS:
         im = src[name]
         tw = round(W * wf)
         th = max(1, round(tw * im.height / im.width * squash))
@@ -198,7 +213,7 @@ def travel():
     """How far each layer moves, as a percentage of the canvas height —
     which is exactly what the CSS needs, because a percentage in translate
     is a percentage of the element's own box and the box IS the canvas."""
-    return {name: (yex - y) * K / H * 100 for name, y, yex, _w, _s in LAYERS}
+    return {name: (yex - y) * K / H * 100 for name, y, yex, _w, _s, _c in LAYERS}
 
 
 def preview(placed, path, t=0.0, pad=0.0):
@@ -244,10 +259,25 @@ if __name__ == '__main__':
         print(f'  {"TOTAL":10s} {sum(b for _, b in rep)/1024:7.1f} KB')
     elif cmd == 'steps':
         for t in (0.0, 0.35, 0.7, 1.0):
-            preview(placed, f'ex-{int(t*100):03d}.png', t, pad=0.45)
+            preview(placed, f'ex-{int(t*100):03d}.png', t, pad=0.62)
+    elif cmd == 'ink':
+        # What each layer ACTUALLY occupies, ink not bounding box. The
+        # garnish boxes are mostly transparent, so spacing the open stack by
+        # box height leaves far too much air around the thin layers.
+        print(f'{"layer":10s} {"ink h px":>9s} {"half units":>11s}')
+        for name, *_ in LAYERS:
+            a = np.array(placed[name].split()[3])
+            ys, _ = np.where(a > 12)
+            h = ys.max() - ys.min()
+            print(f'{name:10s} {h:9d} {h / 2 / K:11.1f}')
     elif cmd == 'css':
-        for name, pct in travel().items():
-            print(f'.burger__layer--{name:9s} {{ --dy: {pct:6.1f}%; }}')
+        move = travel()
+        n = len(LAYERS)
+        for i, (name, _y, _yex, _w, _s, sc) in enumerate(LAYERS):
+            t0 = STAGGER * i / (n - 1)
+            k = 1 / (1 - t0)
+            print(f'.burger__layer--{name:9s} {{ --dy: {move[name]:6.1f}%;'
+                  f' --sc: {sc:.3f}; --t0: {t0:.3f}; --k: {k:.3f}; }}')
     else:
         preview(placed, cmd)
     print(json.dumps({'canvas': [W, H], 'K': K}))

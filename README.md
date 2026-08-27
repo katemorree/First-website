@@ -490,8 +490,9 @@ of the markup; only the presentation changes.
 
 ### The burger that comes apart
 
-The hero burger is **nine separate layers**, not one photograph: top bun,
-pickles, lettuce, sauce, cheese, patty, cheese, patty, bottom bun.
+The hero burger is **nine separate layers**, not one photograph, stacked in
+this order: top bun, cheese, patty, cheese, patty, pickles, lettuce, sauce,
+bottom bun.
 
 They come from seven pictures. The cheese arrived as one image of two
 separate slices, which came apart by itself. The two patties arrived
@@ -513,7 +514,7 @@ the pieces to drift out of register at some screen size nobody tested.
 | `--dy` | How far that layer travels, as a percentage of the burger's height. The whole effect, really. **Do not hand-edit these** — they are generated; see below. |
 | `--dx`, `--rot` | A small sideways drift and lean. Deliberately tiny — one burger opening up, not parts floating off. |
 | `--sc` | How much the layer grows. The pieces nearest the eye grow a little more, which is what reads as depth. |
-| `--t0`, `--k` | When that layer sets off, and how long it takes. Staggered down the stack, so the burger peels open from the top instead of everything moving at once. |
+| `--t0`, `--k` | When that layer sets off, and how long it takes. Staggered down the stack, so the burger peels open from the top instead of everything moving at once — but they all FINISH together, at the end of the scroll. See the warning below. |
 | `--ex` | Scales the whole effect down on small screens, where there is less room to open into. Set per breakpoint, not per layer. |
 
 Each layer eases itself in and out with `x * x * (3 - 2x)` — smoothstep — so
@@ -532,9 +533,20 @@ python3 scripts/build-burger-layers.py export   # write the images
 python3 scripts/build-burger-layers.py css      # print the --dy block
 ```
 
-and paste the `--dy` block over the one in `app/globals.css`. The script also
+and paste that block over the one in `app/globals.css`. The script also
 splits the cheese and the patties, so it is the single place the burger is
 composed.
+
+> **Why every layer finishes at the same moment.** Open, the stack is about
+> two and a half times the height of the closed burger, and the only reason
+> it fits a pinned viewport at all is that the whole thing shrinks as it
+> opens. Give every layer the same short run and they reach full spread
+> around 60% of the way down, while the shrink is only three quarters
+> applied — so the stack bulges through the middle of the scroll and the top
+> bun loses its dome behind the header. Landing each layer exactly when the
+> burger is at its smallest keeps the two in step. That is what the varying
+> `--k` is doing, and it is why the generated block should not be
+> hand-edited.
 
 > **This replaced a 360° spin** of a single flat photograph. That version had
 > to fight the fact that a flat picture turned side-on has no width at all and

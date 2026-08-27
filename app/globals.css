@@ -1435,7 +1435,7 @@ textarea:focus-visible {
 .stage {
   --amp-x: 8vw;     /* how far the burger travels right */
   --amp-y: -2vh;    /* and up */
-  --amp-scale: 0.30;/* how much it shrinks (--amp-z shrinks it further) */
+  --amp-scale: 0.40;/* how much it shrinks (--amp-z shrinks it further) */
   --amp-split: 9vw; /* how far the two headline lines separate */
   --amp-z: -160px;  /* how far it recedes into the scene */
   --amp-tilt: -7deg;/* how far it tips away from the viewer */
@@ -1635,33 +1635,51 @@ textarea:focus-visible {
 
 /* Where each piece goes, and when it sets off.
 
-   --dy is the effect and every one of these numbers is the owner's own
-   stacking spec, converted from their units into a percentage of the
-   canvas by scripts/build-burger-layers.py. Do not hand-edit them: change
-   the LAYERS table in that script and run `python3
-   scripts/build-burger-layers.py css` to print this block again.
+   --dy is the whole effect, and every one of these numbers is GENERATED.
+   Do not hand-edit them: change the LAYERS table in
+   scripts/build-burger-layers.py, then run
 
-   dx and rot are deliberately tiny. The brief was one burger opening up,
-   not parts drifting off on their own, so everything stays on the centre
-   line and only leans.
+       python3 scripts/build-burger-layers.py css
 
-   The top bun leaves first and the bottom bun travels furthest down, so the
-   burger opens from both ends around the patties. The starts are staggered
-   down the stack, which is what makes it peel apart a piece at a time
-   instead of everything moving at once.
+   and paste the result over this block. The table there is also what
+   composes the images, so the two can never drift out of step.
 
-   sc grows the pieces nearest the eye a little more than the ones behind,
-   which is the parallax: they separate at different rates AND at different
-   sizes, so it reads as depth rather than as a list sliding apart. */
-.burger__layer--topbun    { --dy: -31.7%; --dx:  1.0%; --rot: -2.2deg; --sc: 0.04; --t0: 0.000; --k: 1.72; }
-.burger__layer--pickles   { --dy: -23.3%; --dx: -1.8%; --rot:  2.4deg; --sc: 0.00; --t0: 0.045; --k: 1.72; }
-.burger__layer--lettuce   { --dy: -15.9%; --dx:  1.6%; --rot: -1.4deg; --sc: 0.01; --t0: 0.090; --k: 1.72; }
-.burger__layer--sauce     { --dy:  -8.4%; --dx: -1.4%; --rot:  1.6deg; --sc: 0.00; --t0: 0.135; --k: 1.72; }
-.burger__layer--cheesetop { --dy:  -1.9%; --dx:  1.2%; --rot: -1.0deg; --sc: 0.00; --t0: 0.180; --k: 1.72; }
-.burger__layer--pattytop  { --dy:   5.6%; --dx: -0.8%; --rot:  0.8deg; --sc: 0.02; --t0: 0.225; --k: 1.72; }
-.burger__layer--cheesebot { --dy:  13.1%; --dx:  1.4%; --rot: -1.6deg; --sc: 0.00; --t0: 0.270; --k: 1.72; }
-.burger__layer--pattybot  { --dy:  21.5%; --dx: -0.6%; --rot:  1.0deg; --sc: 0.02; --t0: 0.315; --k: 1.72; }
-.burger__layer--bottombun { --dy:  32.7%; --dx:  0.0%; --rot:  0.6deg; --sc: 0.03; --t0: 0.360; --k: 1.72; }
+   They are not evenly spaced, deliberately. Even gaps between centres put a
+   thick bun the same distance from its neighbour as a sheet of cheese is
+   from its own, which leaves the bun crowded and the cheese adrift. These
+   are spaced so the AIR between one layer and the next is even the whole
+   way down.
+
+   --dx and --rot are zero on every layer and that is the design: the
+   reference is a dead-straight column and the alignment is most of why it
+   looks expensive. They are still read by the transform above, so a lean
+   can be reintroduced by setting one here without touching anything else.
+
+   --sc is the only thing left doing parallax — the buns and patties grow a
+   shade more than the thin layers, so the stack separates at different
+   rates AND at different sizes rather than sliding apart as a flat list.
+
+   The starts are staggered down the stack, so the burger peels open from
+   the top rather than everything moving at once — but every layer FINISHES
+   at the end of the scroll, which is why --k differs per layer.
+
+   That is not a flourish, it is what keeps the burger on screen. Open, the
+   stack is about two and a half times its closed height, and the only
+   reason it fits a pinned viewport is that the whole thing shrinks as it
+   opens (--amp-scale). Give every layer the same short run and they reach
+   full spread around 60% of the way down, while the shrink is only three
+   quarters applied — so the stack bulges through the middle of the scroll
+   and the top bun loses its dome behind the header. Landing each layer
+   exactly when the burger is at its smallest keeps the two in step. */
+.burger__layer--topbun    { --dy:  -73.8%; --sc: 0.035; --t0: 0.000; --k: 1.000; }
+.burger__layer--cheesetop { --dy:  -54.5%; --sc: 0.010; --t0: 0.045; --k: 1.047; }
+.burger__layer--pattytop  { --dy:  -33.1%; --sc: 0.022; --t0: 0.090; --k: 1.099; }
+.burger__layer--cheesebot { --dy:  -15.3%; --sc: 0.010; --t0: 0.135; --k: 1.156; }
+.burger__layer--pattybot  { --dy:    1.5%; --sc: 0.022; --t0: 0.180; --k: 1.220; }
+.burger__layer--pickles   { --dy:   17.2%; --sc: 0.000; --t0: 0.225; --k: 1.290; }
+.burger__layer--lettuce   { --dy:   34.0%; --sc: 0.006; --t0: 0.270; --k: 1.370; }
+.burger__layer--sauce     { --dy:   51.4%; --sc: 0.000; --t0: 0.315; --k: 1.460; }
+.burger__layer--bottombun { --dy:   73.2%; --sc: 0.035; --t0: 0.360; --k: 1.562; }
 
 /* The halo behind the burger. It widens and lifts as the burger opens, so the
    light grows with the thing it is lighting instead of sitting still behind a
@@ -1934,7 +1952,7 @@ textarea:focus-visible {
        the bun in the clear. It costs nothing when the burger is together —
        this is multiplied by scroll progress, which is zero up there. */
     --amp-y: 3vh;
-    --amp-scale: 0.20;
+    --amp-scale: 0.30;
     --amp-split: 4vw;
     --amp-z: -90px;
     --amp-tilt: -5deg;
