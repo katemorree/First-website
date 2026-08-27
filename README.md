@@ -269,44 +269,46 @@ to the phone number — so the page never appears broken to a customer.
 
 ## 5. Publishing
 
-The site is hosted on GitHub Pages, built by the workflow in
-`.github/workflows/deploy.yml`.
+The site is deployed on **Vercel**. Push to `main` and Vercel rebuilds and
+publishes it; nothing else needs doing.
 
-**Set this once or nothing publishes:** in **Settings → Pages**, set
-**Source** to **GitHub Actions**. Not a branch — the old setting built
-nothing, because there was nothing to build.
+Vercel detects Next.js on its own, so there is no configuration to keep in
+step. The two settings that vary by host both default to what Vercel needs:
+the site sits at the root of the domain, and it works out its own address
+for the canonical tags, `sitemap.xml`, `robots.txt` and the restaurant's
+structured data.
 
-After that, every push to `main` rebuilds and republishes the site. Watch it
-happen in the **Actions** tab; it takes a few minutes. If a build fails the
-site stays as it was rather than breaking, and the Actions tab says why.
+**Set `SITE_URL`** in the Vercel project settings once there is a real
+domain. Until then the address it works out is the `.vercel.app` one, which
+is right for a preview but not what you want a search engine to record.
 
-### Deploying to Vercel instead
+### GitHub Pages is switched off
 
-Nothing needs changing. Point Vercel at the repository and it will detect
-Next.js, run `npm run build` and serve the result. The two settings that
-differ by host both default to what Vercel needs:
+The site used to be published on GitHub Pages as well. Two copies of the
+same site on two addresses is worse than one — search engines have to guess
+which is the real one — so the workflow that published to Pages has been
+removed.
 
-- **The base path is empty**, so the site sits at the root of the domain.
-  GitHub Pages is the exception, and its workflow sets `BASE_PATH` itself.
-- **The address is worked out from the deployment**, so canonical tags,
-  `sitemap.xml`, `robots.txt` and the restaurant's structured data all
-  describe the right domain without being told.
+Turning it off completely also needs one thing in the repository settings,
+which is not something a file in the repository can do: **Settings → Pages →
+Source → None**. Until that is set, whatever was published last stays up at
+the old address.
 
-Once there is a real domain, set `SITE_URL` in the Vercel project settings to
-it — the automatic value follows Vercel's own domain, which is fine for a
-preview but not what you want search engines to record.
+**To bring it back**, restore `.github/workflows/deploy.yml` from the
+history:
 
-One optional improvement on Vercel: `output: 'export'` in `next.config.mjs`
-builds the site as plain files, which is what a file host needs. Vercel can
-run Next.js properly, so removing that line would switch on the image
-optimiser. The product photos would gain little — they are already exported
-at four sizes each by hand — but it costs nothing to try.
+```
+git checkout 0843f33 -- .github/workflows/deploy.yml
+```
+
+and set Settings → Pages → Source back to **GitHub Actions**. The workflow
+already knows GitHub Pages serves the site from a `/First-website/` folder
+and sets the base path accordingly.
 
 ### If you register a custom domain
 
-Set `SITE_URL` to it wherever the site is built: in the Vercel project
-settings, or in `.github/workflows/deploy.yml` for GitHub Pages. Everything
-that mentions the address is generated from it.
+Set `SITE_URL` to it in the Vercel project settings. Everything that
+mentions the address is generated from it.
 
 ---
 
