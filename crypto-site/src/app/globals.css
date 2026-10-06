@@ -1,0 +1,205 @@
+@import "tailwindcss";
+
+/* ───────── Design tokens ─────────
+   Change colours here and the whole site follows. */
+@theme {
+  --color-bg: #08090b;
+  --color-surface: #0e1013;
+  --color-surface-2: #14171b;
+  --color-surface-3: #1a1e23;
+  --color-line: #1e2228;
+  --color-line-strong: #2a2f37;
+  --color-fg: #eceef1;
+  --color-muted: #a1a9b5;
+  --color-subtle: #828a97;
+  --color-accent: #5be7a9;
+  --color-accent-strong: #3fd894;
+  --color-accent-ink: #03140c;
+  --color-amber: #f5b748;
+  --color-red: #f37272;
+  --color-blue: #82acff;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-pulse-dot: pulse-dot 2.4s ease-in-out infinite;
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--color-accent) 35%, transparent);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  h1, h2, h3, h4 {
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+}
+
+@layer components {
+  .container-x {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 76rem;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 640px) {
+    .container-x { padding-inline: 1.5rem; }
+  }
+
+  /* Small uppercase mono label — the "terminal" accent used across the site */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .card {
+    position: relative;
+    border: 1px solid var(--color-line);
+    background: linear-gradient(180deg, var(--color-surface-2), var(--color-surface));
+    border-radius: 1rem;
+  }
+  .card-hover {
+    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .card-hover:hover {
+    border-color: var(--color-line-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(91, 231, 169, 0.04);
+  }
+
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+  }
+
+  .glow {
+    background:
+      radial-gradient(600px 300px at 20% 0%, rgba(91, 231, 169, 0.12), transparent 70%),
+      radial-gradient(500px 260px at 85% 10%, rgba(130, 172, 255, 0.09), transparent 70%);
+  }
+
+  .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  /* Horizontal scroll wrapper for wide tables on phones */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--color-line);
+    border-radius: 0.875rem;
+    margin-block: 1.5rem;
+  }
+
+  /* ───────── Article / long-form typography ───────── */
+  .prose {
+    color: var(--color-muted);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+  .prose > * + *, .prose > div > * + * { margin-top: 1.15em; }
+  .prose h2 {
+    color: var(--color-fg);
+    font-size: 1.5rem;
+    line-height: 1.3;
+    font-weight: 600;
+    margin-top: 2.2em;
+    padding-top: 0.25em;
+  }
+  .prose h3 {
+    color: var(--color-fg);
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-top: 1.8em;
+  }
+  .prose strong { color: var(--color-fg); font-weight: 600; }
+  .prose a:not(:where(.not-prose *)) {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklab, var(--color-accent) 40%, transparent);
+    text-underline-offset: 3px;
+  }
+  .prose a:not(:where(.not-prose *)):hover { text-decoration-color: var(--color-accent); }
+  .prose ul, .prose ol { padding-left: 1.25rem; }
+  .prose ul { list-style: disc; }
+  .prose ol { list-style: decimal; }
+  .prose li { margin-top: 0.4em; padding-left: 0.25rem; }
+  .prose li::marker { color: var(--color-subtle); }
+  .prose blockquote {
+    border: 1px solid color-mix(in oklab, var(--color-amber) 30%, transparent);
+    background: color-mix(in oklab, var(--color-amber) 7%, transparent);
+    border-radius: 0.75rem;
+    padding: 0.9rem 1.1rem;
+    color: var(--color-fg);
+    font-size: 0.97rem;
+  }
+  .prose blockquote strong { color: var(--color-amber); }
+  .prose table { width: 100%; border-collapse: collapse; font-size: 0.92rem; min-width: 34rem; }
+  .prose .table-wrap { margin-block: 1.5rem; }
+  .prose th {
+    text-align: left;
+    color: var(--color-fg);
+    font-weight: 600;
+    background: var(--color-surface-2);
+    padding: 0.7rem 0.9rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .prose td { padding: 0.7rem 0.9rem; border-top: 1px solid var(--color-line); vertical-align: top; }
+  .prose code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--color-surface-3);
+    padding: 0.15em 0.4em;
+    border-radius: 0.35em;
+    color: var(--color-fg);
+  }
+  .prose hr { border-color: var(--color-line); margin-block: 2.5em; }
+}
+
+/* Hide scrollbars on horizontal chip rows while keeping them scrollable */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
