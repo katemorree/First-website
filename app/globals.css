@@ -310,8 +310,14 @@ textarea:focus-visible {
   top: 0;
   z-index: 900;
   background: rgba(13, 12, 11, 0.72);
-  backdrop-filter: blur(14px) saturate(140%);
+  /* PREFIXED FIRST, then the standard property. Not a style preference —
+     with them the other way round the minifier collapsed the pair and kept
+     only the -webkit- one, which this engine does not act on, so the blur
+     was silently dead in the built site while looking perfectly correct in
+     the source. This bar is only 72% opaque and leans on that blur, so what
+     you actually got was the page showing through the header. */
   -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
   border-bottom: 1px solid transparent;
   transition: background var(--t-fast), border-color var(--t-fast);
 }
@@ -929,6 +935,18 @@ textarea:focus-visible {
   color: var(--muted);
 }
 
+/* On a phone the four cards stack, so the section is read top to bottom as
+   one tall column and the spacing that gives each card room on a desktop
+   grid just turns into scrolling. The quote keeps its size — it is the
+   thing being read — and the air around it comes in instead. */
+@media (max-width: 620px) {
+  .quote-card { padding: 1.25rem 1.3rem; }
+  .quote-card__stars { margin-bottom: var(--sp-2); }
+  .quote-card blockquote { margin-bottom: var(--sp-3); }
+  .quote-card figcaption { padding-top: var(--sp-2); gap: 0.7rem; }
+  .quote-card__mark { width: 2.3rem; height: 2.3rem; font-size: 0.95rem; }
+}
+
 /* ---------- 9. MENU ---------- */
 .menu-nav {
   display: flex;
@@ -1263,15 +1281,27 @@ textarea:focus-visible {
   inset: auto 0 0 0;
   gap: 0.6rem;
   padding: 0.6rem 0.75rem calc(0.6rem + env(safe-area-inset-bottom));
-  background: rgba(13, 12, 11, 0.94);
-  backdrop-filter: blur(14px);
+  /* Near solid, on purpose. This bar is pinned over whatever the page
+     happens to be showing, and at 94% the cream text behind it came through
+     as readable ghost words sitting under the buttons. The blur was meant to
+     hide that, but a blur is an enhancement: it was silently dropped from
+     the build until the prefix order above was fixed, and it still does not
+     render everywhere. The bar carries the main call to action on a phone,
+     so it should not need the blur to be legible — it just looks nicer with
+     it. */
+  background: rgba(10, 9, 8, 0.985);
   -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
   border-top: 1px solid var(--line);
 }
 .actionbar .btn {
   flex: 1;
   padding-inline: 0.75rem;
-  font-size: 0.74rem;
+  /* 0.74rem came out at 11.8px, which is small for the main thing a phone
+     visitor is meant to tap. The labels are two words at most and the bar
+     is the full width of the screen, so there was never a reason to squeeze
+     them. */
+  font-size: 0.82rem;
   min-height: 50px;
 }
 
@@ -2328,7 +2358,7 @@ textarea:focus-visible {
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
-.orderbox__opt small { font-size: 0.74rem; color: var(--muted); }
+.orderbox__opt small { font-size: 0.8rem; color: var(--muted); }
 
 /* Each option arrives just behind the one above it, so the three read as a
    list being dealt out rather than three things flashing at once. */
